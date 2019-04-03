@@ -41,8 +41,11 @@ namespace VehicleRootingProblem {
             } else {
 
             }
-            AllocConsole();
-            freopen("CONOUT$", "w", stdout);
+
+			if (localDebug) {
+				AllocConsole();
+				freopen("CONOUT$", "w", stdout);
+			}
         }
 
     protected:
