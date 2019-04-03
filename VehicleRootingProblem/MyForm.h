@@ -17,7 +17,7 @@
 
 namespace VehicleRootingProblem {
 
-    bool localDebug = true;
+    bool localDebug = false;
 
     using namespace System;
     using namespace System::ComponentModel;
