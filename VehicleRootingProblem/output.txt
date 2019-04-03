@@ -1,0 +1,8 @@
+drons: 2, targets: 61
+No 
+No 
+No 
+No 
+maxdist: 836.673
+
+
