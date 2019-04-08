@@ -38,9 +38,8 @@ namespace VehicleRootingProblem {
                 this->textBox1->Visible = true;
                 this->progressBar1->Visible = true;
                 this->button1->Visible = true;
-            } else {
-
-            }
+			} 
+			this->cbAlgorithm->SelectedIndex = 0;
 
 			if (localDebug) {
 				AllocConsole();
@@ -55,9 +54,6 @@ namespace VehicleRootingProblem {
         ~MyForm() {
             if (components) {
                 delete components;
-            }
-            if (formInputData) {
-                delete formInputData;
             }
         }
     private: System::Windows::Forms::Button^  button1;
@@ -92,6 +88,9 @@ namespace VehicleRootingProblem {
     private: System::Windows::Forms::Label^  label3;
     private: System::Windows::Forms::SaveFileDialog^  saveFileDialog1;
     private: System::Windows::Forms::Label^  label9;
+	private: System::Windows::Forms::Label^  label10;
+	private: System::Windows::Forms::ComboBox^  cbAlgorithm;
+
 
     protected:
 
@@ -107,346 +106,393 @@ namespace VehicleRootingProblem {
         /// the contents of this method with the code editor.
         /// </summary>
         void InitializeComponent(void) {
-            this->button1 = (gcnew System::Windows::Forms::Button());
-            this->progressBar1 = (gcnew System::Windows::Forms::ProgressBar());
-            this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-            this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-            this->textBoxMatrix = (gcnew System::Windows::Forms::TextBox());
-            this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
-            this->buttonRun = (gcnew System::Windows::Forms::Button());
-            this->radioButtonMinMaxLen = (gcnew System::Windows::Forms::RadioButton());
-            this->radioButtonMinSum = (gcnew System::Windows::Forms::RadioButton());
-            this->textBoxMaxDist = (gcnew System::Windows::Forms::TextBox());
-            this->textBoxCntTargets = (gcnew System::Windows::Forms::TextBox());
-            this->textBoxCntDrons = (gcnew System::Windows::Forms::TextBox());
-            this->label7 = (gcnew System::Windows::Forms::Label());
-            this->label6 = (gcnew System::Windows::Forms::Label());
-            this->label5 = (gcnew System::Windows::Forms::Label());
-            this->label4 = (gcnew System::Windows::Forms::Label());
-            this->labelFileName = (gcnew System::Windows::Forms::Label());
-            this->buttonFileOpen = (gcnew System::Windows::Forms::Button());
-            this->label2 = (gcnew System::Windows::Forms::Label());
-            this->label1 = (gcnew System::Windows::Forms::Label());
-            this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
-            this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
-            this->label9 = (gcnew System::Windows::Forms::Label());
-            this->buttonSave = (gcnew System::Windows::Forms::Button());
-            this->textBoxResult = (gcnew System::Windows::Forms::TextBox());
-            this->textBoxResMaxLen = (gcnew System::Windows::Forms::TextBox());
-            this->label8 = (gcnew System::Windows::Forms::Label());
-            this->textBoxResSumLen = (gcnew System::Windows::Forms::TextBox());
-            this->label3 = (gcnew System::Windows::Forms::Label());
-            this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
-            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
-            this->groupBox1->SuspendLayout();
-            this->groupBox2->SuspendLayout();
-            this->SuspendLayout();
-            // 
-            // button1
-            // 
-            this->button1->Location = System::Drawing::Point(697, 675);
-            this->button1->Margin = System::Windows::Forms::Padding(4);
-            this->button1->Name = L"button1";
-            this->button1->Size = System::Drawing::Size(169, 84);
-            this->button1->TabIndex = 0;
-            this->button1->Text = L"Run";
-            this->button1->UseVisualStyleBackColor = true;
-            this->button1->Visible = false;
-            this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
-            // 
-            // progressBar1
-            // 
-            this->progressBar1->Location = System::Drawing::Point(320, 672);
-            this->progressBar1->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
-            this->progressBar1->Name = L"progressBar1";
-            this->progressBar1->Size = System::Drawing::Size(360, 52);
-            this->progressBar1->TabIndex = 2;
-            this->progressBar1->Visible = false;
-            // 
-            // textBox1
-            // 
-            this->textBox1->Location = System::Drawing::Point(873, 675);
-            this->textBox1->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
-            this->textBox1->Name = L"textBox1";
-            this->textBox1->Size = System::Drawing::Size(159, 22);
-            this->textBox1->TabIndex = 3;
-            this->textBox1->Visible = false;
-            // 
-            // pictureBox1
-            // 
-            this->pictureBox1->Location = System::Drawing::Point(15, 21);
-            this->pictureBox1->Margin = System::Windows::Forms::Padding(4);
-            this->pictureBox1->Name = L"pictureBox1";
-            this->pictureBox1->Size = System::Drawing::Size(683, 610);
-            this->pictureBox1->TabIndex = 4;
-            this->pictureBox1->TabStop = false;
-            this->pictureBox1->Visible = false;
-            // 
-            // textBoxMatrix
-            // 
-            this->textBoxMatrix->Location = System::Drawing::Point(11, 139);
-            this->textBoxMatrix->MaxLength = 527670;
-            this->textBoxMatrix->Multiline = true;
-            this->textBoxMatrix->Name = L"textBoxMatrix";
-            this->textBoxMatrix->ScrollBars = System::Windows::Forms::ScrollBars::Both;
-            this->textBoxMatrix->Size = System::Drawing::Size(647, 398);
-            this->textBoxMatrix->TabIndex = 5;
-            // 
-            // groupBox1
-            // 
-            this->groupBox1->Controls->Add(this->buttonRun);
-            this->groupBox1->Controls->Add(this->radioButtonMinMaxLen);
-            this->groupBox1->Controls->Add(this->radioButtonMinSum);
-            this->groupBox1->Controls->Add(this->textBoxMaxDist);
-            this->groupBox1->Controls->Add(this->textBoxCntTargets);
-            this->groupBox1->Controls->Add(this->textBoxCntDrons);
-            this->groupBox1->Controls->Add(this->label7);
-            this->groupBox1->Controls->Add(this->label6);
-            this->groupBox1->Controls->Add(this->label5);
-            this->groupBox1->Controls->Add(this->label4);
-            this->groupBox1->Controls->Add(this->labelFileName);
-            this->groupBox1->Controls->Add(this->buttonFileOpen);
-            this->groupBox1->Controls->Add(this->label2);
-            this->groupBox1->Controls->Add(this->label1);
-            this->groupBox1->Controls->Add(this->textBoxMatrix);
-            this->groupBox1->Location = System::Drawing::Point(12, 13);
-            this->groupBox1->Name = L"groupBox1";
-            this->groupBox1->Size = System::Drawing::Size(664, 655);
-            this->groupBox1->TabIndex = 6;
-            this->groupBox1->TabStop = false;
-            this->groupBox1->Text = L"Входные данные";
-            // 
-            // buttonRun
-            // 
-            this->buttonRun->Location = System::Drawing::Point(342, 583);
-            this->buttonRun->Name = L"buttonRun";
-            this->buttonRun->Size = System::Drawing::Size(193, 48);
-            this->buttonRun->TabIndex = 19;
-            this->buttonRun->Text = L"Запустить";
-            this->buttonRun->UseVisualStyleBackColor = true;
-            this->buttonRun->Click += gcnew System::EventHandler(this, &MyForm::buttonRun_Click);
-            // 
-            // radioButtonMinMaxLen
-            // 
-            this->radioButtonMinMaxLen->AutoSize = true;
-            this->radioButtonMinMaxLen->Location = System::Drawing::Point(19, 610);
-            this->radioButtonMinMaxLen->Name = L"radioButtonMinMaxLen";
-            this->radioButtonMinMaxLen->Size = System::Drawing::Size(185, 21);
-            this->radioButtonMinMaxLen->TabIndex = 18;
-            this->radioButtonMinMaxLen->Text = L"Минимизировать время";
-            this->radioButtonMinMaxLen->UseVisualStyleBackColor = true;
-            // 
-            // radioButtonMinSum
-            // 
-            this->radioButtonMinSum->AutoSize = true;
-            this->radioButtonMinSum->Checked = true;
-            this->radioButtonMinSum->Location = System::Drawing::Point(19, 583);
-            this->radioButtonMinSum->Name = L"radioButtonMinSum";
-            this->radioButtonMinSum->Size = System::Drawing::Size(261, 21);
-            this->radioButtonMinSum->TabIndex = 17;
-            this->radioButtonMinSum->TabStop = true;
-            this->radioButtonMinSum->Text = L"Минимизировать суммарную длину";
-            this->radioButtonMinSum->UseVisualStyleBackColor = true;
-            // 
-            // textBoxMaxDist
-            // 
-            this->textBoxMaxDist->Location = System::Drawing::Point(375, 81);
-            this->textBoxMaxDist->Name = L"textBoxMaxDist";
-            this->textBoxMaxDist->Size = System::Drawing::Size(160, 22);
-            this->textBoxMaxDist->TabIndex = 16;
-            // 
-            // textBoxCntTargets
-            // 
-            this->textBoxCntTargets->Location = System::Drawing::Point(375, 51);
-            this->textBoxCntTargets->Name = L"textBoxCntTargets";
-            this->textBoxCntTargets->Size = System::Drawing::Size(160, 22);
-            this->textBoxCntTargets->TabIndex = 15;
-            // 
-            // textBoxCntDrons
-            // 
-            this->textBoxCntDrons->Location = System::Drawing::Point(375, 21);
-            this->textBoxCntDrons->Name = L"textBoxCntDrons";
-            this->textBoxCntDrons->Size = System::Drawing::Size(160, 22);
-            this->textBoxCntDrons->TabIndex = 14;
-            // 
-            // label7
-            // 
-            this->label7->AutoSize = true;
-            this->label7->Location = System::Drawing::Point(135, 84);
-            this->label7->Name = L"label7";
-            this->label7->Size = System::Drawing::Size(232, 17);
-            this->label7->TabIndex = 13;
-            this->label7->Text = L"Максимальная дальность полёта:";
-            // 
-            // label6
-            // 
-            this->label6->AutoSize = true;
-            this->label6->Location = System::Drawing::Point(135, 54);
-            this->label6->Name = L"label6";
-            this->label6->Size = System::Drawing::Size(134, 17);
-            this->label6->TabIndex = 12;
-            this->label6->Text = L"Количество целей:";
-            // 
-            // label5
-            // 
-            this->label5->AutoSize = true;
-            this->label5->Location = System::Drawing::Point(135, 24);
-            this->label5->Name = L"label5";
-            this->label5->Size = System::Drawing::Size(141, 17);
-            this->label5->TabIndex = 11;
-            this->label5->Text = L"Количество дронов:";
-            // 
-            // label4
-            // 
-            this->label4->AutoSize = true;
-            this->label4->Location = System::Drawing::Point(135, 114);
-            this->label4->Name = L"label4";
-            this->label4->Size = System::Drawing::Size(151, 17);
-            this->label4->TabIndex = 10;
-            this->label4->Text = L"Матрица расстояний:";
-            // 
-            // labelFileName
-            // 
-            this->labelFileName->AutoSize = true;
-            this->labelFileName->Location = System::Drawing::Point(305, 548);
-            this->labelFileName->Name = L"labelFileName";
-            this->labelFileName->Size = System::Drawing::Size(118, 17);
-            this->labelFileName->TabIndex = 9;
-            this->labelFileName->Text = L"Файл не выбран";
-            // 
-            // buttonFileOpen
-            // 
-            this->buttonFileOpen->Location = System::Drawing::Point(160, 543);
-            this->buttonFileOpen->Name = L"buttonFileOpen";
-            this->buttonFileOpen->Size = System::Drawing::Size(139, 27);
-            this->buttonFileOpen->TabIndex = 8;
-            this->buttonFileOpen->Text = L"Выберите файл";
-            this->buttonFileOpen->UseVisualStyleBackColor = true;
-            this->buttonFileOpen->Click += gcnew System::EventHandler(this, &MyForm::buttonFileOpen_Click);
-            // 
-            // label2
-            // 
-            this->label2->AutoSize = true;
-            this->label2->Location = System::Drawing::Point(8, 548);
-            this->label2->Name = L"label2";
-            this->label2->Size = System::Drawing::Size(146, 17);
-            this->label2->TabIndex = 7;
-            this->label2->Text = L"Или загрузите файл:";
-            // 
-            // label1
-            // 
-            this->label1->AutoSize = true;
-            this->label1->Location = System::Drawing::Point(8, 24);
-            this->label1->Name = L"label1";
-            this->label1->Size = System::Drawing::Size(121, 17);
-            this->label1->TabIndex = 6;
-            this->label1->Text = L"Введите данные:";
-            // 
-            // openFileDialog1
-            // 
-            this->openFileDialog1->FileName = L"openFileDialog1";
-            // 
-            // groupBox2
-            // 
-            this->groupBox2->Controls->Add(this->pictureBox1);
-            this->groupBox2->Controls->Add(this->label9);
-            this->groupBox2->Controls->Add(this->buttonSave);
-            this->groupBox2->Controls->Add(this->textBoxResult);
-            this->groupBox2->Controls->Add(this->textBoxResMaxLen);
-            this->groupBox2->Controls->Add(this->label8);
-            this->groupBox2->Controls->Add(this->textBoxResSumLen);
-            this->groupBox2->Controls->Add(this->label3);
-            this->groupBox2->Location = System::Drawing::Point(682, 13);
-            this->groupBox2->Name = L"groupBox2";
-            this->groupBox2->Size = System::Drawing::Size(721, 655);
-            this->groupBox2->TabIndex = 7;
-            this->groupBox2->TabStop = false;
-            this->groupBox2->Text = L"Результат";
-            // 
-            // label9
-            // 
-            this->label9->AutoSize = true;
-            this->label9->Location = System::Drawing::Point(12, 93);
-            this->label9->Name = L"label9";
-            this->label9->Size = System::Drawing::Size(101, 17);
-            this->label9->TabIndex = 24;
-            this->label9->Text = L"Список путей:";
-            // 
-            // buttonSave
-            // 
-            this->buttonSave->Location = System::Drawing::Point(15, 553);
-            this->buttonSave->Name = L"buttonSave";
-            this->buttonSave->Size = System::Drawing::Size(147, 27);
-            this->buttonSave->TabIndex = 20;
-            this->buttonSave->Text = L"Сохранить в файл";
-            this->buttonSave->UseVisualStyleBackColor = true;
-            this->buttonSave->Click += gcnew System::EventHandler(this, &MyForm::buttonSave_Click);
-            // 
-            // textBoxResult
-            // 
-            this->textBoxResult->Location = System::Drawing::Point(11, 139);
-            this->textBoxResult->Multiline = true;
-            this->textBoxResult->Name = L"textBoxResult";
-            this->textBoxResult->ScrollBars = System::Windows::Forms::ScrollBars::Both;
-            this->textBoxResult->Size = System::Drawing::Size(704, 398);
-            this->textBoxResult->TabIndex = 20;
-            // 
-            // textBoxResMaxLen
-            // 
-            this->textBoxResMaxLen->Location = System::Drawing::Point(177, 59);
-            this->textBoxResMaxLen->Name = L"textBoxResMaxLen";
-            this->textBoxResMaxLen->Size = System::Drawing::Size(160, 22);
-            this->textBoxResMaxLen->TabIndex = 23;
-            // 
-            // label8
-            // 
-            this->label8->AutoSize = true;
-            this->label8->Location = System::Drawing::Point(12, 32);
-            this->label8->Name = L"label8";
-            this->label8->Size = System::Drawing::Size(130, 17);
-            this->label8->TabIndex = 20;
-            this->label8->Text = L"Суммарная длина:";
-            // 
-            // textBoxResSumLen
-            // 
-            this->textBoxResSumLen->Location = System::Drawing::Point(177, 29);
-            this->textBoxResSumLen->Name = L"textBoxResSumLen";
-            this->textBoxResSumLen->Size = System::Drawing::Size(160, 22);
-            this->textBoxResSumLen->TabIndex = 22;
-            // 
-            // label3
-            // 
-            this->label3->AutoSize = true;
-            this->label3->Location = System::Drawing::Point(12, 62);
-            this->label3->Name = L"label3";
-            this->label3->Size = System::Drawing::Size(154, 17);
-            this->label3->TabIndex = 21;
-            this->label3->Text = L"Наидлиннейший путь:";
-            // 
-            // MyForm
-            // 
-            this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
-            this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-            this->ClientSize = System::Drawing::Size(1409, 673);
-            this->Controls->Add(this->groupBox1);
-            this->Controls->Add(this->groupBox2);
-            this->Controls->Add(this->textBox1);
-            this->Controls->Add(this->progressBar1);
-            this->Controls->Add(this->button1);
-            this->Margin = System::Windows::Forms::Padding(4);
-            this->Name = L"MyForm";
-            this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
-            this->Text = L"Маршрутизация транспорта";
-            this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
-            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
-            this->groupBox1->ResumeLayout(false);
-            this->groupBox1->PerformLayout();
-            this->groupBox2->ResumeLayout(false);
-            this->groupBox2->PerformLayout();
-            this->ResumeLayout(false);
-            this->PerformLayout();
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->progressBar1 = (gcnew System::Windows::Forms::ProgressBar());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
+			this->textBoxMatrix = (gcnew System::Windows::Forms::TextBox());
+			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->label10 = (gcnew System::Windows::Forms::Label());
+			this->cbAlgorithm = (gcnew System::Windows::Forms::ComboBox());
+			this->buttonRun = (gcnew System::Windows::Forms::Button());
+			this->radioButtonMinMaxLen = (gcnew System::Windows::Forms::RadioButton());
+			this->radioButtonMinSum = (gcnew System::Windows::Forms::RadioButton());
+			this->textBoxMaxDist = (gcnew System::Windows::Forms::TextBox());
+			this->textBoxCntTargets = (gcnew System::Windows::Forms::TextBox());
+			this->textBoxCntDrons = (gcnew System::Windows::Forms::TextBox());
+			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->labelFileName = (gcnew System::Windows::Forms::Label());
+			this->buttonFileOpen = (gcnew System::Windows::Forms::Button());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
+			this->label9 = (gcnew System::Windows::Forms::Label());
+			this->buttonSave = (gcnew System::Windows::Forms::Button());
+			this->textBoxResult = (gcnew System::Windows::Forms::TextBox());
+			this->textBoxResMaxLen = (gcnew System::Windows::Forms::TextBox());
+			this->label8 = (gcnew System::Windows::Forms::Label());
+			this->textBoxResSumLen = (gcnew System::Windows::Forms::TextBox());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
+			this->groupBox1->SuspendLayout();
+			this->groupBox2->SuspendLayout();
+			this->SuspendLayout();
+			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(523, 548);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(127, 68);
+			this->button1->TabIndex = 0;
+			this->button1->Text = L"Run";
+			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Visible = false;
+			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
+			// 
+			// progressBar1
+			// 
+			this->progressBar1->Location = System::Drawing::Point(240, 546);
+			this->progressBar1->Margin = System::Windows::Forms::Padding(2);
+			this->progressBar1->Name = L"progressBar1";
+			this->progressBar1->Size = System::Drawing::Size(270, 42);
+			this->progressBar1->TabIndex = 2;
+			this->progressBar1->Visible = false;
+			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(655, 548);
+			this->textBox1->Margin = System::Windows::Forms::Padding(2);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(120, 20);
+			this->textBox1->TabIndex = 3;
+			this->textBox1->Visible = false;
+			// 
+			// pictureBox1
+			// 
+			this->pictureBox1->Location = System::Drawing::Point(11, 17);
+			this->pictureBox1->Name = L"pictureBox1";
+			this->pictureBox1->Size = System::Drawing::Size(512, 514);
+			this->pictureBox1->TabIndex = 4;
+			this->pictureBox1->TabStop = false;
+			this->pictureBox1->Visible = false;
+			// 
+			// textBoxMatrix
+			// 
+			this->textBoxMatrix->Location = System::Drawing::Point(8, 113);
+			this->textBoxMatrix->Margin = System::Windows::Forms::Padding(2);
+			this->textBoxMatrix->MaxLength = 527670;
+			this->textBoxMatrix->Multiline = true;
+			this->textBoxMatrix->Name = L"textBoxMatrix";
+			this->textBoxMatrix->ScrollBars = System::Windows::Forms::ScrollBars::Both;
+			this->textBoxMatrix->Size = System::Drawing::Size(486, 324);
+			this->textBoxMatrix->TabIndex = 5;
+			// 
+			// groupBox1
+			// 
+			this->groupBox1->Controls->Add(this->label10);
+			this->groupBox1->Controls->Add(this->cbAlgorithm);
+			this->groupBox1->Controls->Add(this->buttonRun);
+			this->groupBox1->Controls->Add(this->radioButtonMinMaxLen);
+			this->groupBox1->Controls->Add(this->radioButtonMinSum);
+			this->groupBox1->Controls->Add(this->textBoxMaxDist);
+			this->groupBox1->Controls->Add(this->textBoxCntTargets);
+			this->groupBox1->Controls->Add(this->textBoxCntDrons);
+			this->groupBox1->Controls->Add(this->label7);
+			this->groupBox1->Controls->Add(this->label6);
+			this->groupBox1->Controls->Add(this->label5);
+			this->groupBox1->Controls->Add(this->label4);
+			this->groupBox1->Controls->Add(this->labelFileName);
+			this->groupBox1->Controls->Add(this->buttonFileOpen);
+			this->groupBox1->Controls->Add(this->label2);
+			this->groupBox1->Controls->Add(this->label1);
+			this->groupBox1->Controls->Add(this->textBoxMatrix);
+			this->groupBox1->Location = System::Drawing::Point(9, 11);
+			this->groupBox1->Margin = System::Windows::Forms::Padding(2);
+			this->groupBox1->Name = L"groupBox1";
+			this->groupBox1->Padding = System::Windows::Forms::Padding(2);
+			this->groupBox1->Size = System::Drawing::Size(498, 543);
+			this->groupBox1->TabIndex = 6;
+			this->groupBox1->TabStop = false;
+			this->groupBox1->Text = L"Входные данные";
+			// 
+			// label10
+			// 
+			this->label10->AutoSize = true;
+			this->label10->Location = System::Drawing::Point(6, 472);
+			this->label10->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label10->Name = L"label10";
+			this->label10->Size = System::Drawing::Size(59, 13);
+			this->label10->TabIndex = 21;
+			this->label10->Text = L"Алгоритм:";
+			// 
+			// cbAlgorithm
+			// 
+			this->cbAlgorithm->FormattingEnabled = true;
+			this->cbAlgorithm->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Точный", L"Приближенный" });
+			this->cbAlgorithm->Location = System::Drawing::Point(120, 469);
+			this->cbAlgorithm->Name = L"cbAlgorithm";
+			this->cbAlgorithm->Size = System::Drawing::Size(162, 21);
+			this->cbAlgorithm->TabIndex = 20;
+			// 
+			// buttonRun
+			// 
+			this->buttonRun->Location = System::Drawing::Point(338, 485);
+			this->buttonRun->Margin = System::Windows::Forms::Padding(2);
+			this->buttonRun->Name = L"buttonRun";
+			this->buttonRun->Size = System::Drawing::Size(145, 39);
+			this->buttonRun->TabIndex = 19;
+			this->buttonRun->Text = L"Запустить";
+			this->buttonRun->UseVisualStyleBackColor = true;
+			this->buttonRun->Click += gcnew System::EventHandler(this, &MyForm::buttonRun_Click);
+			// 
+			// radioButtonMinMaxLen
+			// 
+			this->radioButtonMinMaxLen->AutoSize = true;
+			this->radioButtonMinMaxLen->Location = System::Drawing::Point(8, 518);
+			this->radioButtonMinMaxLen->Margin = System::Windows::Forms::Padding(2);
+			this->radioButtonMinMaxLen->Name = L"radioButtonMinMaxLen";
+			this->radioButtonMinMaxLen->Size = System::Drawing::Size(148, 17);
+			this->radioButtonMinMaxLen->TabIndex = 18;
+			this->radioButtonMinMaxLen->Text = L"Минимизировать время";
+			this->radioButtonMinMaxLen->UseVisualStyleBackColor = true;
+			// 
+			// radioButtonMinSum
+			// 
+			this->radioButtonMinSum->AutoSize = true;
+			this->radioButtonMinSum->Checked = true;
+			this->radioButtonMinSum->Location = System::Drawing::Point(8, 496);
+			this->radioButtonMinSum->Margin = System::Windows::Forms::Padding(2);
+			this->radioButtonMinSum->Name = L"radioButtonMinSum";
+			this->radioButtonMinSum->Size = System::Drawing::Size(206, 17);
+			this->radioButtonMinSum->TabIndex = 17;
+			this->radioButtonMinSum->TabStop = true;
+			this->radioButtonMinSum->Text = L"Минимизировать суммарную длину";
+			this->radioButtonMinSum->UseVisualStyleBackColor = true;
+			// 
+			// textBoxMaxDist
+			// 
+			this->textBoxMaxDist->Location = System::Drawing::Point(281, 66);
+			this->textBoxMaxDist->Margin = System::Windows::Forms::Padding(2);
+			this->textBoxMaxDist->Name = L"textBoxMaxDist";
+			this->textBoxMaxDist->Size = System::Drawing::Size(121, 20);
+			this->textBoxMaxDist->TabIndex = 16;
+			// 
+			// textBoxCntTargets
+			// 
+			this->textBoxCntTargets->Location = System::Drawing::Point(281, 41);
+			this->textBoxCntTargets->Margin = System::Windows::Forms::Padding(2);
+			this->textBoxCntTargets->Name = L"textBoxCntTargets";
+			this->textBoxCntTargets->Size = System::Drawing::Size(121, 20);
+			this->textBoxCntTargets->TabIndex = 15;
+			this->textBoxCntTargets->TextChanged += gcnew System::EventHandler(this, &MyForm::textBoxCntTargets_TextChanged);
+			// 
+			// textBoxCntDrons
+			// 
+			this->textBoxCntDrons->Location = System::Drawing::Point(281, 17);
+			this->textBoxCntDrons->Margin = System::Windows::Forms::Padding(2);
+			this->textBoxCntDrons->Name = L"textBoxCntDrons";
+			this->textBoxCntDrons->Size = System::Drawing::Size(121, 20);
+			this->textBoxCntDrons->TabIndex = 14;
+			this->textBoxCntDrons->TextChanged += gcnew System::EventHandler(this, &MyForm::textBoxCntDrons_TextChanged);
+			// 
+			// label7
+			// 
+			this->label7->AutoSize = true;
+			this->label7->Location = System::Drawing::Point(101, 68);
+			this->label7->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label7->Name = L"label7";
+			this->label7->Size = System::Drawing::Size(181, 13);
+			this->label7->TabIndex = 13;
+			this->label7->Text = L"Максимальная дальность полёта:";
+			// 
+			// label6
+			// 
+			this->label6->AutoSize = true;
+			this->label6->Location = System::Drawing::Point(101, 44);
+			this->label6->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(102, 13);
+			this->label6->TabIndex = 12;
+			this->label6->Text = L"Количество целей:";
+			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Location = System::Drawing::Point(101, 20);
+			this->label5->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(108, 13);
+			this->label5->TabIndex = 11;
+			this->label5->Text = L"Количество дронов:";
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(101, 93);
+			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(116, 13);
+			this->label4->TabIndex = 10;
+			this->label4->Text = L"Матрица расстояний:";
+			// 
+			// labelFileName
+			// 
+			this->labelFileName->AutoSize = true;
+			this->labelFileName->Location = System::Drawing::Point(229, 445);
+			this->labelFileName->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->labelFileName->Name = L"labelFileName";
+			this->labelFileName->Size = System::Drawing::Size(92, 13);
+			this->labelFileName->TabIndex = 9;
+			this->labelFileName->Text = L"Файл не выбран";
+			// 
+			// buttonFileOpen
+			// 
+			this->buttonFileOpen->Location = System::Drawing::Point(120, 441);
+			this->buttonFileOpen->Margin = System::Windows::Forms::Padding(2);
+			this->buttonFileOpen->Name = L"buttonFileOpen";
+			this->buttonFileOpen->Size = System::Drawing::Size(104, 22);
+			this->buttonFileOpen->TabIndex = 8;
+			this->buttonFileOpen->Text = L"Выберите файл";
+			this->buttonFileOpen->UseVisualStyleBackColor = true;
+			this->buttonFileOpen->Click += gcnew System::EventHandler(this, &MyForm::buttonFileOpen_Click);
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(6, 445);
+			this->label2->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(113, 13);
+			this->label2->TabIndex = 7;
+			this->label2->Text = L"Или загрузите файл:";
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(6, 20);
+			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(93, 13);
+			this->label1->TabIndex = 6;
+			this->label1->Text = L"Введите данные:";
+			// 
+			// openFileDialog1
+			// 
+			this->openFileDialog1->FileName = L"openFileDialog1";
+			// 
+			// groupBox2
+			// 
+			this->groupBox2->Controls->Add(this->label9);
+			this->groupBox2->Controls->Add(this->buttonSave);
+			this->groupBox2->Controls->Add(this->textBoxResult);
+			this->groupBox2->Controls->Add(this->textBoxResMaxLen);
+			this->groupBox2->Controls->Add(this->label8);
+			this->groupBox2->Controls->Add(this->textBoxResSumLen);
+			this->groupBox2->Controls->Add(this->label3);
+			this->groupBox2->Controls->Add(this->pictureBox1);
+			this->groupBox2->Location = System::Drawing::Point(512, 11);
+			this->groupBox2->Margin = System::Windows::Forms::Padding(2);
+			this->groupBox2->Name = L"groupBox2";
+			this->groupBox2->Padding = System::Windows::Forms::Padding(2);
+			this->groupBox2->Size = System::Drawing::Size(541, 543);
+			this->groupBox2->TabIndex = 7;
+			this->groupBox2->TabStop = false;
+			this->groupBox2->Text = L"Результат";
+			// 
+			// label9
+			// 
+			this->label9->AutoSize = true;
+			this->label9->Location = System::Drawing::Point(9, 76);
+			this->label9->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label9->Name = L"label9";
+			this->label9->Size = System::Drawing::Size(78, 13);
+			this->label9->TabIndex = 24;
+			this->label9->Text = L"Список путей:";
+			// 
+			// buttonSave
+			// 
+			this->buttonSave->Location = System::Drawing::Point(11, 449);
+			this->buttonSave->Margin = System::Windows::Forms::Padding(2);
+			this->buttonSave->Name = L"buttonSave";
+			this->buttonSave->Size = System::Drawing::Size(110, 22);
+			this->buttonSave->TabIndex = 20;
+			this->buttonSave->Text = L"Сохранить в файл";
+			this->buttonSave->UseVisualStyleBackColor = true;
+			this->buttonSave->Click += gcnew System::EventHandler(this, &MyForm::buttonSave_Click);
+			// 
+			// textBoxResult
+			// 
+			this->textBoxResult->Location = System::Drawing::Point(8, 113);
+			this->textBoxResult->Margin = System::Windows::Forms::Padding(2);
+			this->textBoxResult->Multiline = true;
+			this->textBoxResult->Name = L"textBoxResult";
+			this->textBoxResult->ScrollBars = System::Windows::Forms::ScrollBars::Both;
+			this->textBoxResult->Size = System::Drawing::Size(529, 324);
+			this->textBoxResult->TabIndex = 20;
+			// 
+			// textBoxResMaxLen
+			// 
+			this->textBoxResMaxLen->Location = System::Drawing::Point(133, 48);
+			this->textBoxResMaxLen->Margin = System::Windows::Forms::Padding(2);
+			this->textBoxResMaxLen->Name = L"textBoxResMaxLen";
+			this->textBoxResMaxLen->Size = System::Drawing::Size(121, 20);
+			this->textBoxResMaxLen->TabIndex = 23;
+			// 
+			// label8
+			// 
+			this->label8->AutoSize = true;
+			this->label8->Location = System::Drawing::Point(9, 26);
+			this->label8->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label8->Name = L"label8";
+			this->label8->Size = System::Drawing::Size(101, 13);
+			this->label8->TabIndex = 20;
+			this->label8->Text = L"Суммарная длина:";
+			// 
+			// textBoxResSumLen
+			// 
+			this->textBoxResSumLen->Location = System::Drawing::Point(133, 24);
+			this->textBoxResSumLen->Margin = System::Windows::Forms::Padding(2);
+			this->textBoxResSumLen->Name = L"textBoxResSumLen";
+			this->textBoxResSumLen->Size = System::Drawing::Size(121, 20);
+			this->textBoxResSumLen->TabIndex = 22;
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(9, 50);
+			this->label3->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(117, 13);
+			this->label3->TabIndex = 21;
+			this->label3->Text = L"Наидлиннейший путь:";
+			// 
+			// MyForm
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(1057, 561);
+			this->Controls->Add(this->groupBox1);
+			this->Controls->Add(this->groupBox2);
+			this->Controls->Add(this->textBox1);
+			this->Controls->Add(this->progressBar1);
+			this->Controls->Add(this->button1);
+			this->Name = L"MyForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
+			this->Text = L"Маршрутизация транспорта";
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
+			this->groupBox1->ResumeLayout(false);
+			this->groupBox1->PerformLayout();
+			this->groupBox2->ResumeLayout(false);
+			this->groupBox2->PerformLayout();
+			this->ResumeLayout(false);
+			this->PerformLayout();
 
-        }
+		}
 #pragma endregion
     private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
         //auto input = InputData("input.txt", false);
@@ -528,7 +574,7 @@ namespace VehicleRootingProblem {
         formInputData = new InputData(fileName);
     }
 
-    private: InputData* formInputData = nullptr;
+	private: InputData* formInputData = nullptr;
     private: ProblemMode formProblemMode = ProblemMode::MINMAXLEN;
 
     private: System::Void buttonRun_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -589,7 +635,7 @@ namespace VehicleRootingProblem {
             return;
         }
 
-        auto solution = SolverMain::Run(*formInputData, 5, formProblemMode);
+        auto solution = SolverMain::Run(*formInputData, 5, formProblemMode, (EAlgorithms)this->cbAlgorithm->SelectedIndex);
         this->textBoxResMaxLen->Text = System::Double(solution.MaxPathLength).ToString();
         this->textBoxResSumLen->Text = System::Double(solution.SumOfPathLengths).ToString();
         this->textBoxResult->Clear();
@@ -605,7 +651,21 @@ namespace VehicleRootingProblem {
             this->textBoxResult->Text += Environment::NewLine;
         }
     }
-    private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
-    }
+
+	private: void updateChosenAlgorithm() {
+		int cntDrons = atoi(msclr::interop::marshal_as<std::string>(this->textBoxCntDrons->Text).c_str());
+		int cntTargets = atoi(msclr::interop::marshal_as<std::string>(this->textBoxCntTargets->Text).c_str());
+		if (pow(3, cntTargets) * cntDrons < 5e7)
+			this->cbAlgorithm->SelectedIndex = 0;
+		else
+			this->cbAlgorithm->SelectedIndex = 1;
+	}
+
+	private: System::Void textBoxCntTargets_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		updateChosenAlgorithm();
+	}
+	private: System::Void textBoxCntDrons_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		updateChosenAlgorithm();
+	}
 };
 }
