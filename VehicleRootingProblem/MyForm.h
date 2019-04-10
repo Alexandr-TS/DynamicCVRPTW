@@ -12,6 +12,7 @@
 #include <cstring>
 #include <fstream>
 #include <sstream>
+#include <string>
 #include <memory>
 #include <msclr\marshal_cppstd.h>
 
@@ -90,6 +91,17 @@ namespace VehicleRootingProblem {
     private: System::Windows::Forms::Label^  label9;
 	private: System::Windows::Forms::Label^  label10;
 	private: System::Windows::Forms::ComboBox^  cbAlgorithm;
+	private: System::Windows::Forms::DataGridView^  dataGridViewResult;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column2;
+
+
+
+
+
+
+
+
 
 
     protected:
@@ -130,6 +142,7 @@ namespace VehicleRootingProblem {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
+			this->dataGridViewResult = (gcnew System::Windows::Forms::DataGridView());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->buttonSave = (gcnew System::Windows::Forms::Button());
 			this->textBoxResult = (gcnew System::Windows::Forms::TextBox());
@@ -138,9 +151,12 @@ namespace VehicleRootingProblem {
 			this->textBoxResSumLen = (gcnew System::Windows::Forms::TextBox());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->groupBox1->SuspendLayout();
 			this->groupBox2->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewResult))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// button1
@@ -387,6 +403,7 @@ namespace VehicleRootingProblem {
 			// 
 			// groupBox2
 			// 
+			this->groupBox2->Controls->Add(this->dataGridViewResult);
 			this->groupBox2->Controls->Add(this->label9);
 			this->groupBox2->Controls->Add(this->buttonSave);
 			this->groupBox2->Controls->Add(this->textBoxResult);
@@ -403,6 +420,20 @@ namespace VehicleRootingProblem {
 			this->groupBox2->TabIndex = 7;
 			this->groupBox2->TabStop = false;
 			this->groupBox2->Text = L"Результат";
+			// 
+			// dataGridViewResult
+			// 
+			this->dataGridViewResult->AllowUserToAddRows = false;
+			this->dataGridViewResult->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridViewResult->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
+				this->Column1,
+					this->Column2
+			});
+			this->dataGridViewResult->Location = System::Drawing::Point(8, 113);
+			this->dataGridViewResult->Name = L"dataGridViewResult";
+			this->dataGridViewResult->ReadOnly = true;
+			this->dataGridViewResult->Size = System::Drawing::Size(528, 324);
+			this->dataGridViewResult->TabIndex = 26;
 			// 
 			// label9
 			// 
@@ -427,6 +458,7 @@ namespace VehicleRootingProblem {
 			// 
 			// textBoxResult
 			// 
+			this->textBoxResult->Enabled = false;
 			this->textBoxResult->Location = System::Drawing::Point(8, 113);
 			this->textBoxResult->Margin = System::Windows::Forms::Padding(2);
 			this->textBoxResult->Multiline = true;
@@ -471,6 +503,23 @@ namespace VehicleRootingProblem {
 			this->label3->TabIndex = 21;
 			this->label3->Text = L"Наидлиннейший путь:";
 			// 
+			// Column1
+			// 
+			this->Column1->Frozen = true;
+			this->Column1->HeaderText = L"Пути";
+			this->Column1->Name = L"Column1";
+			this->Column1->ReadOnly = true;
+			this->Column1->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
+			this->Column1->Width = 325;
+			// 
+			// Column2
+			// 
+			this->Column2->Frozen = true;
+			this->Column2->HeaderText = L"Длины";
+			this->Column2->Name = L"Column2";
+			this->Column2->ReadOnly = true;
+			this->Column2->Width = 155;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -489,6 +538,7 @@ namespace VehicleRootingProblem {
 			this->groupBox1->PerformLayout();
 			this->groupBox2->ResumeLayout(false);
 			this->groupBox2->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewResult))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -639,23 +689,46 @@ namespace VehicleRootingProblem {
         this->textBoxResMaxLen->Text = System::Double(solution.MaxPathLength).ToString();
         this->textBoxResSumLen->Text = System::Double(solution.SumOfPathLengths).ToString();
         this->textBoxResult->Clear();
+
         if (!solution.SolutionExists) {
             this->textBoxResult->Text = System::String("Решение не найдено").ToString();
+			MessageBox::Show("Решение не найдено");
             return;
         }
 
+		while (this->dataGridViewResult->Rows->Count < solution.Paths.size())
+			this->dataGridViewResult->Rows->Add();
+		while (this->dataGridViewResult->Rows->Count > solution.Paths.size())
+			this->dataGridViewResult->Rows->RemoveAt(this->dataGridViewResult->Rows->Count - 1);
+
+		int lineNum = 0;
         for (auto& path : solution.Paths) {
-            for (auto x : path) {
+			double pathDistance = 0;
+			if (path.size() > 0)
+				pathDistance = solution.Input.Distance(0, path[0]) + solution.Input.Distance(0, path.back()); // from depot and to depot
+			std::string pathStr = "";
+			char buffer[(1 << 5)];
+			for (size_t i = 0; i < path.size(); ++i) {
+				int x = path[i];
+				if (i + 1 < path.size())
+					pathDistance += solution.Input.Distance(x, path[i + 1]);
                 this->textBoxResult->Text += System::Double(x).ToString() + System::String(" ").ToString();
+				itoa(x, buffer, 10);
+				pathStr += ((std::string)buffer);
+				pathStr += " ";
             }
+			this->dataGridViewResult->Rows[lineNum]->Cells[0]->Value = System::String(pathStr.c_str()).ToString();
+			this->dataGridViewResult->Rows[lineNum]->Cells[1]->Value = System::Double(pathDistance);
+			this->dataGridViewResult->Update();
             this->textBoxResult->Text += Environment::NewLine;
+			++lineNum;
         }
     }
 
 	private: void updateChosenAlgorithm() {
 		int cntDrons = atoi(msclr::interop::marshal_as<std::string>(this->textBoxCntDrons->Text).c_str());
 		int cntTargets = atoi(msclr::interop::marshal_as<std::string>(this->textBoxCntTargets->Text).c_str());
-		if (pow(3, cntTargets) * cntDrons < 5e7)
+		if (pow(3, cntTargets) * cntDrons < 1e7)
 			this->cbAlgorithm->SelectedIndex = 0;
 		else
 			this->cbAlgorithm->SelectedIndex = 1;
