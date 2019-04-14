@@ -29,6 +29,7 @@ public:
 	InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix);
 	InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix, std::vector<std::pair<double, double> > points);
 	InputData(std::string inputFileName, bool isMatrix = true);
+	~InputData();
 public:
 	double Distance(int i, int j);
 

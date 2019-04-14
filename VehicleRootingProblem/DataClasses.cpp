@@ -44,6 +44,10 @@ InputData::InputData(std::string inputFileName, bool isMatrix) {
 	fin.close();
 }
 
+InputData::~InputData() {
+
+}
+
 inline double InputData::Distance(const int i, const int j) {
 	return DistanceMatrix[i][j];
 }
