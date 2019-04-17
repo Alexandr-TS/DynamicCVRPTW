@@ -30,16 +30,16 @@ ProblemSolution SolverDP::Run(InputData input, double timeLimit, ProblemMode pro
 
 	// finishing in depot
 	std::vector<int> optLastV((1 << (input.TargetsCnt)), -1);
-	std::vector<double> optLastDist((1 << (input.TargetsCnt)), INF);
-	optLastDist[0] = 0;
+	std::vector<double> optMaskDist((1 << (input.TargetsCnt)), INF);
+	optMaskDist[0] = 0;
 
 	for (int mask = 0; mask < (1 << (input.TargetsCnt)); ++mask) {
 		for (int curV = 0; curV < input.TargetsCnt; ++curV)
 			dp1[mask][curV] += input.Distance(curV + 1, 0);
 		for (int curV = 0; curV < input.TargetsCnt; ++curV)
-			if (dp1[mask][curV] < optLastDist[mask]) {
+			if (dp1[mask][curV] < optMaskDist[mask]) {
 				optLastV[mask] = curV;
-				optLastDist[mask] = dp1[mask][curV];
+				optMaskDist[mask] = dp1[mask][curV];
 			}
 	}
 
@@ -55,17 +55,17 @@ ProblemSolution SolverDP::Run(InputData input, double timeLimit, ProblemMode pro
 	for (int cntDrons = 1; cntDrons <= input.DronsCnt; ++cntDrons) {
 		for (int mask = 0; mask < (1 << (input.TargetsCnt)); ++mask) {
 			for (int subMask = mask; ; subMask = (subMask - 1) & mask) {
-				if (optLastDist[subMask] - EPS > input.MaxDist)
+				if (optMaskDist[subMask] - EPS > input.MaxDist)
 					continue;
 				if (problemMode == ProblemMode::MINSUM) {
-					if (dp[cntDrons][mask] > dp[cntDrons - 1][mask ^ subMask] + optLastDist[subMask]) {
-						dp[cntDrons][mask] = dp[cntDrons - 1][mask ^ subMask] + optLastDist[subMask];
+					if (dp[cntDrons][mask] > dp[cntDrons - 1][mask ^ subMask] + optMaskDist[subMask]) {
+						dp[cntDrons][mask] = dp[cntDrons - 1][mask ^ subMask] + optMaskDist[subMask];
 						prevDp[cntDrons][mask] = subMask;
 					}
 				}
 				else {
-					if (dp[cntDrons][mask] > std::max(dp[cntDrons - 1][mask ^ subMask], optLastDist[subMask])) {
-						dp[cntDrons][mask] = std::max(dp[cntDrons - 1][mask ^ subMask], optLastDist[subMask]);
+					if (dp[cntDrons][mask] > std::max(dp[cntDrons - 1][mask ^ subMask], optMaskDist[subMask])) {
+						dp[cntDrons][mask] = std::max(dp[cntDrons - 1][mask ^ subMask], optMaskDist[subMask]);
 						prevDp[cntDrons][mask] = subMask;
 					}
 				}

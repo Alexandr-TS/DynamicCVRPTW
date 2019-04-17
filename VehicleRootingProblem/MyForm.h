@@ -39,6 +39,7 @@ namespace VehicleRootingProblem {
                 this->textBox1->Visible = true;
                 this->progressBar1->Visible = true;
                 this->button1->Visible = true;
+				this->pictureBox1->BringToFront();
 			} 
 			this->cbAlgorithm->SelectedIndex = 0;
 
@@ -143,6 +144,8 @@ namespace VehicleRootingProblem {
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
 			this->dataGridViewResult = (gcnew System::Windows::Forms::DataGridView());
+			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->buttonSave = (gcnew System::Windows::Forms::Button());
 			this->textBoxResult = (gcnew System::Windows::Forms::TextBox());
@@ -151,8 +154,6 @@ namespace VehicleRootingProblem {
 			this->textBoxResSumLen = (gcnew System::Windows::Forms::TextBox());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
-			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->groupBox1->SuspendLayout();
 			this->groupBox2->SuspendLayout();
@@ -161,7 +162,7 @@ namespace VehicleRootingProblem {
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(523, 548);
+			this->button1->Location = System::Drawing::Point(523, 555);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(127, 68);
 			this->button1->TabIndex = 0;
@@ -181,7 +182,7 @@ namespace VehicleRootingProblem {
 			// 
 			// textBox1
 			// 
-			this->textBox1->Location = System::Drawing::Point(655, 548);
+			this->textBox1->Location = System::Drawing::Point(655, 555);
 			this->textBox1->Margin = System::Windows::Forms::Padding(2);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(120, 20);
@@ -190,9 +191,9 @@ namespace VehicleRootingProblem {
 			// 
 			// pictureBox1
 			// 
-			this->pictureBox1->Location = System::Drawing::Point(11, 17);
+			this->pictureBox1->Location = System::Drawing::Point(0, 17);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(512, 514);
+			this->pictureBox1->Size = System::Drawing::Size(541, 518);
 			this->pictureBox1->TabIndex = 4;
 			this->pictureBox1->TabStop = false;
 			this->pictureBox1->Visible = false;
@@ -435,6 +436,23 @@ namespace VehicleRootingProblem {
 			this->dataGridViewResult->Size = System::Drawing::Size(528, 324);
 			this->dataGridViewResult->TabIndex = 26;
 			// 
+			// Column1
+			// 
+			this->Column1->Frozen = true;
+			this->Column1->HeaderText = L"Пути";
+			this->Column1->Name = L"Column1";
+			this->Column1->ReadOnly = true;
+			this->Column1->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
+			this->Column1->Width = 325;
+			// 
+			// Column2
+			// 
+			this->Column2->Frozen = true;
+			this->Column2->HeaderText = L"Длины";
+			this->Column2->Name = L"Column2";
+			this->Column2->ReadOnly = true;
+			this->Column2->Width = 155;
+			// 
 			// label9
 			// 
 			this->label9->AutoSize = true;
@@ -502,23 +520,6 @@ namespace VehicleRootingProblem {
 			this->label3->Size = System::Drawing::Size(117, 13);
 			this->label3->TabIndex = 21;
 			this->label3->Text = L"Наидлиннейший путь:";
-			// 
-			// Column1
-			// 
-			this->Column1->Frozen = true;
-			this->Column1->HeaderText = L"Пути";
-			this->Column1->Name = L"Column1";
-			this->Column1->ReadOnly = true;
-			this->Column1->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
-			this->Column1->Width = 325;
-			// 
-			// Column2
-			// 
-			this->Column2->Frozen = true;
-			this->Column2->HeaderText = L"Длины";
-			this->Column2->Name = L"Column2";
-			this->Column2->ReadOnly = true;
-			this->Column2->Width = 155;
 			// 
 			// MyForm
 			// 
@@ -612,6 +613,9 @@ namespace VehicleRootingProblem {
 
     private: System::Void buttonFileOpen_Click(System::Object^  sender, System::EventArgs^  e) {
         this->labelFileName->Text = "Файл не выбран";
+		this->textBoxCntDrons->Text = "";
+		this->textBoxCntTargets->Text = "";
+		this->textBoxMaxDist->Text = "";
         delete formInputData;
         formInputData = nullptr;
         if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::Cancel) {
@@ -622,6 +626,11 @@ namespace VehicleRootingProblem {
         if (formInputData)
             delete formInputData;
         formInputData = new InputData(fileName);
+		if (!formInputData->DronsCnt && !formInputData->TargetsCnt) {
+			MessageBox::Show("Неверный формат файла. Требуемый формат:\n" +
+				"КоличествоДронов КоличествоЦелей ДальностьПолёта\n МатрицаРасстояний");
+			formInputData = nullptr;
+		}
     }
 
 	private: InputData* formInputData = nullptr;

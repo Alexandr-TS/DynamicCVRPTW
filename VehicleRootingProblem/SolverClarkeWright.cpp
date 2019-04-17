@@ -103,14 +103,12 @@ ProblemSolution SolverClarkeWright::RunMinMaxLen(InputData& input, double timeLi
 		input.MaxDist = answerM;
 		auto solution = RunMinSum(input, timeLimit, ProblemMode::MINMAXLEN);
 		if (solution.SolutionExists) {
+			bestSolution = solution;
 			answerR = answerM;
 		} else {
 			answerL = answerM;
 		}
 	}
-
-	input.MaxDist = answerL;
-	bestSolution = RunMinSum(input, timeLimit, ProblemMode::MINMAXLEN);
 
 	input.MaxDist = startMaxDist;
 	std::cout << ((double)clock()- st) / CLOCKS_PER_SEC << std::endl;
