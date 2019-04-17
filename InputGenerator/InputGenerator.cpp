@@ -1,6 +1,8 @@
 // InputGenerator.cpp: определяет точку входа для консольного приложения.
 //
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "stdafx.h"
 #include <cstdlib>
 #include <cstdio>
@@ -9,11 +11,14 @@
 #include <ctime>
 #include <vector>
 #include <iomanip>
+#include <cstring>
+#include <chrono>
 
 using namespace std;
 
 void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTargets, int maxCoord) {
-	mt19937 gen(clock());
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	mt19937 gen(seed);
 	int drons = gen() % (maxDrons - minDrons + 1) + minDrons;
 	int targets = gen() % (maxTargets - minTargets + 1) + minTargets;
 	cout << drons << endl << targets << endl << gen() % (maxCoord * targets) << endl;
@@ -35,6 +40,17 @@ void printPreciseInput(int drons, int targets, int maxCoord) {
 
 int main(int argc, char** argv)
 {
-	printPreciseInput(atoi(argv[1]), atoi(argv[2]), 100);
+	if (argc == 3) {
+		printPreciseInput(atoi(argv[1]), atoi(argv[2]), 100);
+	}
+	else {
+		int num = atoi(argv[3]);
+		string fileName = "test";
+		fileName += (char)('0' + num / 10);
+		fileName += (char)('0' + num % 10);
+		fileName += ".txt";
+		freopen(fileName.c_str(), "w", stdout);
+		printPreciseInput(atoi(argv[1]), atoi(argv[2]), 100);
+	}
 }
 

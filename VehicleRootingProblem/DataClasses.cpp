@@ -19,26 +19,31 @@ InputData::InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble 
 
 InputData::InputData(std::string inputFileName, bool isMatrix) {
 	std::ifstream fin(inputFileName.c_str(), std::ios::in);
+	try {
+		fin >> DronsCnt >> TargetsCnt;
+		fin >> MaxDist;
 
-	fin >> DronsCnt >> TargetsCnt;
-	fin >> MaxDist;
-
-	DistanceMatrix.resize(1 + TargetsCnt, std::vector<double>(1 + TargetsCnt));
-	if (isMatrix) {
-		for (int i = 0; i < 1 + TargetsCnt; ++i) {
-			for (int j = 0; j < 1 + TargetsCnt; ++j) {
-				fin >> DistanceMatrix[i][j];
+		DistanceMatrix.resize(1 + TargetsCnt, std::vector<double>(1 + TargetsCnt));
+		if (isMatrix) {
+			for (int i = 0; i < 1 + TargetsCnt; ++i) {
+				for (int j = 0; j < 1 + TargetsCnt; ++j) {
+					fin >> DistanceMatrix[i][j];
+					assert(DistanceMatrix[i][j] >= -EPS);
+				}
 			}
+		} else {
+			std::vector<std::pair<double, double> > coords(1 + TargetsCnt);
+			for (int i = 0; i < 1 + TargetsCnt; ++i) {
+				fin >> coords[i].first >> coords[i].second;
+			}
+			for (int i = 0; i < 1 + TargetsCnt; ++i)
+				for (int j = 0; j < 1 + TargetsCnt; ++j)
+					DistanceMatrix[i][j] = hypot(coords[i].first - coords[j].first, coords[i].second - coords[j].second);
+			Points = coords;
 		}
-	} else {
-		std::vector<std::pair<double, double> > coords(1 + TargetsCnt);
-		for (int i = 0; i < 1 + TargetsCnt; ++i) {
-			fin >> coords[i].first >> coords[i].second;
-		}
-		for (int i = 0; i < 1 + TargetsCnt; ++i)
-			for (int j = 0; j < 1 + TargetsCnt; ++j)
-				DistanceMatrix[i][j] = hypot(coords[i].first - coords[j].first, coords[i].second - coords[j].second);
-		Points = coords;
+	}
+	catch(int error) {
+		DronsCnt = TargetsCnt = MaxDist = 0;
 	}
 
 	fin.close();
