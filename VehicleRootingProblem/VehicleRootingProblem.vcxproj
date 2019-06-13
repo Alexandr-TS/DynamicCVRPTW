@@ -137,6 +137,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppForm.cpp" />
     <ClCompile Include="DataClasses.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="Optimizations.cpp" />
@@ -150,6 +151,9 @@
     <ClCompile Include="Visualization.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="DataClasses.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
@@ -165,6 +169,9 @@
     <ClInclude Include="Visualization.h" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AppForm.resx">
+      <DependentUpon>AppForm.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MyForm.resx">
       <DependentUpon>MyForm.h</DependentUpon>
     </EmbeddedResource>

@@ -1,6 +1,6 @@
 #include "SolverClarkeWright.h"
 
-ProblemSolution SolverClarkeWright::RunMinSum(InputData& input, double timeLimit, ProblemMode problemMode) {
+ProblemSolution SolverClarkeWright::RunMinSum(InputData& input, ProblemMode problemMode, std::vector<double> args) {
 	
 	double startTime = (double)clock() / CLOCKS_PER_SEC;
 
@@ -88,7 +88,7 @@ ProblemSolution SolverClarkeWright::RunMinSum(InputData& input, double timeLimit
 }
 
 // Solution for minimizing maximum path length
-ProblemSolution SolverClarkeWright::RunMinMaxLen(InputData& input, double timeLimit) {
+ProblemSolution SolverClarkeWright::RunMinMaxLen(InputData& input, std::vector<double> args) {
 	// Use binsearch to find minimum Path length, that exists a solution with sum minimizing
 	double st = clock();
 
@@ -101,7 +101,7 @@ ProblemSolution SolverClarkeWright::RunMinMaxLen(InputData& input, double timeLi
 	for (int cntIterations = 0; cntIterations < 50; ++cntIterations) {
 		double answerM = (answerL + answerR) / 2;
 		input.MaxDist = answerM;
-		auto solution = RunMinSum(input, timeLimit, ProblemMode::MINMAXLEN);
+		auto solution = RunMinSum(input, ProblemMode::MINMAXLEN, args);
 		if (solution.SolutionExists) {
 			bestSolution = solution;
 			answerR = answerM;
@@ -115,10 +115,10 @@ ProblemSolution SolverClarkeWright::RunMinMaxLen(InputData& input, double timeLi
 	return bestSolution;
 }
 
-ProblemSolution SolverClarkeWright::Run(InputData& input, double timeLimit, ProblemMode problemMode) {
+ProblemSolution SolverClarkeWright::Run(InputData& input, ProblemMode problemMode, std::vector<double> args) {
 	if (problemMode == ProblemMode::MINMAXLEN) {
-		return RunMinMaxLen(input, timeLimit);
+		return RunMinMaxLen(input, args);
 	} else {
-		return RunMinSum(input, timeLimit, problemMode);
+		return RunMinSum(input, problemMode, args);
 	}
 }

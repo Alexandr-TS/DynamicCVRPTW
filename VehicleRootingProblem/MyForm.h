@@ -572,10 +572,9 @@ namespace VehicleRootingProblem {
 			auto input = generator.GenInputData(1, t / 5, t - 1, t, 100, 500, -100, 100);
 			//auto input = generator.GenInputData(2, 2, 2, 2, 1000, 3000, -100, 100);
 
-			auto sol1 = SolverClarkeWright::Run(input, 40, probMode);
+			auto sol1 = SolverClarkeWright::Run(input, probMode, {});
 
-			auto sol2 = SolverAntColony::Run(input, 0, probMode, { 5, 5, 0.5, 2, 3, 3, 5, 1 });
-			//auto sol2 = SolverAntColony::Run(input, 5, probMode, { 5, 5, 0.25, 2, 2, 40, 5, 1});
+			auto sol2 = SolverAntColony::Run(input, probMode, { 5, 5, 0.5, 2, 3, 3, 5, 1, 0 });
 			solutions.push_back(sol1);
 			solutions.push_back(sol2);
 
@@ -703,7 +702,7 @@ namespace VehicleRootingProblem {
             return;
         }
 
-        auto solution = SolverMain::Run(*formInputData, 5, formProblemMode, (EAlgorithms)this->cbAlgorithm->SelectedIndex);
+		auto solution = SolverMain::Run(*formInputData, formProblemMode, (EAlgorithms)this->cbAlgorithm->SelectedIndex, {});
 
         this->textBoxResMaxLen->Text = System::Double(solution.MaxPathLength).ToString();
         this->textBoxResSumLen->Text = System::Double(solution.SumOfPathLengths).ToString();

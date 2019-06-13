@@ -1,6 +1,6 @@
 #include "SolverDP.h"
 
-ProblemSolution SolverDP::Run(InputData input, double timeLimit, ProblemMode problemMode) {
+ProblemSolution SolverDP::Run(InputData input, ProblemMode problemMode, std::vector<double>args) {
 	double startTime = (double)clock() / CLOCKS_PER_SEC;
 
 	input.DronsCnt = std::min(input.DronsCnt, input.TargetsCnt);

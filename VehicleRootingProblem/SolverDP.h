@@ -4,6 +4,6 @@
 
 class SolverDP: public Solver {
 public:
-	static ProblemSolution Run(InputData input, double timeLimit, ProblemMode problemMode);
+	static ProblemSolution Run(InputData input, ProblemMode problemMode, std::vector<double> args);
 };
 

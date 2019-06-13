@@ -4,7 +4,7 @@
 
 class SolverAntColony : public Solver {
 public:
-	static ProblemSolution Run(InputData input, double timeLimit, ProblemMode problemMode, std::vector<double> args);
+	static ProblemSolution Run(InputData input, ProblemMode problemMode, std::vector<double> args);
 };
 
 

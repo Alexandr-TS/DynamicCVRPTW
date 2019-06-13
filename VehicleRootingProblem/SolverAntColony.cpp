@@ -21,10 +21,12 @@ double FindMaxPathLen(MatrixInt& paths, double** dist) {
 // Suggested args: {5, 5, 0.75, 2, 2, 2, 6, 0.25}
 // Iterations coef - is a coefficent which will be multiplied by number of targets
 // candList coef sets fraction of viewed neares vertices
-ProblemSolution SolverAntColony::Run(InputData input, double timeLimit, 
-	ProblemMode problemMode, vector<double> args) {
+ProblemSolution SolverAntColony::Run(InputData input, 
+	ProblemMode problemMode, std::vector<double> args) {
 
 	double startClock = clock();
+
+	double timeLimit = args[8];
 
 	// 1 for MINSUM and number of reducing steps for MINMAXLEN
 	int globalIterations = 1;
