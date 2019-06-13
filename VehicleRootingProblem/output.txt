@@ -1,6 +1,6 @@
-drons: 12, targets: 80
-2082.95 7
-2028.53 7
-maxdist: 314.406
+drons: 1, targets: 100
+No 
+No 
+maxdist: 278.585
 
 

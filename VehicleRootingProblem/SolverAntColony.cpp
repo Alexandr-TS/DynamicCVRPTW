@@ -3,13 +3,37 @@
 
 using namespace std;
 
+double FindMaxPathLen(MatrixInt& paths, double** dist) {
+	double ans = 0;
+	if (!paths.size())
+		return INF;
+	for (auto& path : paths) {
+		double curPathLen = dist[path.back()][0];
+		for (int i = 0; i < (int)path.size() - 1; i++)
+			curPathLen += dist[path[i]][path[i + 1]];
+		ans = max(ans, curPathLen);
+	}
+	return ans;
+}
+
+
 // Args are: {alpha, betta, p, f, g, iterations coef, sigma, candList coef}
 // Suggested args: {5, 5, 0.75, 2, 2, 2, 6, 0.25}
 // Iterations coef - is a coefficent which will be multiplied by number of targets
-// candList coef is currently not working, but will set fraction of viewed neares vertices
-
+// candList coef sets fraction of viewed neares vertices
 ProblemSolution SolverAntColony::Run(InputData input, double timeLimit, 
 	ProblemMode problemMode, vector<double> args) {
+
+	double startClock = clock();
+
+	// 1 for MINSUM and number of reducing steps for MINMAXLEN
+	int globalIterations = 1;
+	if (problemMode == ProblemMode::MINMAXLEN) {
+		globalIterations = 20;
+		if (timeLimit > EPS)
+			globalIterations = INF;
+	}
+
 
 	// Coefficient powers for calculating probability of each edge
 	int alpha = (int)args[0], betta = (int)args[1];
@@ -20,6 +44,10 @@ ProblemSolution SolverAntColony::Run(InputData input, double timeLimit,
 	double etaG = (int)args[4];
 	// Number of iterations
 	int iterations = (int)(args[5] * input.TargetsCnt);
+	if (problemMode == ProblemMode::MINMAXLEN)
+		iterations /= globalIterations;
+	else if (timeLimit > EPS)
+		iterations = INF;
 	// Number of elitist ants
 	int sigma = std::min((int)args[6], input.TargetsCnt);
 	// Coefficient for candidate list. ListSize = n * candListCoef
@@ -71,7 +99,7 @@ ProblemSolution SolverAntColony::Run(InputData input, double timeLimit,
 		}
 	}
 
-	MatrixInt bestSolution = { {} };
+	MatrixInt bestSolution = { };
 	double objectiveFBest = INF;
 
 	bool* visited = new bool[n];
@@ -79,134 +107,220 @@ ProblemSolution SolverAntColony::Run(InputData input, double timeLimit,
 	// During the algorithm the paths have format {{0, 1, 5}, {0, 2, 3, 4}} - 1st is always depot, all others - targets
 	MatrixInt* paths = new MatrixInt[n];
 
-	for (int iteration = 0; iteration < iterations; ++iteration) {
-		for (int i = 0; i < n; ++i) {
-			for (int j = 0; j < n; ++j) {
-				p[i][j] = InputDataGenerator::PowInt(tau[i][j], alpha) * InputDataGenerator::PowInt(eta[i][j], betta);
-			}
+	// Will be reduced if we optimize MINMAXLEN
+	double solutionMaxPathLen = input.MaxDist;
+
+	for (int globIter = 0; globIter < globalIterations; globIter++) {
+
+		for (int i = 0; i < n; i++)
+			fill(tau[i], tau[i] + n, 1);
+
+		double bestSolutionMaxPath = 0;
+		if (bestSolution.size() == 0) {
+			solutionMaxPathLen = input.MaxDist;
+		}
+		else {
+			bestSolutionMaxPath = FindMaxPathLen(bestSolution, dist);
+			solutionMaxPathLen = min(solutionMaxPathLen, bestSolutionMaxPath - 1e-2);
+			if (*max_element(dist[0], dist[0] + n) * 2 > solutionMaxPathLen)
+				break;
 		}
 
-		for (int i = 0; i < n; ++i)
-			paths[i].clear();
-		
-		fill(objectiveF, objectiveF + n, 0);
-		for (int antIndex = 1; antIndex < n; ++antIndex) {
-			fill(visited, visited + n, false);
-			visited[antIndex] = true;
-			visited[0] = true;
-			double curPathLen = dist[0][antIndex];
-			paths[antIndex] = { {0, antIndex} };
-			int cntVisitedTargets = 1;
-			int lastVisited = 0;
-			while (cntVisitedTargets < n - 1) {
-				if (cntVisitedTargets == lastVisited && paths[antIndex].back().back() != 0 || cntVisitedTargets < lastVisited) {
-					assert(false);
-				}
-				lastVisited = cntVisitedTargets;
-				int v = paths[antIndex].back().back();
-				double probDenominator = 0;
+		for (int iteration = 0; iteration < iterations; ++iteration) {
 
-				int checkListSz = max(1, min(n - 1, (int)(n * candListCoef)));
-				int cntToCheck = (v == 0 ? n - 1 : checkListSz);
-				
-				for (int i = 0; i < cntToCheck; ++i) {
-					int u = candList[v][i].second;
-					if (!visited[u]) {
-						probDenominator += p[v][u];
-						if (probDenominator > EPS && !v && i >= cntToCheck)
-							break;
+			if (timeLimit > EPS && clock() - startClock > CLOCKS_PER_SEC * timeLimit)
+				break;
+
+			for (int i = 0; i < n; ++i) {
+				for (int j = 0; j < n; ++j) {
+					p[i][j] = InputDataGenerator::PowInt(tau[i][j], alpha) * InputDataGenerator::PowInt(eta[i][j], betta);
+				}
+			}
+
+			for (int i = 0; i < n; ++i)
+				paths[i].clear();
+
+			fill(objectiveF, objectiveF + n, 0);
+			for (int antIndex = 1; antIndex < n; ++antIndex) {
+				fill(visited, visited + n, false);
+				visited[antIndex] = true;
+				visited[0] = true;
+				double curPathLen = dist[0][antIndex];
+				paths[antIndex] = { {0, antIndex} };
+				int cntVisitedTargets = 1;
+				int lastVisited = 0;
+				while (cntVisitedTargets < n - 1) {
+					if (cntVisitedTargets == lastVisited && paths[antIndex].back().back() != 0 || cntVisitedTargets < lastVisited) {
+						assert(false);
+					}
+					lastVisited = cntVisitedTargets;
+					int v = paths[antIndex].back().back();
+					double probDenominator = 0;
+
+					int checkListSz = max(1, min(n - 1, (int)(n * candListCoef)));
+					int cntToCheck = (v == 0 ? n - 1 : checkListSz);
+
+					for (int i = 0; i < cntToCheck; ++i) {
+						int u = candList[v][i].second;
+						if (!visited[u]) {
+							probDenominator += p[v][u];
+							if (probDenominator > EPS && !v && i >= cntToCheck)
+								break;
+						}
+					}
+
+					double tmp;
+					if (probDenominator > EPS)
+						tmp = InputDataGenerator::GenDouble(0, probDenominator);
+					else
+						tmp = 0;
+					int nextV = -1;
+					for (int i = 0; i < cntToCheck && nextV == -1; ++i) {
+						int u = candList[v][i].second;
+						if (!visited[u]) {
+							tmp -= p[v][u];
+							if (tmp < EPS) {
+								nextV = u;
+							}
+						}
+					}
+
+					// if nextV is found and addidng edge (v, nextV) is feasible
+					if (nextV != -1 && curPathLen + dist[v][nextV] + dist[nextV][0] <= solutionMaxPathLen) {
+						visited[nextV] = true;
+						curPathLen += dist[v][nextV];
+						paths[antIndex].back().emplace_back(nextV);
+						cntVisitedTargets++;
+					}
+					else {
+						// path should contain not only depot. Its size must be at leat 2
+						assert(paths[antIndex].back().size() > 1);
+						curPathLen += dist[v][0];
+						objectiveF[antIndex] += curPathLen;
+						paths[antIndex].push_back({ 0 });
+						curPathLen = 0;
 					}
 				}
+				objectiveF[antIndex] += curPathLen;
+			}
 
-				double tmp;
-				if (probDenominator > EPS)
-					tmp = InputDataGenerator::GenDouble(0, probDenominator);
-				else
-					tmp = 0;
-				int nextV = -1;
-				for (int i = 0; i < cntToCheck && nextV == -1; ++i) {
-					int u = candList[v][i].second;
-					if (!visited[u]) {
-						tmp -= p[v][u];
-						if (tmp < EPS) {
-							nextV = u;
+			for (int antIndex = 1; antIndex < n; antIndex++) {
+				antPathLen[antIndex - 1] = { objectiveF[antIndex], antIndex };
+			}
+			sort(antPathLen, antPathLen + n - 1);
+
+			if (problemMode == ProblemMode::MINMAXLEN) {
+				vector<double> maxPaths(n);
+				for (int i = 0; i < n - 1; i++)
+					maxPaths[i] = FindMaxPathLen(paths[antPathLen[i].second], dist);
+				for (int i = 0; i < n - 2; i++) {
+					for (int j = 0; j < n - i - 2; j++) {
+						int ind1 = antPathLen[j].second;
+						int ind2 = antPathLen[j + 1].second;
+						bool ok1 = (maxPaths[j] <= solutionMaxPathLen && paths[ind1].size() <= input.DronsCnt);
+						bool ok2 = (maxPaths[j + 1] <= solutionMaxPathLen && paths[ind2].size() <= input.DronsCnt);
+						if (ok1 ^ ok2) {
+							if (ok2) {
+								swap(antPathLen[j], antPathLen[j + 1]);
+								swap(maxPaths[j], maxPaths[j + 1]);
+							}
+						}
+						else {
+							if (paths[ind1].size() > paths[ind2].size()) {
+								swap(antPathLen[j], antPathLen[j + 1]);
+								swap(maxPaths[j], maxPaths[j + 1]);
+							} else if (paths[ind1].size() == paths[ind2].size() && maxPaths[j] > maxPaths[j + 1]) {
+								swap(antPathLen[j], antPathLen[j + 1]);
+								swap(maxPaths[j], maxPaths[j + 1]);
+							}
 						}
 					}
 				}
+			}
 
-				// if nextV is found and addidng edge (v, nextV) is feasible
-				if (nextV != -1 && curPathLen + dist[v][nextV] + dist[nextV][0] <= input.MaxDist) {
-					visited[nextV] = true;
-					curPathLen += dist[v][nextV];
-					paths[antIndex].back().emplace_back(nextV);
-					cntVisitedTargets++;
-				} else {
-					// path should contain not only depot. Its size must be at leat 2
-					assert(paths[antIndex].back().size() > 1);
-					curPathLen += dist[v][0];
-					objectiveF[antIndex] += curPathLen;
-					paths[antIndex].push_back({ 0 });
-					curPathLen = 0;
+			for (int i = 0; i < sigma; ++i) {
+				antPathLen[i].first = 0;
+				for (auto& path : paths[antPathLen[i].second]) {
+					LocalReverseOptimization(path, input, true);
+					for (int j = 0; j < (int)path.size() - 1; ++j)
+						antPathLen[i].first += dist[path[j]][path[j + 1]];
+					antPathLen[i].first += dist[path.back()][0];
 				}
 			}
-			objectiveF[antIndex] += curPathLen;
-		}
+			sort(antPathLen, antPathLen + sigma);
 
-		for (int antIndex = 1; antIndex < n; antIndex++) {
-			antPathLen[antIndex - 1] = { objectiveF[antIndex], antIndex };
-		}
-		sort(antPathLen, antPathLen + n - 1);
+			double lastBestVal = antPathLen[0].first;
+			double bestSolutionMaxPathBefore = FindMaxPathLen(paths[antPathLen[0].second], dist);
+			// Making String-Cross optimization for best solution, and then localReverseOpt
 
-		for (int i = 0; i < sigma; ++i) {
-			antPathLen[i].first = 0;
-			for (auto& path : paths[antPathLen[i].second]) {
-				LocalReverseOptimization(path, input, true);
-				for (int j = 0; j < (int)path.size() - 1; ++j)
-					antPathLen[i].first += dist[path[j]][path[j + 1]];
-				antPathLen[i].first += dist[path.back()][0];
+			for (int i = 0; i < sigma; ++i) {
+				StringCrossOptimization(paths[antPathLen[i].second], input, problemMode);
+				antPathLen[i].first = 0;
+				for (auto& path : paths[antPathLen[i].second]) {
+					LocalReverseOptimization(path, input, true);
+					for (int j = 0; j < (int)path.size() - 1; ++j)
+						antPathLen[i].first += dist[path[j]][path[j + 1]];
+					antPathLen[i].first += dist[path.back()][0];
+				}
 			}
-		}
-		sort(antPathLen, antPathLen + sigma);
+			
+			double bestSolutionMaxPathAfter = FindMaxPathLen(paths[antPathLen[0].second], dist);
 
-		double lastBestVal = antPathLen[0].first;
-		// Making String-Cross optimization for best solution
-		StringCrossOptimization(paths[antPathLen[0].second], input, problemMode);
-		antPathLen[0].first = 0;
-		for (auto& path : paths[antPathLen[0].second]) {
-			for (int j = 0; j < (int)path.size() - 1; ++j)
-				antPathLen[0].first += dist[path[j]][path[j + 1]];
-			antPathLen[0].first += dist[path.back()][0];
-		}
-		assert(antPathLen[0].first <= lastBestVal + EPS);
-		if (antPathLen[0].first < lastBestVal) {
-			cout << "String-cross improve: " << antPathLen[0].first << " " << lastBestVal << " " << lastBestVal - antPathLen[0].first << endl;
-		}
+			//assert((problemMode == ProblemMode::MINSUM && antPathLen[0].first <= lastBestVal + EPS) ||
+			//		(problemMode == ProblemMode::MINMAXLEN && bestSolutionMaxPathAfter <= bestSolutionMaxPathBefore + EPS));
+			//if (antPathLen[0].first < lastBestVal && problemMode == ProblemMode::MINSUM) {
+			//	//cout << "String-cross improve: " << antPathLen[0].first << " " << lastBestVal << " " << lastBestVal - antPathLen[0].first << endl;
+			//}
+			//if (bestSolutionMaxPathAfter < bestSolutionMaxPathBefore && problemMode == ProblemMode::MINMAXLEN) {
+			//	//cout << "String-cross improve: " << bestSolutionMaxPathAfter << " " << bestSolutionMaxPathBefore << 
+			//	//	" " << bestSolutionMaxPathBefore - bestSolutionMaxPathAfter << endl;
+			//}
 
-		for (int i = 0; i < n; ++i) {
-			for (int j = 0; j < n; ++j) {
-				tau[i][j] *= rho;
+			for (int i = 0; i < n; ++i) {
+				for (int j = 0; j < n; ++j) {
+					tau[i][j] *= rho;
+				}
 			}
-		}
 
-		for (int mu = 1; mu < sigma; ++mu) {
-			for (auto& path : paths[mu]) {
+			for (int mu = 1; mu < sigma; ++mu) {
+				for (auto& path : paths[mu]) {
+					for (int i = 1; i < (int)path.size(); ++i) {
+						tau[path[i - 1]][path[i]] += (sigma - mu) / antPathLen[mu - 1].first;
+					}
+				}
+			}
+
+			if ((antPathLen[0].first < objectiveFBest && problemMode == ProblemMode::MINSUM && paths[antPathLen[0].second].size() <= input.DronsCnt) ||
+				(problemMode == ProblemMode::MINMAXLEN && paths[antPathLen[0].second].size() <= input.DronsCnt &&
+					FindMaxPathLen(bestSolution, dist) > FindMaxPathLen(paths[antPathLen[0].second], dist))) {
+				objectiveFBest = antPathLen[0].first;
+				bestSolution = paths[antPathLen[0].second];
+				if (problemMode == ProblemMode::MINMAXLEN) {
+					solutionMaxPathLen = FindMaxPathLen(bestSolution, dist) - 0.01;
+				}
+			}
+
+			if ((iteration % 10 == 0) && paths[antPathLen[0].second].size() > input.DronsCnt)
+				cout << "More drons: " << paths[antPathLen[0].second].size() << endl;
+			if (iteration % 10 == 0)
+				cout << FindMaxPathLen(paths[antPathLen[0].second], dist) << " " << paths[antPathLen[0].second].size() << endl;
+
+			for (auto& path : bestSolution) {
 				for (int i = 1; i < (int)path.size(); ++i) {
-					tau[path[i - 1]][path[i]] += (sigma - mu) / antPathLen[mu - 1].first;
+					tau[path[i - 1]][path[i]] += sigma / objectiveFBest;
 				}
 			}
-		}
 
-		if (antPathLen[0].first < objectiveFBest) {
-			objectiveFBest = antPathLen[0].first;
-			bestSolution = paths[antPathLen[0].second];
-		}
+			if (*max_element(dist[0], dist[0] + n) * 2 > solutionMaxPathLen)
+				break;
 
-		for (auto& path : bestSolution) {
-			for (int i = 1; i < (int)path.size(); ++i) {
-				tau[path[i - 1]][path[i]] += sigma / objectiveFBest;
+			if (iteration % 10 == 0) {
+				if (problemMode == ProblemMode::MINMAXLEN)
+					cout << iteration << " " << fixed << setprecision(6) << FindMaxPathLen(bestSolution, dist) << " " << solutionMaxPathLen << endl;
+				else
+					cout << iteration << " " << fixed << setprecision(6) << objectiveFBest << " " << solutionMaxPathLen << endl;
 			}
 		}
-		cout << iteration << " " << fixed << setprecision(6) << objectiveFBest << endl;
 	}
 
 	for (auto& path : bestSolution) {
