@@ -25,7 +25,7 @@ typedef std::vector<std::vector<int> > MatrixInt;
 
 class InputData {
 public:
-	InputData() = default;
+	InputData();
 	InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix);
 	InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix, std::vector<std::pair<double, double> > points);
 	InputData(std::string inputFileName, bool isMatrix = true);
