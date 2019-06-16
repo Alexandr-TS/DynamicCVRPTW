@@ -2,6 +2,7 @@
 
 #include "DataClasses.h"
 #include "SolverMain.h"
+#include "Visualization.h"
 
 #include <memory>
 #include <msclr\marshal_cppstd.h>
@@ -78,12 +79,8 @@ namespace VehicleRootingProblem {
 			})
 		};
 		std::vector<Launch> Launches;
-
 		InputData LoadedInputData;
-
 		int PrintedLaunchPathsIndex;
-
-		std::vector<int> LaunchIndexInGrid;
 	}
 
 	System::String^ ToText(std::string s) {
@@ -123,11 +120,13 @@ namespace VehicleRootingProblem {
 			this->buttonSavePathsToFile->Enabled = false;
 			buttonUploadFile->Enabled = false;
 			buttonRun->Enabled = false;
-			timer1->Enabled = false;
 			
-			AppFormVars::LaunchIndexInGrid.clear();
+			//AppFormVars::LaunchIndexInGrid.clear();
 			AppFormVars::PrintedLaunchPathsIndex = -1;
+
+			Graphics = this->pictureBoxRes->CreateGraphics();
 		}
+		System::Drawing::Graphics^ Graphics;
 
 	protected:
 		/// <summary>
@@ -140,7 +139,9 @@ namespace VehicleRootingProblem {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::TabControl^ tabControl1;
+	private: System::Windows::Forms::TabControl^ tabControlLeft;
+	protected:
+
 	protected:
 	private: System::Windows::Forms::TabPage^ tabPage1;
 	private: System::Windows::Forms::ListView^ listViewLoadedDataSets;
@@ -168,8 +169,8 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::Button^ buttonRun;
 	private: System::Windows::Forms::RadioButton^ radioButtonMinMaxLen;
 	private: System::Windows::Forms::RadioButton^ radioButtonMinSum;
-	private: System::Windows::Forms::Timer^ timer1;
-	private: System::Windows::Forms::ProgressBar^ progressBarAlgo;
+
+
 
 
 	private: System::Windows::Forms::Button^ buttonFileOpen;
@@ -188,7 +189,8 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
 	private: System::Windows::Forms::Button^ buttonSavePathsToFile;
-	private: System::Windows::Forms::PictureBox^ pictureBox1;
+	private: System::Windows::Forms::PictureBox^ pictureBoxRes;
+
 
 
 	private: System::Windows::Forms::DataGridView^ dataGridViewResults;
@@ -214,13 +216,11 @@ namespace VehicleRootingProblem {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->components = (gcnew System::ComponentModel::Container());
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
-			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
-			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::ListViewItem^ listViewItem2 = (gcnew System::Windows::Forms::ListViewItem(L""));
+			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->groupBoxLaunches = (gcnew System::Windows::Forms::GroupBox());
-			this->progressBarAlgo = (gcnew System::Windows::Forms::ProgressBar());
 			this->buttonRun = (gcnew System::Windows::Forms::Button());
 			this->radioButtonMinMaxLen = (gcnew System::Windows::Forms::RadioButton());
 			this->radioButtonMinSum = (gcnew System::Windows::Forms::RadioButton());
@@ -242,8 +242,7 @@ namespace VehicleRootingProblem {
 			this->colMaxDist = (gcnew System::Windows::Forms::ColumnHeader());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
 			this->dataGridViewSelectedRes = (gcnew System::Windows::Forms::DataGridView());
-			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->pictureBoxRes = (gcnew System::Windows::Forms::PictureBox());
 			this->openFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->groupBoxResults = (gcnew System::Windows::Forms::GroupBox());
 			this->dataGridViewResults = (gcnew System::Windows::Forms::DataGridView());
@@ -255,28 +254,28 @@ namespace VehicleRootingProblem {
 			this->comboBoxResAlgo = (gcnew System::Windows::Forms::ComboBox());
 			this->labelChosenResAlgo = (gcnew System::Windows::Forms::Label());
 			this->saveFileDialog = (gcnew System::Windows::Forms::SaveFileDialog());
-			this->tabControl1->SuspendLayout();
+			this->tabControlLeft->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->groupBoxLaunches->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewParams))->BeginInit();
 			this->groupBoxLoadedDataSets->SuspendLayout();
 			this->tabPage2->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewSelectedRes))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBoxRes))->BeginInit();
 			this->groupBoxResults->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewResults))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewPaths))->BeginInit();
 			this->SuspendLayout();
 			// 
-			// tabControl1
+			// tabControlLeft
 			// 
-			this->tabControl1->Controls->Add(this->tabPage1);
-			this->tabControl1->Controls->Add(this->tabPage2);
-			this->tabControl1->Location = System::Drawing::Point(12, 12);
-			this->tabControl1->Name = L"tabControl1";
-			this->tabControl1->SelectedIndex = 0;
-			this->tabControl1->Size = System::Drawing::Size(567, 701);
-			this->tabControl1->TabIndex = 0;
+			this->tabControlLeft->Controls->Add(this->tabPage1);
+			this->tabControlLeft->Controls->Add(this->tabPage2);
+			this->tabControlLeft->Location = System::Drawing::Point(12, 12);
+			this->tabControlLeft->Name = L"tabControlLeft";
+			this->tabControlLeft->SelectedIndex = 0;
+			this->tabControlLeft->Size = System::Drawing::Size(567, 701);
+			this->tabControlLeft->TabIndex = 0;
 			// 
 			// tabPage1
 			// 
@@ -292,7 +291,6 @@ namespace VehicleRootingProblem {
 			// 
 			// groupBoxLaunches
 			// 
-			this->groupBoxLaunches->Controls->Add(this->progressBarAlgo);
 			this->groupBoxLaunches->Controls->Add(this->buttonRun);
 			this->groupBoxLaunches->Controls->Add(this->radioButtonMinMaxLen);
 			this->groupBoxLaunches->Controls->Add(this->radioButtonMinSum);
@@ -305,16 +303,6 @@ namespace VehicleRootingProblem {
 			this->groupBoxLaunches->TabIndex = 3;
 			this->groupBoxLaunches->TabStop = false;
 			this->groupBoxLaunches->Text = L"Запуск алгоритмов";
-			// 
-			// progressBarAlgo
-			// 
-			this->progressBarAlgo->Location = System::Drawing::Point(181, 299);
-			this->progressBarAlgo->Maximum = 1200;
-			this->progressBarAlgo->Name = L"progressBarAlgo";
-			this->progressBarAlgo->Size = System::Drawing::Size(358, 23);
-			this->progressBarAlgo->Step = 1;
-			this->progressBarAlgo->Style = System::Windows::Forms::ProgressBarStyle::Continuous;
-			this->progressBarAlgo->TabIndex = 23;
 			// 
 			// buttonRun
 			// 
@@ -380,16 +368,16 @@ namespace VehicleRootingProblem {
 				this->ColParam,
 					this->ColVal, this->ColRecom, this->ColComment
 			});
-			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle1->BackColor = System::Drawing::SystemColors::Window;
-			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
+			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+			dataGridViewCellStyle2->BackColor = System::Drawing::SystemColors::Window;
+			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::ControlText;
-			dataGridViewCellStyle1->NullValue = nullptr;
-			dataGridViewCellStyle1->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle1->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
-			this->dataGridViewParams->DefaultCellStyle = dataGridViewCellStyle1;
+			dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::ControlText;
+			dataGridViewCellStyle2->NullValue = nullptr;
+			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::SystemColors::Highlight;
+			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
+			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
+			this->dataGridViewParams->DefaultCellStyle = dataGridViewCellStyle2;
 			this->dataGridViewParams->Location = System::Drawing::Point(15, 56);
 			this->dataGridViewParams->Name = L"dataGridViewParams";
 			this->dataGridViewParams->Size = System::Drawing::Size(524, 223);
@@ -478,7 +466,7 @@ namespace VehicleRootingProblem {
 			});
 			this->listViewLoadedDataSets->FullRowSelect = true;
 			this->listViewLoadedDataSets->GridLines = true;
-			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem1 });
+			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem2 });
 			this->listViewLoadedDataSets->Location = System::Drawing::Point(6, 19);
 			this->listViewLoadedDataSets->Name = L"listViewLoadedDataSets";
 			this->listViewLoadedDataSets->Size = System::Drawing::Size(533, 238);
@@ -510,7 +498,7 @@ namespace VehicleRootingProblem {
 			// tabPage2
 			// 
 			this->tabPage2->Controls->Add(this->dataGridViewSelectedRes);
-			this->tabPage2->Controls->Add(this->pictureBox1);
+			this->tabPage2->Controls->Add(this->pictureBoxRes);
 			this->tabPage2->Location = System::Drawing::Point(4, 22);
 			this->tabPage2->Name = L"tabPage2";
 			this->tabPage2->Padding = System::Windows::Forms::Padding(3);
@@ -534,18 +522,13 @@ namespace VehicleRootingProblem {
 			this->dataGridViewSelectedRes->Size = System::Drawing::Size(547, 82);
 			this->dataGridViewSelectedRes->TabIndex = 32;
 			// 
-			// pictureBox1
+			// pictureBoxRes
 			// 
-			this->pictureBox1->Location = System::Drawing::Point(4, 91);
-			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(549, 578);
-			this->pictureBox1->TabIndex = 0;
-			this->pictureBox1->TabStop = false;
-			// 
-			// timer1
-			// 
-			this->timer1->Enabled = true;
-			this->timer1->Tick += gcnew System::EventHandler(this, &AppForm::Timer1_Tick);
+			this->pictureBoxRes->Location = System::Drawing::Point(4, 91);
+			this->pictureBoxRes->Name = L"pictureBoxRes";
+			this->pictureBoxRes->Size = System::Drawing::Size(549, 578);
+			this->pictureBoxRes->TabIndex = 0;
+			this->pictureBoxRes->TabStop = false;
 			// 
 			// openFileDialog
 			// 
@@ -583,10 +566,10 @@ namespace VehicleRootingProblem {
 			this->dataGridViewResults->Name = L"dataGridViewResults";
 			this->dataGridViewResults->ReadOnly = true;
 			this->dataGridViewResults->RowHeadersWidthSizeMode = System::Windows::Forms::DataGridViewRowHeadersWidthSizeMode::AutoSizeToAllHeaders;
+			this->dataGridViewResults->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dataGridViewResults->Size = System::Drawing::Size(556, 320);
 			this->dataGridViewResults->TabIndex = 31;
 			this->dataGridViewResults->CellContentDoubleClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &AppForm::DataGridViewResults_CellContentDoubleClick);
-			this->dataGridViewResults->DoubleClick += gcnew System::EventHandler(this, &AppForm::DataGridViewResults_DoubleClick);
 			// 
 			// buttonSavePathsToFile
 			// 
@@ -675,10 +658,10 @@ namespace VehicleRootingProblem {
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1159, 718);
 			this->Controls->Add(this->groupBoxResults);
-			this->Controls->Add(this->tabControl1);
+			this->Controls->Add(this->tabControlLeft);
 			this->Name = L"AppForm";
 			this->Text = L"AppForm";
-			this->tabControl1->ResumeLayout(false);
+			this->tabControlLeft->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
 			this->groupBoxLaunches->ResumeLayout(false);
 			this->groupBoxLaunches->PerformLayout();
@@ -687,7 +670,7 @@ namespace VehicleRootingProblem {
 			this->groupBoxLoadedDataSets->PerformLayout();
 			this->tabPage2->ResumeLayout(false);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewSelectedRes))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBoxRes))->EndInit();
 			this->groupBoxResults->ResumeLayout(false);
 			this->groupBoxResults->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewResults))->EndInit();
@@ -710,7 +693,6 @@ namespace VehicleRootingProblem {
 		int ind = this->comboBoxResAlgo->SelectedIndex;
 		this->dataGridViewResults->Rows->Clear();
 		this->dataGridViewResults->Columns->Clear();
-		AppFormVars::LaunchIndexInGrid.clear();
 
 		if (ind <= 0) {
 			int colInd = 0;
@@ -718,18 +700,31 @@ namespace VehicleRootingProblem {
 				"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 				this->dataGridViewResults->Columns->Add(ToText(colInd++), ToText((std::string)col));
 			}
+
+			this->dataGridViewResults->Columns->Add("launchInd", ToText("Номер запуска"));
+			this->dataGridViewResults->Columns[this->dataGridViewResults->Columns->Count - 1]->Visible = false;
+
 			for (auto& launch : AppFormVars::Launches) {
 				int rowInd = this->dataGridViewResults->Rows->Count;
-				AppFormVars::LaunchIndexInGrid.push_back(rowInd);
 				this->dataGridViewResults->Rows->Add();
-				this->dataGridViewResults->Rows[rowInd]->Cells[0]->Value = ToText(launch.DataSetIndex + 1);
-				this->dataGridViewResults->Rows[rowInd]->Cells[1]->Value = ToText(AppFormVars::Algos[launch.AlgoIndex].Name);
-				this->dataGridViewResults->Rows[rowInd]->Cells[2]->Value = ToText(launch.Mode == ProblemMode::MINMAXLEN ? "Макс длина пути" : "Сумма длин путей");
-				this->dataGridViewResults->Rows[rowInd]->Cells[3]->Value = ToText(AppFormVars::DataSets[launch.DataSetIndex].DronsCnt);
-				this->dataGridViewResults->Rows[rowInd]->Cells[4]->Value = ToText(AppFormVars::DataSets[launch.DataSetIndex].TargetsCnt);
-				this->dataGridViewResults->Rows[rowInd]->Cells[5]->Value = ToText(AppFormVars::DataSets[launch.DataSetIndex].MaxDist);
-				this->dataGridViewResults->Rows[rowInd]->Cells[6]->Value = ToText(launch.Solution.SumOfPathLengths);
-				this->dataGridViewResults->Rows[rowInd]->Cells[7]->Value = ToText(launch.Solution.MaxPathLength);
+				this->dataGridViewResults->Rows[rowInd]->Cells[0]->Value = 
+					ToText(launch.DataSetIndex + 1);
+				this->dataGridViewResults->Rows[rowInd]->Cells[1]->Value = 
+					ToText(AppFormVars::Algos[launch.AlgoIndex].Name);
+				this->dataGridViewResults->Rows[rowInd]->Cells[2]->Value = 
+					ToText(launch.Mode == ProblemMode::MINMAXLEN ? "Макс длина пути" : "Сумма длин путей");
+				this->dataGridViewResults->Rows[rowInd]->Cells[3]->Value = 
+					ToText(AppFormVars::DataSets[launch.DataSetIndex].DronsCnt);
+				this->dataGridViewResults->Rows[rowInd]->Cells[4]->Value = 
+					ToText(AppFormVars::DataSets[launch.DataSetIndex].TargetsCnt);
+				this->dataGridViewResults->Rows[rowInd]->Cells[5]->Value = 
+					ToText(AppFormVars::DataSets[launch.DataSetIndex].MaxDist);
+				this->dataGridViewResults->Rows[rowInd]->Cells[6]->Value = 
+					ToText(launch.Solution.SumOfPathLengths);
+				this->dataGridViewResults->Rows[rowInd]->Cells[7]->Value = 
+					ToText(launch.Solution.MaxPathLength);
+
+				this->dataGridViewResults->Rows[rowInd]->Cells[8]->Value = ToText(rowInd);
 			}
 			return;
 		}
@@ -742,24 +737,36 @@ namespace VehicleRootingProblem {
 			for (auto param : AppFormVars::Algos[ind - 1].Params) {
 				this->dataGridViewResults->Columns->Add(ToText(colInd++), ToText((std::string)param.Name));
 			}
+
+			this->dataGridViewResults->Columns->Add("launchInd", ToText("Номер запуска"));
+			this->dataGridViewResults->Columns[this->dataGridViewResults->Columns->Count - 1]->Visible = false;
+
 			int curLaunchInd = 0;
 			for (auto& launch : AppFormVars::Launches) {
-				AppFormVars::LaunchIndexInGrid.push_back(curLaunchInd);
 				curLaunchInd++;
 				if (launch.AlgoIndex != ind - 1) continue;
 				int rowInd = this->dataGridViewResults->Rows->Count;
 				this->dataGridViewResults->Rows->Add();
-				this->dataGridViewResults->Rows[rowInd]->Cells[0]->Value = ToText(launch.DataSetIndex + 1);
-				this->dataGridViewResults->Rows[rowInd]->Cells[1]->Value = ToText(launch.Mode == ProblemMode::MINMAXLEN ? "Макс длина пути" : "Сумма длин путей");
-				this->dataGridViewResults->Rows[rowInd]->Cells[2]->Value = ToText(AppFormVars::DataSets[launch.DataSetIndex].DronsCnt);
-				this->dataGridViewResults->Rows[rowInd]->Cells[3]->Value = ToText(AppFormVars::DataSets[launch.DataSetIndex].TargetsCnt);
-				this->dataGridViewResults->Rows[rowInd]->Cells[4]->Value = ToText(AppFormVars::DataSets[launch.DataSetIndex].MaxDist);
-				this->dataGridViewResults->Rows[rowInd]->Cells[5]->Value = ToText(launch.Solution.SumOfPathLengths);
-				this->dataGridViewResults->Rows[rowInd]->Cells[6]->Value = ToText(launch.Solution.MaxPathLength);
+				this->dataGridViewResults->Rows[rowInd]->Cells[0]->Value = 
+					ToText(launch.DataSetIndex + 1);
+				this->dataGridViewResults->Rows[rowInd]->Cells[1]->Value = 
+					ToText(launch.Mode == ProblemMode::MINMAXLEN ? "Макс длина пути" : "Сумма длин путей");
+				this->dataGridViewResults->Rows[rowInd]->Cells[2]->Value = 
+					ToText(AppFormVars::DataSets[launch.DataSetIndex].DronsCnt);
+				this->dataGridViewResults->Rows[rowInd]->Cells[3]->Value = 
+					ToText(AppFormVars::DataSets[launch.DataSetIndex].TargetsCnt);
+				this->dataGridViewResults->Rows[rowInd]->Cells[4]->Value = 
+					ToText(AppFormVars::DataSets[launch.DataSetIndex].MaxDist);
+				this->dataGridViewResults->Rows[rowInd]->Cells[5]->Value = 
+					ToText(launch.Solution.SumOfPathLengths);
+				this->dataGridViewResults->Rows[rowInd]->Cells[6]->Value = 
+					ToText(launch.Solution.MaxPathLength);
 				int curCol = 7;
 				for (auto& param : launch.ParamsVals) {
 					this->dataGridViewResults->Rows[rowInd]->Cells[curCol++]->Value = ToText(param);
 				}
+
+				this->dataGridViewResults->Rows[rowInd]->Cells[curCol++]->Value = ToText(curLaunchInd - 1);
 			}
 		}
 
@@ -769,6 +776,8 @@ namespace VehicleRootingProblem {
 			this->dataGridViewResults->Columns[i]->AutoSizeMode = DataGridViewAutoSizeColumnMode::None;
 			this->dataGridViewResults->Columns[i]->Width = widthCol;
 		}
+
+		this->dataGridViewResults->ClearSelection();
 	}
 
 	void UpdateDataGridViewPaths(ProblemSolution& solution) {
@@ -797,142 +806,190 @@ namespace VehicleRootingProblem {
 			this->dataGridViewPaths->Update();
 			++lineNum;
 		}
+
+		this->dataGridViewPaths->ClearSelection();
 	}
 
+	// rowInd is clicked row in dataGridViewResults
+	void UpdateVisualization(int launchInd) {
+		this->dataGridViewSelectedRes->Rows->Clear();
+		this->dataGridViewSelectedRes->Columns->Clear();
 
-
-private: System::Void Timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
-	this->progressBarAlgo->PerformStep();
-}
-
-private: System::Void ButtonRun_Click(System::Object^ sender, System::EventArgs^ e) {
-	this->timer1->Enabled = true;
-	this->timer1->Start();
-	int algoInd = this->comboBoxLaunchAlgo->SelectedIndex - 1;
-	int dataSetInd = this->listViewLoadedDataSets->SelectedIndices[0];
-	ProblemMode mode = ProblemMode::MINMAXLEN;
-	if (this->radioButtonMinSum->Checked)
-		mode = ProblemMode::MINSUM;
-	std::vector<double> args;
-	for (int i = 0; i < this->dataGridViewParams->Rows->Count; ++i) {
-		try {
-			std::string x = msclr::interop::marshal_as<std::string>(this->dataGridViewParams->Rows[i]->Cells[1]->Value->ToString());
-			double z = atof(x.c_str());
-			args.push_back(z);
+		int colInd = 0;
+		for (auto col : { "Номер датасета", "Минимизируемая величина", "Количество БПЛА",
+			"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
+			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)col));
 		}
-		catch(...) {
-			MessageBox::Show("Не удалось считать параметр");
-			args.push_back(AppFormVars::Algos[algoInd].Params[i].Recommend);
-		}	
-	}
-	ProblemSolution solution = SolverMain::Run(AppFormVars::DataSets[dataSetInd], mode, AppFormVars::Algos[algoInd].Ealgo, args);
+		for (auto param : AppFormVars::Algos[AppFormVars::Launches[launchInd].AlgoIndex].Params) {
+			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)param.Name));
+		}
 
-	if (!solution.SolutionExists) {
-		MessageBox::Show("Не удалось найти решение");
-	}
-	else {
-		AppFormVars::Launches.push_back(AppFormVars::Launch(algoInd, dataSetInd, args, mode, solution));
-		UpdateDataGridViewPaths(AppFormVars::Launches.back().Solution);
-		AppFormVars::PrintedLaunchPathsIndex = (int)AppFormVars::Launches.size() - 1;
-		UpdateDataGridViewResults();
-		this->buttonSavePathsToFile->Enabled = true;
-	}
-}
+		this->dataGridViewSelectedRes->Rows->Add();
+		this->dataGridViewSelectedRes->Rows[0]->Cells[0]->Value = 
+			ToText(AppFormVars::Launches[launchInd].DataSetIndex + 1);
+		this->dataGridViewSelectedRes->Rows[0]->Cells[1]->Value = 
+			ToText(AppFormVars::Launches[launchInd].Mode == 
+				ProblemMode::MINMAXLEN ? "Макс длина пути" : "Сумма длин путей");
+		this->dataGridViewSelectedRes->Rows[0]->Cells[2]->Value = 
+			ToText(AppFormVars::DataSets[AppFormVars::Launches[launchInd].DataSetIndex].DronsCnt);
+		this->dataGridViewSelectedRes->Rows[0]->Cells[3]->Value = 
+			ToText(AppFormVars::DataSets[AppFormVars::Launches[launchInd].DataSetIndex].TargetsCnt);
+		this->dataGridViewSelectedRes->Rows[0]->Cells[4]->Value = 
+			ToText(AppFormVars::DataSets[AppFormVars::Launches[launchInd].DataSetIndex].MaxDist);
+		this->dataGridViewSelectedRes->Rows[0]->Cells[5]->Value = 
+			ToText(AppFormVars::Launches[launchInd].Solution.SumOfPathLengths);
+		this->dataGridViewSelectedRes->Rows[0]->Cells[6]->Value = 
+			ToText(AppFormVars::Launches[launchInd].Solution.MaxPathLength);
+		int curCol = 7;
+		for (auto& param : AppFormVars::Launches[launchInd].ParamsVals) {
+			this->dataGridViewSelectedRes->Rows[0]->Cells[curCol++]->Value = ToText(param);
+		}
+		
+		for (int i = 0; i < this->dataGridViewSelectedRes->Columns->Count; i++) {
+			this->dataGridViewSelectedRes->Columns[i]->AutoSizeMode = DataGridViewAutoSizeColumnMode::DisplayedCells;
+			int widthCol = this->dataGridViewSelectedRes->Columns[i]->Width - 15;
+			this->dataGridViewSelectedRes->Columns[i]->AutoSizeMode = DataGridViewAutoSizeColumnMode::None;
+			this->dataGridViewSelectedRes->Columns[i]->Width = widthCol;
+		}
 
-private: System::Void ButtonFileOpen_Click(System::Object^ sender, System::EventArgs^ e) {
+		
+		this->tabControlLeft->SelectedTab = this->tabControlLeft->TabPages[1];
+		this->tabControlLeft->Refresh();
+		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution, 
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width);
+	}
 
-	if (openFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::Cancel) {
-		return;
-	}
-	std::string fileName = msclr::interop::marshal_as<std::string>(this->openFileDialog->FileName);
-	this->labelLoadedFile->Text = System::String(fileName.c_str()).ToString();
 
-	AppFormVars::LoadedInputData = InputData(fileName, false);
-	buttonUploadFile->Enabled = true;
-}
-private: System::Void ButtonUploadFile_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (!AppFormVars::LoadedInputData.DronsCnt && !AppFormVars::LoadedInputData.TargetsCnt) {
-		MessageBox::Show("Неверный формат файла. Требуемый формат:\n" +
-			"КоличествоДронов КоличествоЦелей ДальностьПолёта\n Список пар координат");
-	}
-	else {
-		AppFormVars::DataSets.push_back(AppFormVars::LoadedInputData);
-		auto newitem = gcnew ListViewItem(ToText((int)AppFormVars::DataSets.size()));
-		newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().DronsCnt));
-		newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().TargetsCnt));
-		newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().MaxDist));
-		listViewLoadedDataSets->Items->Add(newitem);
-	}
-	AppFormVars::LoadedInputData = InputData();
-	this->labelLoadedFile->Text = "Файл не выбран";
-	buttonUploadFile->Enabled = false;
-}
-private: System::Void ComboBoxLaunchAlgo_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-	int ind = comboBoxLaunchAlgo->SelectedIndex;
-	dataGridViewParams->Rows->Clear();
-	UpdateRunButton();
-	for (auto& param : AppFormVars::Algos[ind - 1].Params) {
-		int i = dataGridViewParams->Rows->Count;
-		dataGridViewParams->Rows->Add();
-		dataGridViewParams->Rows[i]->Cells[0]->Value = ToText(param.Name);
-		dataGridViewParams->Rows[i]->Cells[1]->Value = ToText(param.Recommend);
-		dataGridViewParams->Rows[i]->Cells[2]->Value = ToText(param.Recommend);
-		dataGridViewParams->Rows[i]->Cells[3]->Value = ToText(param.Comment);
-	}
-	dataGridViewParams->Refresh();
-}
+	private: System::Void ButtonRun_Click(System::Object^ sender, System::EventArgs^ e) {
+		int algoInd = this->comboBoxLaunchAlgo->SelectedIndex - 1;
+		int dataSetInd = this->listViewLoadedDataSets->SelectedIndices[0];
+		ProblemMode mode = ProblemMode::MINMAXLEN;
+		if (this->radioButtonMinSum->Checked)
+			mode = ProblemMode::MINSUM;
+		std::vector<double> args;
+		for (int i = 0; i < this->dataGridViewParams->Rows->Count; ++i) {
+			try {
+				std::string x = msclr::interop::marshal_as<std::string>(this->dataGridViewParams->Rows[i]->Cells[1]->Value->ToString());
+				double z = atof(x.c_str());
+				args.push_back(z);
+			}
+			catch(...) {
+				MessageBox::Show("Не удалось считать параметр");
+				args.push_back(AppFormVars::Algos[algoInd].Params[i].Recommend);
+			}	
+		}
+		ProblemSolution solution = SolverMain::Run(AppFormVars::DataSets[dataSetInd], mode, AppFormVars::Algos[algoInd].Ealgo, args);
 
-private: System::Void dataGridViewParams_EditingControlShowing(System::Object^ sender, System::Windows::Forms::DataGridViewEditingControlShowingEventArgs^ e) {
-
-	if (dataGridViewParams->CurrentCell->ColumnIndex == 1)
-	{
-		e->Control->KeyPress += gcnew KeyPressEventHandler(this, &AppForm::tb_KeyPress);
+		if (!solution.SolutionExists) {
+			MessageBox::Show("Не удалось найти решение");
+		}
+		else {
+			AppFormVars::Launches.push_back(AppFormVars::Launch(algoInd, dataSetInd, args, mode, solution));
+			UpdateDataGridViewPaths(AppFormVars::Launches.back().Solution);
+			AppFormVars::PrintedLaunchPathsIndex = (int)AppFormVars::Launches.size() - 1;
+			UpdateDataGridViewResults();
+			this->buttonSavePathsToFile->Enabled = true;
+		}
 	}
-}
 
-void tb_KeyPress(System::Object^ sender, KeyPressEventArgs^ e)
-{
-	auto s = (sender)->ToString();
-	std::string tmps = msclr::interop::marshal_as<std::string>(s);
-	int ind = tmps.find("Text");
-	tmps = tmps.substr(ind, (int)tmps.size() - ind);
-	if (tmps.find(".") != -1 && e->KeyChar == '.') {
-		e->Handled = true;
+	private: System::Void ButtonFileOpen_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (openFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::Cancel) {
+			return;
+		}
+		std::string fileName = msclr::interop::marshal_as<std::string>(this->openFileDialog->FileName);
+		this->labelLoadedFile->Text = System::String(fileName.c_str()).ToString();
+
+		AppFormVars::LoadedInputData = InputData(fileName, false);
+		buttonUploadFile->Enabled = true;
 	}
-	else 
-		if (!(Char::IsDigit(e->KeyChar)) && (e->KeyChar != '.'))
-	{
-		if (e->KeyChar != (char)Keys::Back)
+
+	private: System::Void ButtonUploadFile_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!AppFormVars::LoadedInputData.DronsCnt && !AppFormVars::LoadedInputData.TargetsCnt) {
+			MessageBox::Show("Неверный формат файла. Требуемый формат:\n" +
+				"КоличествоДронов КоличествоЦелей ДальностьПолёта\n Список пар координат");
+		}
+		else {
+			AppFormVars::DataSets.push_back(AppFormVars::LoadedInputData);
+			auto newitem = gcnew ListViewItem(ToText((int)AppFormVars::DataSets.size()));
+			newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().DronsCnt));
+			newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().TargetsCnt));
+			newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().MaxDist));
+			listViewLoadedDataSets->Items->Add(newitem);
+		}
+		AppFormVars::LoadedInputData = InputData();
+		this->labelLoadedFile->Text = "Файл не выбран";
+		buttonUploadFile->Enabled = false;
+	}
+
+	private: System::Void ComboBoxLaunchAlgo_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+		int ind = comboBoxLaunchAlgo->SelectedIndex;
+		dataGridViewParams->Rows->Clear();
+		UpdateRunButton();
+		for (auto& param : AppFormVars::Algos[ind - 1].Params) {
+			int i = dataGridViewParams->Rows->Count;
+			dataGridViewParams->Rows->Add();
+			dataGridViewParams->Rows[i]->Cells[0]->Value = ToText(param.Name);
+			dataGridViewParams->Rows[i]->Cells[1]->Value = ToText(param.Recommend);
+			dataGridViewParams->Rows[i]->Cells[2]->Value = ToText(param.Recommend);
+			dataGridViewParams->Rows[i]->Cells[3]->Value = ToText(param.Comment);
+		}
+		dataGridViewParams->Refresh();
+	}
+
+	private: System::Void dataGridViewParams_EditingControlShowing(System::Object^ sender, System::Windows::Forms::DataGridViewEditingControlShowingEventArgs^ e) {
+		if (dataGridViewParams->CurrentCell->ColumnIndex == 1)
 		{
+			e->Control->KeyPress += gcnew KeyPressEventHandler(this, &AppForm::tb_KeyPress);
+		}
+	}
+
+	private: void tb_KeyPress(System::Object^ sender, KeyPressEventArgs^ e) {
+		auto s = (sender)->ToString();
+		std::string tmps = msclr::interop::marshal_as<std::string>(s);
+		int ind = tmps.find("Text");
+		tmps = tmps.substr(ind, (int)tmps.size() - ind);
+		if (tmps.find(".") != -1 && e->KeyChar == '.') {
 			e->Handled = true;
 		}
-	}
-}
-
-private: System::Void ListViewLoadedDataSets_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-	UpdateRunButton();
-}
-private: System::Void ComboBoxResAlgo_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-	UpdateDataGridViewResults();
-}
-private: System::Void ButtonSavePathsToFile_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (saveFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::Cancel) {
-		return;
-	}
-	std::string fileName = msclr::interop::marshal_as<std::string>(this->saveFileDialog->FileName);
-	std::ofstream fout(fileName.c_str(), std::ios::out);
-	std::string outputString;
-	for (int i = 0; i < this->dataGridViewPaths->Rows->Count; ++i) {
-		std::string curPath = msclr::interop::marshal_as<std::string>(this->dataGridViewPaths->Rows[i]->Cells[0]->Value->ToString());
-		outputString += curPath;
-		outputString += "\n";
+		else 
+			if (!(Char::IsDigit(e->KeyChar)) && (e->KeyChar != '.')) {
+			if (e->KeyChar != (char)Keys::Back) {
+				e->Handled = true;
+			}
+		}
 	}
 
-	fout << outputString;
-	fout.close();
-}
+	private: System::Void ListViewLoadedDataSets_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+		UpdateRunButton();
+	}
 
-private: System::Void DataGridViewResults_CellContentDoubleClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
-}
+	private: System::Void ComboBoxResAlgo_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+		UpdateDataGridViewResults();
+	}
+
+	private: System::Void ButtonSavePathsToFile_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (saveFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::Cancel) {
+			return;
+		}
+		std::string fileName = msclr::interop::marshal_as<std::string>(this->saveFileDialog->FileName);
+		std::ofstream fout(fileName.c_str(), std::ios::out);
+		std::string outputString;
+		for (int i = 0; i < this->dataGridViewPaths->Rows->Count; ++i) {
+			std::string curPath = msclr::interop::marshal_as<std::string>(this->dataGridViewPaths->Rows[i]->Cells[0]->Value->ToString());
+			outputString += curPath;
+			outputString += "\n";
+		}
+
+		fout << outputString;
+		fout.close();
+	}
+
+	private: System::Void DataGridViewResults_CellContentDoubleClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+		std::string x = msclr::interop::marshal_as<std::string>(
+			this->dataGridViewResults->Rows[e->RowIndex]->Cells[this->dataGridViewResults->Columns->Count - 1]->Value->ToString());
+		int launchInd = atoi(x.c_str());
+		UpdateVisualization(launchInd);
+		UpdateDataGridViewPaths(AppFormVars::Launches[launchInd].Solution);
+	}
 };
 }
