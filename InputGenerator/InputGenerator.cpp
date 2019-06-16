@@ -22,7 +22,7 @@ void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTarg
 	int drons = gen() % (maxDrons - minDrons + 1) + minDrons;
 	int targets = gen() % (maxTargets - minTargets + 1) + minTargets;
 	cout << drons << endl << targets << endl << gen() % (maxCoord * targets) << endl;
-	vector<pair<double, double> > points = { {0, 0} };
+	vector<pair<double, double> > points = { { gen() % maxCoord, gen() % maxCoord } };
 	for (int i = 0; i < targets; ++i) {
 		points.push_back({ gen() % maxCoord, gen() % maxCoord });
 	}
