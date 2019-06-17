@@ -47,7 +47,7 @@ ProblemSolution SolverAntColony::Run(InputData input,
 	// Number of iterations
 	int iterations = (int)(args[5] * input.TargetsCnt);
 	if (problemMode == ProblemMode::MINMAXLEN)
-		iterations /= globalIterations;
+		iterations /= 20;
 	else if (timeLimit > EPS)
 		iterations = INF;
 	// Number of elitist ants
@@ -113,6 +113,9 @@ ProblemSolution SolverAntColony::Run(InputData input,
 	double solutionMaxPathLen = input.MaxDist;
 
 	for (int globIter = 0; globIter < globalIterations; globIter++) {
+
+		if (timeLimit > EPS && clock() - startClock > CLOCKS_PER_SEC * timeLimit)
+			break;
 
 		for (int i = 0; i < n; i++)
 			fill(tau[i], tau[i] + n, 1);

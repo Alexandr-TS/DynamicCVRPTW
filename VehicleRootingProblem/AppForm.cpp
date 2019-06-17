@@ -8,6 +8,9 @@ void Main(array<String^>^ args) {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
+	//AllocConsole();
+	//freopen("CONOUT$", "w", stdout);
+
 	VehicleRootingProblem::AppForm form;
 	Application::Run(% form);
 }
