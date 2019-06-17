@@ -4,8 +4,8 @@
 
 class SolverClarkeWright: public Solver {
 public:
-	static ProblemSolution Run(InputData& input, double timeLimit, ProblemMode problemMode);
-	static ProblemSolution RunMinSum(InputData& input, double timeLimit, ProblemMode problemMode);
-	static ProblemSolution RunMinMaxLen(InputData& input, double timeLimit);
+	static ProblemSolution Run(InputData& input, ProblemMode problemMode, std::vector<double> args);
+	static ProblemSolution RunMinSum(InputData& input, ProblemMode problemMode, std::vector<double> args);
+	static ProblemSolution RunMinMaxLen(InputData& input, std::vector<double> args);
 };
 

@@ -6,6 +6,7 @@
 #include "SolverGreedy.h"
 #include "SolverGreedyClusterized.h"
 #include "SolverMain.h"
+#include "SolverAntColony.h"
 #include "Utils.h"
 #include "Visualization.h"
 
@@ -18,7 +19,7 @@
 
 namespace VehicleRootingProblem {
 
-    bool localDebug = false;
+    bool localDebug = true;
 
     using namespace System;
     using namespace System::ComponentModel;
@@ -560,33 +561,40 @@ namespace VehicleRootingProblem {
         if (this->radioButtonMinSum->Checked) {
             probMode = ProblemMode::MINSUM;
         }
+
+		//probMode = ProblemMode::MINSUM;
+
 		std::vector<ProblemSolution> solutions;
         for (int i = 0; i < tests; ++i) {
             int t = 100;
 
-            auto input = generator.GenInputData(1, t / 5, 1, t, 100, 3000, -100, 100);
+			//auto input = generator.GenInputData(1, t / 5, 1, t, 100, 3000, -100, 100);
+			auto input = generator.GenInputData(1, t / 5, t - 1, t, 100, 500, -100, 100);
+			//auto input = generator.GenInputData(2, 2, 2, 2, 1000, 3000, -100, 100);
 
-            auto sol1 = SolverGreedy::Run(input, 1000, probMode);
-            auto sol2 = SolverGreedyClusterized::Run(input, 1000, probMode);
+			auto sol1 = SolverClarkeWright::Run(input, probMode, {});
 
-            
-            solutions.push_back(sol1);
-            solutions.push_back(sol2);
-            solutions.push_back(SolverClarkeWright::Run(input, 1000, probMode));
-            solutions.push_back(ReverseOptimization(solutions.back(), probMode));
+			auto sol2 = SolverAntColony::Run(input, probMode, { 5, 5, 0.5, 2, 3, 3, 5, 1, 0 });
+			solutions.push_back(sol1);
+			solutions.push_back(sol2);
+
 
             fout << "drons: " << input.DronsCnt << ", targets: " << input.TargetsCnt << std::endl;
-            for (auto x : solutions)
-                if (!x.SolutionExists) {
-                    fout << "No \n";
-                } else {
-                    if (probMode == ProblemMode::MINSUM)
-                        fout << x.SumOfPathLengths << " " << x.Paths.size() << "\n";
-                    else
-                        fout << x.MaxPathLength << " " << x.Paths.size() << "\n";
-                }
+			for (auto x : solutions) {
+				if (!x.SolutionExists) {
+					fout << "No \n";
+				} else {
+					if (probMode == ProblemMode::MINSUM)
+						fout << x.SumOfPathLengths << " " << x.Paths.size() << "\n";
+					else
+						fout << x.MaxPathLength << " " << x.Paths.size() << "\n";
+				}
+			}
             fout << "maxdist: " << input.MaxDist << std::endl << std::endl << std::endl;
             this->progressBar1->PerformStep();
+
+			this->textBoxCntDrons->Text = input.DronsCnt.ToString();
+			this->textBoxCntTargets->Text = input.TargetsCnt.ToString();
         }
 
         double timeL = ((double)clock() - startTime) / CLOCKS_PER_SEC;
@@ -694,7 +702,8 @@ namespace VehicleRootingProblem {
             return;
         }
 
-        auto solution = SolverMain::Run(*formInputData, 5, formProblemMode, (EAlgorithms)this->cbAlgorithm->SelectedIndex);
+		auto solution = SolverMain::Run(*formInputData, formProblemMode, (EAlgorithms)this->cbAlgorithm->SelectedIndex, {});
+
         this->textBoxResMaxLen->Text = System::Double(solution.MaxPathLength).ToString();
         this->textBoxResSumLen->Text = System::Double(solution.SumOfPathLengths).ToString();
         this->textBoxResult->Clear();
@@ -705,9 +714,9 @@ namespace VehicleRootingProblem {
             return;
         }
 
-		while (this->dataGridViewResult->Rows->Count < solution.Paths.size())
+		while (this->dataGridViewResult->Rows->Count < (int)solution.Paths.size())
 			this->dataGridViewResult->Rows->Add();
-		while (this->dataGridViewResult->Rows->Count > solution.Paths.size())
+		while (this->dataGridViewResult->Rows->Count > (int)solution.Paths.size())
 			this->dataGridViewResult->Rows->RemoveAt(this->dataGridViewResult->Rows->Count - 1);
 
 		int lineNum = 0;
@@ -722,7 +731,7 @@ namespace VehicleRootingProblem {
 				if (i + 1 < path.size())
 					pathDistance += solution.Input.Distance(x, path[i + 1]);
                 this->textBoxResult->Text += System::Double(x).ToString() + System::String(" ").ToString();
-				itoa(x, buffer, 10);
+				_itoa(x, buffer, 10);
 				pathStr += ((std::string)buffer);
 				pathStr += " ";
             }

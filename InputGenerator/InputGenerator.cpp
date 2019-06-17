@@ -16,26 +16,33 @@
 
 using namespace std;
 
-void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTargets, int maxCoord) {
+void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTargets, int maxCoord, bool printMatrix) {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	mt19937 gen(seed);
 	int drons = gen() % (maxDrons - minDrons + 1) + minDrons;
 	int targets = gen() % (maxTargets - minTargets + 1) + minTargets;
 	cout << drons << endl << targets << endl << gen() % (maxCoord * targets) << endl;
-	vector<pair<double, double> > points = { {0, 0} };
+	vector<pair<double, double> > points = { { gen() % maxCoord, gen() % maxCoord } };
 	for (int i = 0; i < targets; ++i) {
 		points.push_back({ gen() % maxCoord, gen() % maxCoord });
 	}
 
-	for (size_t i = 0; i < points.size(); ++i) {
-		for (size_t j = 0; j < points.size(); ++j)
-			cout << fixed << setprecision(3) << hypot(points[i].first - points[j].first, points[i].second - points[j].second) << " ";
-		cout << endl;
+	if (!printMatrix) {
+		for (auto& pt : points) {
+			cout << fixed << setprecision(3) << pt.first << " " << pt.second << endl;
+		}
+	}
+	else {
+		for (size_t i = 0; i < points.size(); ++i) {
+			for (size_t j = 0; j < points.size(); ++j)
+				cout << fixed << setprecision(3) << hypot(points[i].first - points[j].first, points[i].second - points[j].second) << " ";
+			cout << endl;
+		}
 	}
 }
 
 void printPreciseInput(int drons, int targets, int maxCoord) {
-	printGeneratedInput(drons, drons, targets, targets, maxCoord);
+	printGeneratedInput(drons, drons, targets, targets, maxCoord, false);
 }
 
 int main(int argc, char** argv)

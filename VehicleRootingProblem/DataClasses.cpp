@@ -1,5 +1,11 @@
 #include "DataClasses.h"
 
+InputData::InputData()
+{
+	DronsCnt = TargetsCnt = 0;
+	MaxDist = 0;
+}
+
 InputData::InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix)
 	: DronsCnt(dronsCnt)
 	, TargetsCnt(targetsCnt)

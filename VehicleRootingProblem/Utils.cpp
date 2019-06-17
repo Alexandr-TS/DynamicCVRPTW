@@ -44,3 +44,10 @@ double InputDataGenerator::GenDouble(double l, double r) {
 	std::uniform_real_distribution<double> urd(l, r);
 	return urd(randGen);
 }
+
+double InputDataGenerator::PowInt(double x, int alpha) {
+	double ans = 1;
+	for (int i = 0; i < alpha; ++i)
+		ans *= x;
+	return ans;
+}

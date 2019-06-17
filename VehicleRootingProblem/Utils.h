@@ -10,9 +10,10 @@ public:
 public:
 	InputData GenInputData(int minDronsCnt, int maxDronsCnt, int minTargetsCnt,
 		int maxTargetsCnt, double minMaxDist, double maxMaxDist, double minCoordinate, double maxCoordinate);
-private:
-	int GenInt(int l, int r);
-	double GenDouble(double l, double r);
+public:
+	static int GenInt(int l, int r);
+	static double GenDouble(double l, double r);
+	static double PowInt(double x, int alpha);
 };
 
 enum class ProblemMode {
