@@ -925,13 +925,15 @@ namespace VehicleRootingProblem {
 		int ind = comboBoxLaunchAlgo->SelectedIndex;
 		dataGridViewParams->Rows->Clear();
 		UpdateRunButton();
-		for (auto& param : AppFormVars::Algos[ind - 1].Params) {
-			int i = dataGridViewParams->Rows->Count;
-			dataGridViewParams->Rows->Add();
-			dataGridViewParams->Rows[i]->Cells[0]->Value = ToText(param.Name);
-			dataGridViewParams->Rows[i]->Cells[1]->Value = ToText(param.Recommend);
-			dataGridViewParams->Rows[i]->Cells[2]->Value = ToText(param.Recommend);
-			dataGridViewParams->Rows[i]->Cells[3]->Value = ToText(param.Comment);
+		if (ind > 0) {
+			for (auto& param : AppFormVars::Algos[ind - 1].Params) {
+				int i = dataGridViewParams->Rows->Count;
+				dataGridViewParams->Rows->Add();
+				dataGridViewParams->Rows[i]->Cells[0]->Value = ToText(param.Name);
+				dataGridViewParams->Rows[i]->Cells[1]->Value = ToText(param.Recommend);
+				dataGridViewParams->Rows[i]->Cells[2]->Value = ToText(param.Recommend);
+				dataGridViewParams->Rows[i]->Cells[3]->Value = ToText(param.Comment);
+			}
 		}
 		dataGridViewParams->Refresh();
 	}
