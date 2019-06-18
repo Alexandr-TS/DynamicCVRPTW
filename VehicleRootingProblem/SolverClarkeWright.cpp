@@ -111,7 +111,9 @@ ProblemSolution SolverClarkeWright::RunMinMaxLen(InputData& input, std::vector<d
 	}
 
 	input.MaxDist = startMaxDist;
+	bestSolution.Input.MaxDist = startMaxDist;
 	std::cout << ((double)clock()- st) / CLOCKS_PER_SEC << std::endl;
+
 	return bestSolution;
 }
 

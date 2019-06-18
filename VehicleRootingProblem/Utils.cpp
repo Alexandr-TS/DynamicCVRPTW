@@ -1,8 +1,8 @@
 #include "Utils.h"
 
-auto randGen = std::mt19937(0);
+std::mt19937 randGen = std::mt19937(0);
 
-InputData InputDataGenerator::GenInputData(int minDronsCnt, int maxDronsCnt, int minTargetsCnt,
+InputData DataGenerator::GenInputData(int minDronsCnt, int maxDronsCnt, int minTargetsCnt,
 	int maxTargetsCnt, double minMaxDist, double maxMaxDist, double minCoordinate, double maxCoordinate) {
 
 	int dronsCnt(GenInt(minDronsCnt, maxDronsCnt));
@@ -35,17 +35,17 @@ InputData InputDataGenerator::GenInputData(int minDronsCnt, int maxDronsCnt, int
 	return InputData(dronsCnt, targetsCnt, maxDist, distanceMatrix, targets);
 }
 
-int InputDataGenerator::GenInt(int l, int r) {
+int DataGenerator::GenInt(int l, int r) {
 	std::uniform_int_distribution<int> uid(l, r);
 	return uid(randGen);
 }
 
-double InputDataGenerator::GenDouble(double l, double r) {
+double DataGenerator::GenDouble(double l, double r) {
 	std::uniform_real_distribution<double> urd(l, r);
 	return urd(randGen);
 }
 
-double InputDataGenerator::PowInt(double x, int alpha) {
+double DataGenerator::PowInt(double x, int alpha) {
 	double ans = 1;
 	for (int i = 0; i < alpha; ++i)
 		ans *= x;

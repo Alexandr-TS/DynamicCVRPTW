@@ -4,9 +4,9 @@
 
 #include <random>
 
-class InputDataGenerator {
+class DataGenerator {
 public:
-	InputDataGenerator() = default;
+	DataGenerator() = default;
 public:
 	InputData GenInputData(int minDronsCnt, int maxDronsCnt, int minTargetsCnt,
 		int maxTargetsCnt, double minMaxDist, double maxMaxDist, double minCoordinate, double maxCoordinate);
@@ -26,5 +26,5 @@ public:
 	Solver() = default;
 
 public:
-	static ProblemSolution Run(InputData input, double timeLimit, ProblemMode problemMode) {}
+	static ProblemSolution Run(InputData input, ProblemMode problemMode) {}
 };

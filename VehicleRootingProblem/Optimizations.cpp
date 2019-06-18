@@ -139,13 +139,15 @@ ProblemSolution ReverseOptimization(ProblemSolution solution, ProblemMode proble
 	return ProblemSolution(solution.Input, solution.Paths);
 }
 
-void LocalReverseOptimization(std::vector<int>& path, InputData& input, bool pathHasFirst0) {
+bool LocalReverseOptimization(std::vector<int>& path, InputData& input, bool pathHasFirst0) {
 	path.push_back(0);
 	if (!pathHasFirst0) {
 		path.push_back(0);
 		rotate(path.begin(), path.begin() + path.size() - 1, path.end());
 	}
 	// we have path: 0 4 7 1 3 0
+
+	bool improvedSolution = false;
 
 	while (true) {
 		bool improved = false;
@@ -160,6 +162,7 @@ void LocalReverseOptimization(std::vector<int>& path, InputData& input, bool pat
 				if (anotherDist < curDist) {
 					reverse(path.begin() + i, path.begin() + j + 1);
 					improved = true;
+					improvedSolution = true;
 				}
 			}
 		}
@@ -174,6 +177,12 @@ void LocalReverseOptimization(std::vector<int>& path, InputData& input, bool pat
 	}
 	assert(path.back() == 0);
 	path.pop_back();
+
+	if (!pathHasFirst0) {
+		assert(find(path.begin(), path.end(), 0) == path.end());
+	}
+
+	return improvedSolution;
 }
 
 // Recalculates prefix and sufix sums of distances of path
@@ -208,10 +217,15 @@ void MakeStringCross(std::vector<std::vector<int>>& paths, std::vector<std::vect
 	recalcPS(pref[p2], suf[p2], paths[p2], input);
 }
 
-// Paths have to be in format {{0, 1, 2, 5}, {0, 6, 4}}
-void StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& input, ProblemMode problemMode) {
+// Paths have to be in format {{0, 1, 2, 5}, {0, 6, 4}} or {{1, 2, 5}, {6, 4}}
+bool StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& input, 
+	ProblemMode problemMode, bool pathsHaveFirst0) {
 	for (auto& path: paths)
 		path.emplace_back(0);
+	if (!pathsHaveFirst0) {
+		for (auto& path : paths)
+			path.insert(path.begin(), { 0 });
+	}
 
 	std::vector<std::vector<double>> pref(paths.size());
 	std::vector<std::vector<double>> suf(paths.size());
@@ -219,6 +233,8 @@ void StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& in
 	for (int p = 0; p < (int)paths.size(); ++p) {
 		recalcPS(pref[p], suf[p], paths[p], input);
 	}
+
+	bool improvedSolution = false;
 
 	for (int p1 = 0; p1 < (int)paths.size(); ++p1) {
 		for (int p2 = p1 + 1; p2 < (int)paths.size(); ++p2) {
@@ -239,12 +255,14 @@ void StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& in
 						double maxNewDist = std::max(pref1 + crossEdge1 + suf2, pref2 + crossEdge2 + suf1);
 						if (maxNewDist < maxPrevDist) {
 							MakeStringCross(paths, pref, suf, i1, i2, p1, p2, input);
+							improvedSolution = true;
 						}
 					}
 					else if (problemMode == ProblemMode::MINSUM) {
 						if (edge1 + edge2 > crossEdge1 + crossEdge2) {
 							if (pref1 + crossEdge1 + suf2 <= input.MaxDist && pref2 + crossEdge2 + suf1 <= input.MaxDist) {
 								MakeStringCross(paths, pref, suf, i1, i2, p1, p2, input);
+								improvedSolution = true;
 							}
 						}
 					}
@@ -253,8 +271,23 @@ void StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& in
 		}
 	}
 
+	if (!pathsHaveFirst0) {
+		for (auto& path : paths) {
+			assert(path[0] == 0);
+			path.erase(path.begin());
+		}
+	}
+
 	for (auto& path : paths) {
 		assert(path.back() == 0);
 		path.pop_back();
 	}
+
+	if (!pathsHaveFirst0) {
+		for (auto& path : paths) {
+			assert(find(path.begin(), path.end(), 0) == path.end());
+		}
+	}
+
+	return improvedSolution;
 }

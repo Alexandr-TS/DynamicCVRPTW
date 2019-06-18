@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Solvers">
+      <UniqueIdentifier>{c46b0361-ac17-47ec-b477-e9de2124af4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyForm.cpp">
@@ -24,32 +27,35 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SolverDP.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SolverGreedy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SolverGreedyClusterized.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Optimizations.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SolverClarkeWright.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Visualization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SolverMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SolverAntColony.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AppForm.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SolverMain.cpp">
+      <Filter>Solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="SolverGreedyClusterized.cpp">
+      <Filter>Solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="SolverGreedy.cpp">
+      <Filter>Solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="SolverDP.cpp">
+      <Filter>Solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="SolverClarkeWright.cpp">
+      <Filter>Solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="SolverAntColony.cpp">
+      <Filter>Solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="SolverGenetic.cpp">
+      <Filter>Solvers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,32 +68,35 @@
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SolverDP.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SolverGreedy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SolverGreedyClusterized.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Optimizations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SolverClarkeWright.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Visualization.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SolverMain.h">
+    <ClInclude Include="AppForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SolverAntColony.h">
-      <Filter>Header Files</Filter>
+      <Filter>Solvers</Filter>
     </ClInclude>
-    <ClInclude Include="AppForm.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="SolverClarkeWright.h">
+      <Filter>Solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="SolverDP.h">
+      <Filter>Solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="SolverGreedy.h">
+      <Filter>Solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="SolverGreedyClusterized.h">
+      <Filter>Solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="SolverMain.h">
+      <Filter>Solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="SolverGenetic.h">
+      <Filter>Solvers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

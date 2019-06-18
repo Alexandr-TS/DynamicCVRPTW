@@ -63,6 +63,15 @@ inline double InputData::Distance(const int i, const int j) {
 	return DistanceMatrix[i][j];
 }
 
+ProblemSolution::ProblemSolution() {
+	Input = InputData();
+	Paths = {};
+	SolutionExists = false;
+	MaxPathLength = 0;
+	SumOfPathLengths = 0;
+}
+
+
 // paths: {{1, 2, 3}, {6, 5, 4, 7}}. without 0. 0 is depot
 ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
 	: Input(input)

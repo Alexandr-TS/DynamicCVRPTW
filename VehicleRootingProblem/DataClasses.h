@@ -43,7 +43,7 @@ public:
 
 class ProblemSolution {
 public:
-	ProblemSolution() = default;
+	ProblemSolution();
 	ProblemSolution(InputData& input, MatrixInt paths);
 
 public:

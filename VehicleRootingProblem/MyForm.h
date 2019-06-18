@@ -552,7 +552,7 @@ namespace VehicleRootingProblem {
         std::ofstream fout("output.txt", std::ios::out);
         auto startTime = clock();
 
-        InputDataGenerator generator;
+        DataGenerator generator;
         int tests = 1;
         this->progressBar1->Maximum = tests;
         this->progressBar1->Value = 0;

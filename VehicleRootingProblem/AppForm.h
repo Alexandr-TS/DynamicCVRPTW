@@ -76,6 +76,14 @@ namespace VehicleRootingProblem {
 				Param("Sigma", 6, "Число элитарных муравьев"),
 				Param("CandList", 0.25, "Доля вершин в списке кандидатов на следующее ребро"),
 				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Imax не учитывается. Если 0, то Imax не учитывается")
+			}),
+			Algo("Генетический алгоритм", EAlgorithms::Genetic, {
+				Param("N", 30, "Размер популяции"),
+				Param("Alpha", 3000, "Максимальное количество изменений популяции"),
+				Param("Betta", 1000, "Максимальное количество итераций без улучшения лучшего решения"),
+				Param("Delta", 0.5, "Минимальная разность фитнес-функций двух решений"),
+				Param("P", 0.05, "Вероятность мутации"),
+				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Alpha и Betta не учитываются")
 			})
 		};
 		std::vector<Launch> Launches;
@@ -121,7 +129,6 @@ namespace VehicleRootingProblem {
 			buttonUploadFile->Enabled = false;
 			buttonRun->Enabled = false;
 			
-			//AppFormVars::LaunchIndexInGrid.clear();
 			AppFormVars::PrintedLaunchPathsIndex = -1;
 
 			Graphics = this->pictureBoxRes->CreateGraphics();
@@ -797,7 +804,7 @@ namespace VehicleRootingProblem {
 				int x = path[i];
 				if (i + 1 < path.size())
 					pathDistance += solution.Input.Distance(x, path[i + 1]);
-				_itoa(x, buffer, 10);
+				_itoa_s(x, buffer, 10);
 				pathStr += ((std::string)buffer);
 				pathStr += " ";
 			}
@@ -987,6 +994,8 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void DataGridViewResults_CellContentDoubleClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+		if (e->RowIndex <= -1)
+			return;
 		std::string x = msclr::interop::marshal_as<std::string>(
 			this->dataGridViewResults->Rows[e->RowIndex]->Cells[this->dataGridViewResults->Columns->Count - 1]->Value->ToString());
 		int launchInd = atoi(x.c_str());
