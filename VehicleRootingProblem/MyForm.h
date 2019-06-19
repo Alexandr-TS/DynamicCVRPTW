@@ -9,6 +9,7 @@
 #include "SolverAntColony.h"
 #include "Utils.h"
 #include "Visualization.h"
+#include "SolverGenetic.h"
 
 #include <cstring>
 #include <fstream>
@@ -572,11 +573,11 @@ namespace VehicleRootingProblem {
 			auto input = generator.GenInputData(1, t / 5, t - 1, t, 100, 500, -100, 100);
 			//auto input = generator.GenInputData(2, 2, 2, 2, 1000, 3000, -100, 100);
 
-			auto sol1 = SolverClarkeWright::Run(input, probMode, {});
+			auto sol1 = SolverGenetic::Run(input, probMode, {30, 3000, 1000, 0.5, 0.5, 0});
 
-			auto sol2 = SolverAntColony::Run(input, probMode, { 5, 5, 0.5, 2, 3, 3, 5, 1, 0 });
+			//auto sol2 = SolverAntColony::Run(input, probMode, { 5, 5, 0.5, 2, 3, 3, 5, 1, 0 });
 			solutions.push_back(sol1);
-			solutions.push_back(sol2);
+			//solutions.push_back(sol2);
 
 
             fout << "drons: " << input.DronsCnt << ", targets: " << input.TargetsCnt << std::endl;
