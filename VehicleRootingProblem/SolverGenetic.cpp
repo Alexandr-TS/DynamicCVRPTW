@@ -12,12 +12,12 @@ struct Chromosome {
 	double Fitness;
 
 	Chromosome() {}
-	Chromosome(std::vector<int> seq, double fitness) :
+	Chromosome(std::vector<int>& seq, double fitness) :
 		Seq(seq),
 		Fitness(fitness)
 	{}
 
-	static double CalcFitnessForMinMax(std::vector<int> seq, InputData& input) {
+	static double CalcFitnessForMinMax(std::vector<int>& seq, InputData& input) {
 		if (seq.size() != input.TargetsCnt) return 0;
 		seq.insert(seq.begin(), { 0 });
 		int n = seq.size();
@@ -32,7 +32,7 @@ struct Chromosome {
 		}
 		tr = prefLen[n - 1] + input.Distance(seq.back(), 0);
 
-		for (int it = 0; it < 65; it++) {
+		for (int it = 0; it < 55; it++) {
 			double tm = (tl + tr) / 2;
 			int cnt = 0;
 			int cur = 0;
@@ -60,7 +60,7 @@ struct Chromosome {
 		return tl;
 	}
 
-	static double CalcFitness(std::vector<int> seq, InputData& input) {
+	static double CalcFitness(std::vector<int>& seq, InputData& input) {
 		if (GlobalProblemMode == ProblemMode::MINMAXLEN)
 			return CalcFitnessForMinMax(seq, input);
 
@@ -81,9 +81,10 @@ struct Chromosome {
 		dp[0] = 0;
 		for (int v = 0; v < n; ++v) {
 			if (dp[v] == INF) continue;
-			for (int u = v + 1; u < n; ++u) {
+			double len = 0;
+			for (int u = v + 1; u < n && len <= input.MaxDist + EPS; ++u) {
 				// relaxing using edge (v, u)
-				double len = prefLen[u] - prefLen[v + 1] + input.Distance(0, seq[v + 1]) + input.Distance(seq[u], 0);
+				len = prefLen[u] - prefLen[v + 1] + input.Distance(0, seq[v + 1]) + input.Distance(seq[u], 0);
 				if (len <= input.MaxDist + EPS) {
 					dp[u] = std::min(dp[u], dp[v] + len);
 				}
@@ -97,7 +98,7 @@ struct Chromosome {
 		return answer;
 	}
 
-	Chromosome(std::vector<int> seq, InputData& input) : Seq(seq) {
+	Chromosome(std::vector<int>& seq, InputData& input) : Seq(seq) {
 		Fitness = CalcFitness(seq, input);
 	}
 
@@ -168,11 +169,16 @@ struct Population {
 		return (Delta == 0 || !FitByDelta.count((int)(x.Fitness / Delta)) || FitByDelta[(int)(x.Fitness / Delta)] == 0);
 	}
 
-	void Del(Chromosome x) {
+	void Del(Chromosome& x) {
 		for (auto it = Chromosomes.begin(); it != Chromosomes.end(); ++it) {
 			if (it->Seq == x.Seq) {
-				if (Delta)
-					FitByDelta[(int)(x.Fitness / Delta)]--;
+				if (Delta) {
+					int arg = (int)(x.Fitness / Delta);
+					FitByDelta[arg]--;
+					if (FitByDelta[arg] == 0)
+						FitByDelta.erase(arg);
+				}
+
 				Chromosomes.erase(it);
 				break;
 			}
@@ -181,8 +187,12 @@ struct Population {
 
 	void Del(int index) {
 		auto it = Chromosomes.begin() + index;
-		if (Delta)
-			FitByDelta[(int)(it->Fitness / Delta)]--;
+		if (Delta) {
+			int arg = (int)(it->Fitness / Delta);
+			FitByDelta[arg]--;
+			if (FitByDelta[arg] == 0)
+				FitByDelta.erase(arg);
+		}
 		Chromosomes.erase(it);
 	}
 
@@ -194,12 +204,17 @@ struct Population {
 const int N = 201;
 
 bool used[N];
+double prefLen[N];
+double dp[N];
+int prev[N];
 
-Chromosome Crossover(Chromosome parent1, Chromosome parent2, InputData& input) {
+Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input) {
+	auto par1 = &parent1;
+	auto par2 = &parent2;
 	if (DataGenerator::GenInt(0, 1)) {
-		std::swap(parent1, parent2);
+		std::swap(par1, par2);
 	}
-	int n = parent1.Seq.size();
+	int n = par1->Seq.size();
 	int tl = DataGenerator::GenInt(0, n - 1);
 	int tr = DataGenerator::GenInt(0, n - 1);
 	if (tr < tl) std::swap(tr, tl);
@@ -208,8 +223,8 @@ Chromosome Crossover(Chromosome parent1, Chromosome parent2, InputData& input) {
 	std::vector<int> child(n, 0);
 
 	for (int i = tl; i <= tr; ++i) {
-		child[i] = parent1.Seq[i];
-		used[parent1.Seq[i]] = true;
+		child[i] = par1->Seq[i];
+		used[par1->Seq[i]] = true;
 	}
 
 	int curChildInd = (tr + 1) % n;
@@ -217,9 +232,9 @@ Chromosome Crossover(Chromosome parent1, Chromosome parent2, InputData& input) {
 		int i = i1;
 		while (i >= n)
 			i -= n;
-		if (!used[parent2.Seq[i]]) {
-			used[parent2.Seq[i]] = true;
-			child[curChildInd] = parent2.Seq[i];
+		if (!used[par2->Seq[i]]) {
+			used[par2->Seq[i]] = true;
+			child[curChildInd] = par2->Seq[i];
 			curChildInd++;
 			if (curChildInd >= n) curChildInd -= n;
 		}
@@ -228,7 +243,7 @@ Chromosome Crossover(Chromosome parent1, Chromosome parent2, InputData& input) {
 	return Chromosome(child, input);
 }
 
-std::vector<std::vector<int>> SplitPathsMinMax(std::vector<int> path, InputData& input) {
+std::vector<std::vector<int>> SplitPathsMinMax(std::vector<int>& path, InputData& input) {
 	if (path.size() == 0) return {};
 	
 	double fitness = Chromosome::CalcFitness(path, input);
@@ -236,7 +251,7 @@ std::vector<std::vector<int>> SplitPathsMinMax(std::vector<int> path, InputData&
 	path.insert(path.begin(), { 0 });
 	int n = path.size();
 
-	std::vector<double> prefLen(n, 0);
+	std::fill(prefLen, prefLen + n, 0);
 	for (int i = 1; i < n; i++) {
 		prefLen[i] = prefLen[i - 1] + input.Distance(path[i - 1], path[i]);
 	}
@@ -258,6 +273,7 @@ std::vector<std::vector<int>> SplitPathsMinMax(std::vector<int> path, InputData&
 		cur = cur2;
 	}
 
+	path.erase(path.begin());
 	return paths;
 }
 
@@ -269,19 +285,20 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 	path.insert(path.begin(), { 0 });
 	int n = path.size();
 
-	std::vector<double> prefLen(n, 0);
+	std::fill(prefLen, prefLen + n, 0);
 	for (int i = 1; i < n; i++) {
 		prefLen[i] = prefLen[i - 1] + input.Distance(path[i - 1], path[i]);
 	}
 
-	std::vector<double> dp(n, INF);
-	std::vector<int> prev(n, -1);
+	std::fill(dp, dp + n, INF);
+	std::fill(prev, prev + n, -1);
 	dp[0] = 0;
 	for (int v = 0; v < n; ++v) {
 		if (dp[v] == INF) continue;
-		for (int u = v + 1; u < n; ++u) {
+		double len = 0;
+		for (int u = v + 1; u < n && len <= input.MaxDist; ++u) {
 			// relaxing using edge (v, u)
-			double len = prefLen[u] - prefLen[v + 1] + input.Distance(0, path[v + 1]) + input.Distance(path[u], 0);
+			len = prefLen[u] - prefLen[v + 1] + input.Distance(0, path[v + 1]) + input.Distance(path[u], 0);
 			if (len <= input.MaxDist) {
 				if (dp[u] > dp[v] + len) {
 					dp[u] = dp[v] + len;
@@ -294,14 +311,14 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 	std::vector<std::vector<int>> paths;
 	for (int i = n - 1; i != 0; i = prev[i]) {
 		paths.push_back({});
-		for (int j = i; j > prev[i]; --j)
+		for (int j = i; j > std::max(-1, prev[i]); --j)
 			paths.back().push_back(path[j]);
 	}
 
 	return paths;
 }
 
-Chromosome Mutation(Chromosome c, double p, ProblemMode problemMode, InputData& input) {
+Chromosome Mutation(Chromosome& c, double p, ProblemMode problemMode, InputData& input) {
 	double x = DataGenerator::GenDouble(0, 1);
 	if (x > p) return c;
 
@@ -372,8 +389,11 @@ Population InitPopulation(InputData& input, ProblemMode problemMode, int populat
 	return population;
 }
 
-ProblemSolution RunMinSum(InputData input, ProblemMode problemMode, std::vector<double>args) {
-
+// Args are: {n, alpha, betta, delta, p, timeLimit}
+// Suggested args: {30, 30000, 10000, 0.5, 0.05, 0}
+ProblemSolution SolverGenetic::Run(InputData input, ProblemMode problemMode, std::vector<double>args) {
+	GlobalProblemMode = problemMode;
+	GlobalCntDrons = input.DronsCnt;
 	for (int i = 1; i <= input.TargetsCnt; ++i) {
 		if (input.Distance(0, i) * 2 > input.MaxDist - 0.001) {
 			return ProblemSolution();
@@ -447,17 +467,4 @@ ProblemSolution RunMinSum(InputData input, ProblemMode problemMode, std::vector<
 	}
 
 	return ProblemSolution(input, SplitPaths(population.Chromosomes[0].Seq, input));
-}
-
-// Args are: {n, alpha, betta, delta, p, timeLimit}
-// Suggested args: {30, 30000, 10000, 0.5, 0.05, 0}
-ProblemSolution SolverGenetic::Run(InputData input, ProblemMode problemMode, std::vector<double>args) {
-	GlobalProblemMode = problemMode;
-	GlobalCntDrons = input.DronsCnt;
-	if (problemMode == ProblemMode::MINSUM) {
-		return RunMinSum(input, problemMode, args);
-	}
-	else {
-		return RunMinSum(input, problemMode, args);
-	}
 }

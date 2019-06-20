@@ -68,7 +68,7 @@ void printClusteredInput(int drons, int targets, int maxCoord, int clustersCnt) 
 		}
 	}
 
-	int r = max(1, (int)(maxCoord / (2 + sqrt(2))));
+	int r = max(1, (int)(maxCoord / (clusters + sqrt(2))));
 
 	for (int i = clusters; i < targets; ++i) {
 		int clusterInd = rand() % clusters + 1;

@@ -240,8 +240,8 @@ bool StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& in
 		for (int p2 = p1 + 1; p2 < (int)paths.size(); ++p2) {
 			for (int i1 = 1; i1 < (int)paths[p1].size() - 2; ++i1) {
 				for (int i2 = 1; i2 < (int)paths[p2].size() - 2; ++i2) {
-					assert(paths[p1].size() == pref[p1].size() && paths[p1].size() == suf[p1].size());
-					assert(paths[p2].size() == pref[p2].size() && paths[p2].size() == suf[p2].size());
+					//assert(paths[p1].size() == pref[p1].size() && paths[p1].size() == suf[p1].size());
+					//assert(paths[p2].size() == pref[p2].size() && paths[p2].size() == suf[p2].size());
 					double pref1 = pref[p1][i1];
 					double suf1 = suf[p1][i1 + 1];
 					double pref2 = pref[p2][i2];
