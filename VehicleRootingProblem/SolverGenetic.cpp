@@ -1,7 +1,5 @@
 //#include "SolverGenetic.h"
-//#include "SolverClarkeWright.h"
 //#include "SolverGreedy.h"
-//#include "SolverGreedyClusterized.h"
 //#include "Optimizations.h"
 //
 //ProblemMode GlobalProblemMode;

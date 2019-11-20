@@ -36,16 +36,10 @@
     <ClCompile Include="SolverMain.cpp">
       <Filter>Solvers</Filter>
     </ClCompile>
-    <ClCompile Include="SolverGreedyClusterized.cpp">
-      <Filter>Solvers</Filter>
-    </ClCompile>
     <ClCompile Include="SolverGreedy.cpp">
       <Filter>Solvers</Filter>
     </ClCompile>
     <ClCompile Include="SolverDP.cpp">
-      <Filter>Solvers</Filter>
-    </ClCompile>
-    <ClCompile Include="SolverClarkeWright.cpp">
       <Filter>Solvers</Filter>
     </ClCompile>
     <ClCompile Include="SolverAntColony.cpp">
@@ -74,16 +68,10 @@
     <ClInclude Include="SolverAntColony.h">
       <Filter>Solvers</Filter>
     </ClInclude>
-    <ClInclude Include="SolverClarkeWright.h">
-      <Filter>Solvers</Filter>
-    </ClInclude>
     <ClInclude Include="SolverDP.h">
       <Filter>Solvers</Filter>
     </ClInclude>
     <ClInclude Include="SolverGreedy.h">
-      <Filter>Solvers</Filter>
-    </ClInclude>
-    <ClInclude Include="SolverGreedyClusterized.h">
       <Filter>Solvers</Filter>
     </ClInclude>
     <ClInclude Include="SolverMain.h">

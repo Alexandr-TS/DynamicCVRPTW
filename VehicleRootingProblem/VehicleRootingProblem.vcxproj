@@ -141,11 +141,9 @@
     <ClCompile Include="DataClasses.cpp" />
     <ClCompile Include="Optimizations.cpp" />
     <ClCompile Include="SolverAntColony.cpp" />
-    <ClCompile Include="SolverClarkeWright.cpp" />
     <ClCompile Include="SolverGenetic.cpp" />
     <ClCompile Include="SolverGreedy.cpp" />
     <ClCompile Include="SolverDP.cpp" />
-    <ClCompile Include="SolverGreedyClusterized.cpp" />
     <ClCompile Include="SolverMain.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Visualization.cpp" />
@@ -157,11 +155,9 @@
     <ClInclude Include="DataClasses.h" />
     <ClInclude Include="Optimizations.h" />
     <ClInclude Include="SolverAntColony.h" />
-    <ClInclude Include="SolverClarkeWright.h" />
     <ClInclude Include="SolverGenetic.h" />
     <ClInclude Include="SolverGreedy.h" />
     <ClInclude Include="SolverDP.h" />
-    <ClInclude Include="SolverGreedyClusterized.h" />
     <ClInclude Include="SolverMain.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Visualization.h" />
