@@ -3,7 +3,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "stdafx.h"
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -16,7 +15,7 @@
 
 using namespace std;
 
-void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTargets, int maxCoord, bool printMatrix) {
+void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTargets, int maxCoord, int minTime, int maxTime) {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	mt19937 gen(seed);
 	int drons = gen() % (maxDrons - minDrons + 1) + minDrons;
@@ -27,25 +26,28 @@ void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTarg
 		points.push_back({ gen() % maxCoord, gen() % maxCoord });
 	}
 
-	if (!printMatrix) {
-		for (auto& pt : points) {
-			cout << fixed << setprecision(3) << pt.first << " " << pt.second << endl;
-		}
+	for (auto& pt : points) {
+		cout << fixed << setprecision(3) << pt.first << " " << pt.second << endl;
 	}
-	else {
-		for (size_t i = 0; i < points.size(); ++i) {
-			for (size_t j = 0; j < points.size(); ++j)
-				cout << fixed << setprecision(3) << hypot(points[i].first - points[j].first, points[i].second - points[j].second) << " ";
-			cout << endl;
+
+	cout << endl;
+
+	for (auto& pt : points) {
+		int start_time = gen() % (maxTime - minTime + 1) + minTime;
+		int end_time = gen() % (maxTime - minTime + 1) + minTime;
+		if (start_time > end_time) {
+			swap(start_time, end_time);
 		}
+		cout << start_time << " " << end_time << endl;
 	}
 }
 
-void printPreciseInput(int drons, int targets, int maxCoord, bool printMatrix = false) {
-	printGeneratedInput(drons, drons, targets, targets, maxCoord, printMatrix);
+void printPreciseInput(int drons, int targets, int maxCoord) {
+	printGeneratedInput(drons, drons, targets, targets, maxCoord, 0, 3 * maxCoord * targets / drons);
 }
 
 void printClusteredInput(int drons, int targets, int maxCoord, int clustersCnt) {
+	int minTime = 0, maxTime = 3 * maxCoord * targets / drons;
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	mt19937 gen(seed);
 	
@@ -80,26 +82,31 @@ void printClusteredInput(int drons, int targets, int maxCoord, int clustersCnt) 
 		cout << fixed << setprecision(3) << pt.first << " " << pt.second << endl;
 	}
 
+	cout << endl;
+
+	for (auto& pt : points) {
+		int start_time = gen() % (maxTime - minTime + 1) + minTime;
+		int end_time = gen() % (maxTime - minTime + 1) + minTime;
+		if (start_time > end_time) {
+			swap(start_time, end_time);
+		}
+		cout << start_time << " " << end_time << endl;
+	}
 }
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
 	if ((string)argv[1] == "help") {
 		cout << "Possible commands:" << endl;
-		cout << "1) list dronsCnt targetsCnt [fileNumber]" << endl;
-		cout << "2) matrix dronsCnt targetsCnt [fileNumber]" << endl;
-		cout << "3) clusters dronsCnt targetsCnt clustersCnt fileNumber" << endl;
+		cout << "1) rand dronsCnt targetsCnt [fileName]" << endl;
+		cout << "2) clusters dronsCnt targetsCnt clustersCnt [fileName]" << endl;
 		return 0;
 	} 
-	if ((string)argv[1] == "list") {
+	if ((string)argv[1] == "rand") {
 		if (argc == 4) {
 			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100);
 		}
 		else if (argc == 5) {
-			int num = atoi(argv[4]);
-			string fileName = "test";
-			fileName += (char)('0' + num / 10);
-			fileName += (char)('0' + num % 10);
+			string fileName = argv[4];
 			fileName += ".txt";
 			freopen(fileName.c_str(), "w", stdout);
 			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100);
@@ -108,29 +115,11 @@ int main(int argc, char** argv)
 			cout << "not correct parameters" << endl;
 		}
 	}
-	else if ((string)argv[1] == "matrix") {
-		if (argc == 4) {
-			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100, true);
-		}
-		else if (argc == 5) {
-			int num = atoi(argv[4]);
-			string fileName = "test";
-			fileName += (char)('0' + num / 10);
-			fileName += (char)('0' + num % 10);
-			fileName += ".txt";
-			freopen(fileName.c_str(), "w", stdout);
-			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100, true);
-		}
-		else {
-			cout << "not correct parameters" << endl;
-		}
-	} 
 	else if ((string)argv[1] == "clusters") {
-		if (argc == 6) {
-			int num = atoi(argv[5]);
-			string fileName = "test";
-			fileName += (char)('0' + num / 10);
-			fileName += (char)('0' + num % 10);
+		if (argc == 5) {
+			printClusteredInput(atoi(argv[2]), atoi(argv[3]), 1000, atoi(argv[4]));
+		} else if (argc == 6) {
+			string fileName = argv[5];
 			fileName += ".txt";
 			freopen(fileName.c_str(), "w", stdout);
 			printClusteredInput(atoi(argv[2]), atoi(argv[3]), 1000, atoi(argv[4]));
