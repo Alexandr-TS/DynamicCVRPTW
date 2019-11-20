@@ -39,14 +39,16 @@ public:
 	int DronsCnt;
 	int TargetsCnt;
 	double MaxDist;
+	// Including depot (it's always {0, 0})
 	std::vector<std::pair<double, double>> Points;
+	// Including depot (it's always {-INF, INF})
 	std::vector<std::pair<double, double>> TimeWindows;
 };
 
 class ProblemSolution {
 public:
 	ProblemSolution();
-	ProblemSolution(InputData& input, MatrixInt paths);
+	ProblemSolution(InputData& input, MatrixInt paths, MatrixDouble arrivalTimes);
 
 public:
 	void PrintIntoFile(std::string outputFileName);
@@ -55,6 +57,8 @@ public:
 	InputData Input;
 	// Sequences of indices in input targets (not all locations) for each dron
 	MatrixInt Paths;
+	// Times when the dron reaches targets
+	MatrixDouble ArrivalTimes;
 	double MaxPathLength;
 	double SumOfPathLengths;
 	bool SolutionExists;

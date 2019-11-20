@@ -1,3 +1,4 @@
+/*
 #include "SolverAntColony.h"
 #include "Optimizations.h"
 
@@ -375,3 +376,6 @@ ProblemSolution SolverAntColony::Run(InputData input,
 
 	return ProblemSolution(input, bestSolution);
 }
+
+
+*/

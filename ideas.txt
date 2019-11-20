@@ -1,0 +1,12 @@
+1) For MinMax - binary search over the time when all the drons will return back to the depot
+
+2) For MinSum:
+    
+A)
+Sort the targets by start_time ascending
+for each target find the best dron:
+    it has enough time
+    among all such drons - find the nearest one
+
+B)
+Take 1 dron. Fly to the nearest one (max from start_time and the time when the can reach the target)

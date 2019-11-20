@@ -1,5 +1,5 @@
 #include "Optimizations.h"
-
+/*
 // Bruteforces all paths and all elements in different paths and tries to swap them.
 ProblemSolution SwapOptimization(ProblemSolution solution, ProblemMode problemMode) {
 	for (size_t path1 = 0; path1 < solution.Paths.size(); ++path1) {
@@ -291,3 +291,5 @@ bool StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& in
 
 	return improvedSolution;
 }
+
+*/

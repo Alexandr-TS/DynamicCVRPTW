@@ -65,7 +65,8 @@ namespace VehicleRootingProblem {
 
 		std::vector<InputData> DataSets;
 		std::vector<Algo> Algos = {
-			Algo("Алгоритм Кларка-Райта", EAlgorithms::ClarkeWright, {}), 
+			Algo("Greedy", EAlgorithms::Greedy, {})
+			/*Algo("Алгоритм Кларка-Райта", EAlgorithms::ClarkeWright, {}), 
 			Algo("Муравьиный алгоритм", EAlgorithms::AntColony, {
 				Param("Alpha", 3, "Показатель степени стойкости феромонов в формуле вероятности выбора ребра"),
 				Param("Betta", 4, "Показатель степени функции видимости в формуле вероятности выбора ребра"),
@@ -84,7 +85,7 @@ namespace VehicleRootingProblem {
 				Param("Delta", 0.5, "Минимальная разность фитнес-функций двух решений"),
 				Param("P", 0.5, "Вероятность мутации"),
 				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Alpha и Betta не учитываются")
-			})
+			})*/
 		};
 		std::vector<Launch> Launches;
 		InputData LoadedInputData;
@@ -915,7 +916,7 @@ namespace VehicleRootingProblem {
 		std::string fileName = msclr::interop::marshal_as<std::string>(this->openFileDialog->FileName);
 		this->labelLoadedFile->Text = System::String(fileName.c_str()).ToString();
 
-		AppFormVars::LoadedInputData = InputData(fileName, false);
+		AppFormVars::LoadedInputData = InputData(fileName);
 		buttonUploadFile->Enabled = true;
 	}
 
