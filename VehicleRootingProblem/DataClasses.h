@@ -26,9 +26,11 @@ typedef std::vector<std::vector<int> > MatrixInt;
 class InputData {
 public:
 	InputData();
-	InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix);
-	InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix, std::vector<std::pair<double, double> > points);
-	InputData(std::string inputFileName, bool isMatrix = true);
+	InputData(int dronsCnt, int targetsCnt, double maxDist, 
+		std::vector<std::pair<double, double>> timeWindows);
+	InputData(int dronsCnt, int targetsCnt, double maxDist, 
+		std::vector<std::pair<double, double>> points, std::vector<std::pair<double, double>> timeWindows);
+	InputData(std::string inputFileName);
 	~InputData();
 public:
 	double Distance(int i, int j);
@@ -37,8 +39,8 @@ public:
 	int DronsCnt;
 	int TargetsCnt;
 	double MaxDist;
-	MatrixDouble DistanceMatrix;
-	std::vector<std::pair<double, double> > Points;
+	std::vector<std::pair<double, double>> Points;
+	std::vector<std::pair<double, double>> TimeWindows;
 };
 
 class ProblemSolution {

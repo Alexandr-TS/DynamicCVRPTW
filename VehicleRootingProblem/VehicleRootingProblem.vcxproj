@@ -139,7 +139,6 @@
   <ItemGroup>
     <ClCompile Include="AppForm.cpp" />
     <ClCompile Include="DataClasses.cpp" />
-    <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="Optimizations.cpp" />
     <ClCompile Include="SolverAntColony.cpp" />
     <ClCompile Include="SolverClarkeWright.cpp" />
@@ -156,9 +155,6 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="DataClasses.h" />
-    <ClInclude Include="MyForm.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
     <ClInclude Include="Optimizations.h" />
     <ClInclude Include="SolverAntColony.h" />
     <ClInclude Include="SolverClarkeWright.h" />
@@ -173,9 +169,6 @@
   <ItemGroup>
     <EmbeddedResource Include="AppForm.resx">
       <DependentUpon>AppForm.h</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MyForm.resx">
-      <DependentUpon>MyForm.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

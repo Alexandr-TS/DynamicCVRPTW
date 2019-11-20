@@ -26,13 +26,14 @@ void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTarg
 		points.push_back({ gen() % maxCoord, gen() % maxCoord });
 	}
 
-	for (auto& pt : points) {
-		cout << fixed << setprecision(3) << pt.first << " " << pt.second << endl;
+	for (int i = 0; i < (int)points.size() - 1; i++) {
+		auto pt = points[i + 1];
+		cout << fixed << setprecision(3) << pt.first - points[0].first << " " << pt.second - points[0].second << endl;
 	}
 
 	cout << endl;
 
-	for (auto& pt : points) {
+	for (int i = 0; i < (int)points.size() - 1; i++) {
 		int start_time = gen() % (maxTime - minTime + 1) + minTime;
 		int end_time = gen() % (maxTime - minTime + 1) + minTime;
 		if (start_time > end_time) {
@@ -78,13 +79,14 @@ void printClusteredInput(int drons, int targets, int maxCoord, int clustersCnt) 
 		points.push_back({ gen() % r + points[clusterInd].first, gen() % r + points[clusterInd].second });
 	}
 	
-	for (auto& pt : points) {
-		cout << fixed << setprecision(3) << pt.first << " " << pt.second << endl;
+	for (int i = 0; i < (int)points.size() - 1; i++) {
+		auto pt = points[i + 1];
+		cout << fixed << setprecision(3) << pt.first - points[0].first << " " << pt.second - points[0].second << endl;
 	}
 
 	cout << endl;
 
-	for (auto& pt : points) {
+	for (int i = 0; i < (int)points.size() - 1; i++) {
 		int start_time = gen() % (maxTime - minTime + 1) + minTime;
 		int end_time = gen() % (maxTime - minTime + 1) + minTime;
 		if (start_time > end_time) {
