@@ -4,18 +4,6 @@
 
 #include <random>
 
-class InputDataGenerator {
-public:
-	InputDataGenerator() = default;
-public:
-	InputData GenInputData(int minDronsCnt, int maxDronsCnt, int minTargetsCnt,
-		int maxTargetsCnt, double minMaxDist, double maxMaxDist, double minCoordinate, double maxCoordinate);
-public:
-	static int GenInt(int l, int r);
-	static double GenDouble(double l, double r);
-	static double PowInt(double x, int alpha);
-};
-
 enum class ProblemMode {
 	MINSUM,
 	MINMAXLEN
@@ -26,5 +14,5 @@ public:
 	Solver() = default;
 
 public:
-	static ProblemSolution Run(InputData input, double timeLimit, ProblemMode problemMode) {}
+	static ProblemSolution Run(InputData input, ProblemMode problemMode) {}
 };

@@ -65,18 +65,27 @@ namespace VehicleRootingProblem {
 
 		std::vector<InputData> DataSets;
 		std::vector<Algo> Algos = {
-			Algo("Алгоритм Кларка-Райта", EAlgorithms::ClarkeWright, {}), 
+			Algo("Greedy", EAlgorithms::Greedy, {})
+			/*Algo("Алгоритм Кларка-Райта", EAlgorithms::ClarkeWright, {}), 
 			Algo("Муравьиный алгоритм", EAlgorithms::AntColony, {
-				Param("Alpha", 5, "Показатель степени стойкости феромонов в формуле вероятности выбора ребра"),
-				Param("Betta", 5, "Показатель степени функции видимости в формуле вероятности выбора ребра"),
-				Param("Rho", 0.75, "Коэффициент стойкости феромнов"),
+				Param("Alpha", 3, "Показатель степени стойкости феромонов в формуле вероятности выбора ребра"),
+				Param("Betta", 4, "Показатель степени функции видимости в формуле вероятности выбора ребра"),
+				Param("Rho", 0.4, "Коэффициент стойкости феромнов"),
 				Param("f", 2, "Коэффициент при расстоянии между вершинами в функции видимости"),
 				Param("g", 3, "Коэффициент при разности расстояний до депо в функции видимости"),
-				Param("Imax", 3, "Коэффициент количества итераций. Число итераций = Imax * n"),
-				Param("Sigma", 6, "Число элитарных муравьев"),
-				Param("CandList", 0.25, "Доля вершин в списке кандидатов на следующее ребро"),
+				Param("Imax", 2, "Коэффициент количества итераций. Число итераций = Imax * n"),
+				Param("Sigma", 5, "Число элитарных муравьев"),
+				Param("CandList", 0.5, "Доля вершин в списке кандидатов на следующее ребро"),
 				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Imax не учитывается. Если 0, то Imax не учитывается")
-			})
+			}),
+			Algo("Генетический алгоритм", EAlgorithms::Genetic, {
+				Param("N", 30, "Размер популяции"),
+				Param("Alpha", 3000, "Максимальное количество изменений популяции"),
+				Param("Betta", 1000, "Максимальное количество итераций без улучшения лучшего решения"),
+				Param("Delta", 0.5, "Минимальная разность фитнес-функций двух решений"),
+				Param("P", 0.5, "Вероятность мутации"),
+				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Alpha и Betta не учитываются")
+			})*/
 		};
 		std::vector<Launch> Launches;
 		InputData LoadedInputData;
@@ -121,7 +130,6 @@ namespace VehicleRootingProblem {
 			buttonUploadFile->Enabled = false;
 			buttonRun->Enabled = false;
 			
-			//AppFormVars::LaunchIndexInGrid.clear();
 			AppFormVars::PrintedLaunchPathsIndex = -1;
 
 			Graphics = this->pictureBoxRes->CreateGraphics();
@@ -216,8 +224,8 @@ namespace VehicleRootingProblem {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
-			System::Windows::Forms::ListViewItem^ listViewItem2 = (gcnew System::Windows::Forms::ListViewItem(L""));
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
 			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->groupBoxLaunches = (gcnew System::Windows::Forms::GroupBox());
@@ -368,16 +376,16 @@ namespace VehicleRootingProblem {
 				this->ColParam,
 					this->ColVal, this->ColRecom, this->ColComment
 			});
-			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle2->BackColor = System::Drawing::SystemColors::Window;
-			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
+			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+			dataGridViewCellStyle1->BackColor = System::Drawing::SystemColors::Window;
+			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::ControlText;
-			dataGridViewCellStyle2->NullValue = nullptr;
-			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
-			this->dataGridViewParams->DefaultCellStyle = dataGridViewCellStyle2;
+			dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::ControlText;
+			dataGridViewCellStyle1->NullValue = nullptr;
+			dataGridViewCellStyle1->SelectionBackColor = System::Drawing::SystemColors::Highlight;
+			dataGridViewCellStyle1->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
+			dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
+			this->dataGridViewParams->DefaultCellStyle = dataGridViewCellStyle1;
 			this->dataGridViewParams->Location = System::Drawing::Point(15, 56);
 			this->dataGridViewParams->Name = L"dataGridViewParams";
 			this->dataGridViewParams->Size = System::Drawing::Size(524, 223);
@@ -466,8 +474,9 @@ namespace VehicleRootingProblem {
 			});
 			this->listViewLoadedDataSets->FullRowSelect = true;
 			this->listViewLoadedDataSets->GridLines = true;
-			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem2 });
+			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem1 });
 			this->listViewLoadedDataSets->Location = System::Drawing::Point(6, 19);
+			this->listViewLoadedDataSets->MultiSelect = false;
 			this->listViewLoadedDataSets->Name = L"listViewLoadedDataSets";
 			this->listViewLoadedDataSets->Size = System::Drawing::Size(533, 238);
 			this->listViewLoadedDataSets->TabIndex = 0;
@@ -680,6 +689,14 @@ namespace VehicleRootingProblem {
 		}
 #pragma endregion
 
+	void UpdateListViewLoaded() {
+		for (int i = 0; i < this->listViewLoadedDataSets->Items->Count; ++i) {
+			this->listViewLoadedDataSets->Items[i]->BackColor = Color::White;
+		}
+		if (listViewLoadedDataSets->SelectedIndices->Count == 1)
+			this->listViewLoadedDataSets->SelectedItems[0]->BackColor = Color::LightBlue;
+	}
+
 	void UpdateRunButton() {
 		if (listViewLoadedDataSets->SelectedIndices->Count == 1 && comboBoxLaunchAlgo->SelectedIndex >= 1) {
 			this->buttonRun->Enabled = true;
@@ -797,7 +814,7 @@ namespace VehicleRootingProblem {
 				int x = path[i];
 				if (i + 1 < path.size())
 					pathDistance += solution.Input.Distance(x, path[i + 1]);
-				_itoa(x, buffer, 10);
+				_itoa_s(x, buffer, 10);
 				pathStr += ((std::string)buffer);
 				pathStr += " ";
 			}
@@ -899,7 +916,7 @@ namespace VehicleRootingProblem {
 		std::string fileName = msclr::interop::marshal_as<std::string>(this->openFileDialog->FileName);
 		this->labelLoadedFile->Text = System::String(fileName.c_str()).ToString();
 
-		AppFormVars::LoadedInputData = InputData(fileName, false);
+		AppFormVars::LoadedInputData = InputData(fileName);
 		buttonUploadFile->Enabled = true;
 	}
 
@@ -919,6 +936,7 @@ namespace VehicleRootingProblem {
 		AppFormVars::LoadedInputData = InputData();
 		this->labelLoadedFile->Text = "Файл не выбран";
 		buttonUploadFile->Enabled = false;
+		UpdateListViewLoaded();
 	}
 
 	private: System::Void ComboBoxLaunchAlgo_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -963,6 +981,7 @@ namespace VehicleRootingProblem {
 
 	private: System::Void ListViewLoadedDataSets_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 		UpdateRunButton();
+		UpdateListViewLoaded();
 	}
 
 	private: System::Void ComboBoxResAlgo_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -987,6 +1006,8 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void DataGridViewResults_CellContentDoubleClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+		if (e->RowIndex <= -1)
+			return;
 		std::string x = msclr::interop::marshal_as<std::string>(
 			this->dataGridViewResults->Rows[e->RowIndex]->Cells[this->dataGridViewResults->Columns->Count - 1]->Value->ToString());
 		int launchInd = atoi(x.c_str());

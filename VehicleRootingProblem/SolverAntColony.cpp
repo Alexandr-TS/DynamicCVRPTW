@@ -1,3 +1,4 @@
+/*
 #include "SolverAntColony.h"
 #include "Optimizations.h"
 
@@ -117,8 +118,11 @@ ProblemSolution SolverAntColony::Run(InputData input,
 		if (timeLimit > EPS && clock() - startClock > CLOCKS_PER_SEC * timeLimit)
 			break;
 
-		for (int i = 0; i < n; i++)
-			fill(tau[i], tau[i] + n, 1);
+		std::cout << "shuffle taus" << endl;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++)
+				tau[i][j] = DataGenerator::GenDouble(0.1, 1);
+		}
 
 		double bestSolutionMaxPath = 0;
 		if (bestSolution.size() == 0) {
@@ -133,12 +137,22 @@ ProblemSolution SolverAntColony::Run(InputData input,
 
 		for (int iteration = 0; iteration < iterations; ++iteration) {
 
+			if (problemMode == ProblemMode::MINSUM) {
+				if (iteration == iterations / 3 || iteration == iterations / 3 * 2) {
+					std::cout << "shuffle taus" << endl;
+					for (int i = 0; i < n; i++) {
+						for (int j = 0; j < n; j++)
+							tau[i][j] = DataGenerator::GenDouble(0.1, 1);
+					}
+				}
+			}
+
 			if (timeLimit > EPS && clock() - startClock > CLOCKS_PER_SEC * timeLimit)
 				break;
 
 			for (int i = 0; i < n; ++i) {
 				for (int j = 0; j < n; ++j) {
-					p[i][j] = InputDataGenerator::PowInt(tau[i][j], alpha) * InputDataGenerator::PowInt(eta[i][j], betta);
+					p[i][j] = DataGenerator::PowInt(tau[i][j], alpha) * DataGenerator::PowInt(eta[i][j], betta);
 				}
 			}
 
@@ -176,7 +190,7 @@ ProblemSolution SolverAntColony::Run(InputData input,
 
 					double tmp;
 					if (probDenominator > EPS)
-						tmp = InputDataGenerator::GenDouble(0, probDenominator);
+						tmp = DataGenerator::GenDouble(0, probDenominator);
 					else
 						tmp = 0;
 					int nextV = -1;
@@ -222,8 +236,8 @@ ProblemSolution SolverAntColony::Run(InputData input,
 					for (int j = 0; j < n - i - 2; j++) {
 						int ind1 = antPathLen[j].second;
 						int ind2 = antPathLen[j + 1].second;
-						bool ok1 = (maxPaths[j] <= solutionMaxPathLen && paths[ind1].size() <= input.DronsCnt);
-						bool ok2 = (maxPaths[j + 1] <= solutionMaxPathLen && paths[ind2].size() <= input.DronsCnt);
+						bool ok1 = (maxPaths[j] <= solutionMaxPathLen && (int)paths[ind1].size() <= input.DronsCnt);
+						bool ok2 = (maxPaths[j + 1] <= solutionMaxPathLen && (int)paths[ind2].size() <= input.DronsCnt);
 						if (ok1 ^ ok2) {
 							if (ok2) {
 								swap(antPathLen[j], antPathLen[j + 1]);
@@ -252,11 +266,6 @@ ProblemSolution SolverAntColony::Run(InputData input,
 					antPathLen[i].first += dist[path.back()][0];
 				}
 			}
-			sort(antPathLen, antPathLen + sigma);
-
-			double lastBestVal = antPathLen[0].first;
-			double bestSolutionMaxPathBefore = FindMaxPathLen(paths[antPathLen[0].second], dist);
-			// Making String-Cross optimization for best solution, and then localReverseOpt
 
 			for (int i = 0; i < sigma; ++i) {
 				StringCrossOptimization(paths[antPathLen[i].second], input, problemMode);
@@ -268,19 +277,40 @@ ProblemSolution SolverAntColony::Run(InputData input,
 					antPathLen[i].first += dist[path.back()][0];
 				}
 			}
+
+			if (problemMode == ProblemMode::MINMAXLEN) {
+				vector<double> maxPaths(n);
+				for (int i = 0; i < n - 1; i++)
+					maxPaths[i] = FindMaxPathLen(paths[antPathLen[i].second], dist);
+				for (int i = 0; i < n - 2; i++) {
+					for (int j = 0; j < n - i - 2; j++) {
+						int ind1 = antPathLen[j].second;
+						int ind2 = antPathLen[j + 1].second;
+						bool ok1 = (maxPaths[j] <= solutionMaxPathLen && (int)paths[ind1].size() <= input.DronsCnt);
+						bool ok2 = (maxPaths[j + 1] <= solutionMaxPathLen && (int)paths[ind2].size() <= input.DronsCnt);
+						if (ok1 ^ ok2) {
+							if (ok2) {
+								swap(antPathLen[j], antPathLen[j + 1]);
+								swap(maxPaths[j], maxPaths[j + 1]);
+							}
+						}
+						else {
+							if (paths[ind1].size() > paths[ind2].size()) {
+								swap(antPathLen[j], antPathLen[j + 1]);
+								swap(maxPaths[j], maxPaths[j + 1]);
+							}
+							else if (paths[ind1].size() == paths[ind2].size() && maxPaths[j] > maxPaths[j + 1]) {
+								swap(antPathLen[j], antPathLen[j + 1]);
+								swap(maxPaths[j], maxPaths[j + 1]);
+							}
+						}
+					}
+				}
+			}
+			else {
+				sort(antPathLen, antPathLen + sigma);
+			}
 			
-			double bestSolutionMaxPathAfter = FindMaxPathLen(paths[antPathLen[0].second], dist);
-
-			//assert((problemMode == ProblemMode::MINSUM && antPathLen[0].first <= lastBestVal + EPS) ||
-			//		(problemMode == ProblemMode::MINMAXLEN && bestSolutionMaxPathAfter <= bestSolutionMaxPathBefore + EPS));
-			//if (antPathLen[0].first < lastBestVal && problemMode == ProblemMode::MINSUM) {
-			//	//cout << "String-cross improve: " << antPathLen[0].first << " " << lastBestVal << " " << lastBestVal - antPathLen[0].first << endl;
-			//}
-			//if (bestSolutionMaxPathAfter < bestSolutionMaxPathBefore && problemMode == ProblemMode::MINMAXLEN) {
-			//	//cout << "String-cross improve: " << bestSolutionMaxPathAfter << " " << bestSolutionMaxPathBefore << 
-			//	//	" " << bestSolutionMaxPathBefore - bestSolutionMaxPathAfter << endl;
-			//}
-
 			for (int i = 0; i < n; ++i) {
 				for (int j = 0; j < n; ++j) {
 					tau[i][j] *= rho;
@@ -288,15 +318,17 @@ ProblemSolution SolverAntColony::Run(InputData input,
 			}
 
 			for (int mu = 1; mu < sigma; ++mu) {
-				for (auto& path : paths[mu]) {
+				if (problemMode == ProblemMode::MINMAXLEN && paths[antPathLen[mu - 1].second].size() <= input.DronsCnt)
+					continue;
+				for (auto& path : paths[antPathLen[mu - 1].second]) {
 					for (int i = 1; i < (int)path.size(); ++i) {
 						tau[path[i - 1]][path[i]] += (sigma - mu) / antPathLen[mu - 1].first;
 					}
 				}
 			}
 
-			if ((antPathLen[0].first < objectiveFBest && problemMode == ProblemMode::MINSUM && paths[antPathLen[0].second].size() <= input.DronsCnt) ||
-				(problemMode == ProblemMode::MINMAXLEN && paths[antPathLen[0].second].size() <= input.DronsCnt &&
+			if ((antPathLen[0].first < objectiveFBest && problemMode == ProblemMode::MINSUM && (int)paths[antPathLen[0].second].size() <= input.DronsCnt) ||
+				(problemMode == ProblemMode::MINMAXLEN && (int)paths[antPathLen[0].second].size() <= input.DronsCnt &&
 					FindMaxPathLen(bestSolution, dist) > FindMaxPathLen(paths[antPathLen[0].second], dist))) {
 				objectiveFBest = antPathLen[0].first;
 				bestSolution = paths[antPathLen[0].second];
@@ -305,7 +337,7 @@ ProblemSolution SolverAntColony::Run(InputData input,
 				}
 			}
 
-			if ((iteration % 10 == 0) && paths[antPathLen[0].second].size() > input.DronsCnt)
+			if ((iteration % 10 == 0) && (int)paths[antPathLen[0].second].size() > input.DronsCnt)
 				cout << "More drons: " << paths[antPathLen[0].second].size() << endl;
 			if (iteration % 10 == 0)
 				cout << FindMaxPathLen(paths[antPathLen[0].second], dist) << " " << paths[antPathLen[0].second].size() << endl;
@@ -344,3 +376,6 @@ ProblemSolution SolverAntColony::Run(InputData input,
 
 	return ProblemSolution(input, bestSolution);
 }
+
+
+*/
