@@ -1,25 +1,28 @@
 #include "DataClasses.h"
 
-InputData::InputData()
-{
+InputData::InputData() {
 	DronsCnt = TargetsCnt = 0;
 	MaxDist = 0;
 }
 
-InputData::InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix)
+InputData::InputData(int dronsCnt, int targetsCnt, double maxDist, 
+	MatrixDouble distanceMatrix, std::vector<std::pair<double, double>> timeWindows)
 	: DronsCnt(dronsCnt)
 	, TargetsCnt(targetsCnt)
 	, MaxDist(maxDist)
 	, DistanceMatrix(distanceMatrix)
+	, TimeWindows(timeWindows)
 {
 }
 
-InputData::InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix, std::vector<std::pair<double, double> > points)
+InputData::InputData(int dronsCnt, int targetsCnt, double maxDist, MatrixDouble distanceMatrix, 
+	std::vector<std::pair<double, double> > points, std::vector<std::pair<double, double>> timeWindows)
 	: DronsCnt(dronsCnt)
 	, TargetsCnt(targetsCnt)
 	, MaxDist(maxDist)
 	, DistanceMatrix(distanceMatrix)
 	, Points(points)
+	, TimeWindows(timeWindows)
 {
 }
 
