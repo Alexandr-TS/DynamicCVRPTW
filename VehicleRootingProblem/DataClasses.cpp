@@ -107,7 +107,7 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, MatrixDouble
 		if (used[i] != 1)
 			SolutionExists = false;
 
-	if (MaxPathLength - EPS > input.MaxDist || paths.size() > input.DronsCnt) {
+	if (MaxPathLength - EPS > input.MaxDist || (int)paths.size() > input.DronsCnt) {
 		SolutionExists = false;
 	}
 }

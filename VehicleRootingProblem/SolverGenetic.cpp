@@ -15,53 +15,7 @@
 //		Fitness(fitness)
 //	{}
 //
-//	static double CalcFitnessForMinMax(std::vector<int>& seq, InputData& input) {
-//		if (seq.size() != input.TargetsCnt) return 0;
-//		seq.insert(seq.begin(), { 0 });
-//		int n = seq.size();
-//
-//		double* prefLen = new double[n];
-//		std::fill(prefLen, prefLen + n, 0);
-//
-//		double tl = 0, tr = INF;
-//		for (int i = 1; i < n; i++) {
-//			prefLen[i] = prefLen[i - 1] + input.Distance(seq[i - 1], seq[i]);
-//			tl = std::max(tl, input.Distance(0, seq[i]) * 2);
-//		}
-//		tr = prefLen[n - 1] + input.Distance(seq.back(), 0);
-//
-//		for (int it = 0; it < 55; it++) {
-//			double tm = (tl + tr) / 2;
-//			int cnt = 0;
-//			int cur = 0;
-//			while (cur != n - 1) {
-//				int cur2 = cur + 1;
-//				while (cur2 + 1 < n && input.Distance(0, seq[cur + 1]) + input.Distance(seq[cur2 + 1], 0) + 
-//					prefLen[cur2 + 1] - prefLen[cur + 1] < tm)
-//					cur2++;
-//				cnt++;
-//				assert(cur2 <= n - 1 && cur < cur2);
-//				cur = cur2;
-//			}
-//			if (cnt <= GlobalCntDrons) {
-//				tr = tm;
-//			}
-//			else {
-//				tl = tm;
-//			}
-//			
-//		}
-//
-//		delete[] prefLen;
-//		seq.erase(seq.begin());
-//
-//		return tl;
-//	}
-//
 //	static double CalcFitness(std::vector<int>& seq, InputData& input) {
-//		if (GlobalProblemMode == ProblemMode::MINMAXLEN)
-//			return CalcFitnessForMinMax(seq, input);
-//
 //		if (seq.size() != input.TargetsCnt) return 0;
 //		seq.insert(seq.begin(), { 0 });
 //		int n = seq.size();
@@ -241,44 +195,7 @@
 //	return Chromosome(child, input);
 //}
 //
-//std::vector<std::vector<int>> SplitPathsMinMax(std::vector<int>& path, InputData& input) {
-//	if (path.size() == 0) return {};
-//	
-//	double fitness = Chromosome::CalcFitness(path, input);
-//	
-//	path.insert(path.begin(), { 0 });
-//	int n = path.size();
-//
-//	std::fill(prefLen, prefLen + n, 0);
-//	for (int i = 1; i < n; i++) {
-//		prefLen[i] = prefLen[i - 1] + input.Distance(path[i - 1], path[i]);
-//	}
-//
-//	std::vector<std::vector<int>> paths;
-//
-//	int cnt = 0;
-//	int cur = 0;
-//	while (cur != n - 1) {
-//		int cur2 = cur + 1;
-//		while (cur2 + 1 < n && input.Distance(0, path[cur + 1]) + input.Distance(path[cur2 + 1], 0) + prefLen[cur2 + 1] - prefLen[cur + 1] < fitness + EPS)
-//			cur2++;
-//		cnt++;
-//		paths.push_back({});
-//		for (int i = cur + 1; i <= cur2; ++i) {
-//			paths.back().push_back(path[i]);
-//		}
-//		assert(cur2 <= n - 1 && cur < cur2);
-//		cur = cur2;
-//	}
-//
-//	path.erase(path.begin());
-//	return paths;
-//}
-//
 //std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input) {
-//	if (GlobalProblemMode == ProblemMode::MINMAXLEN)
-//		return SplitPathsMinMax(path, input);
-//
 //	if (path.size() == 0) return {};
 //	path.insert(path.begin(), { 0 });
 //	int n = path.size();
@@ -339,30 +256,12 @@
 //Population InitPopulation(InputData& input, ProblemMode problemMode, int populationSize, double delta) {
 //	Population population(delta);
 //	
-//	// Clarke-Wright
-//	auto solCW = SolverClarkeWright::Run(input, problemMode, {});
-//	if (solCW.SolutionExists) {
-//		auto chromosomeCW = Chromosome(solCW);
-//		if (chromosomeCW.IsValid()) {
-//			population.Add(chromosomeCW);
-//		}
-//	}
-//
 //	// Greedy
 //	auto solGreedy = SolverGreedy::Run(input, problemMode, {});
 //	if (solGreedy.SolutionExists) {
 //		auto chromosomeGreedy = Chromosome(solGreedy);
 //		if (chromosomeGreedy.IsValid()) {
 //			population.Add(chromosomeGreedy);
-//		}
-//	}
-//
-//	// Greedy clusterized
-//	auto solGrClust = SolverGreedyClusterized::Run(input, problemMode, {});
-//	if (solGrClust.SolutionExists) {
-//		auto chromosomeGrClust = Chromosome(solGrClust);
-//		if (chromosomeGrClust.IsValid()) {
-//			population.Add(chromosomeGrClust);
 //		}
 //	}
 //

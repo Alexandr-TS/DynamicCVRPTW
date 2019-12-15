@@ -145,6 +145,7 @@
     <ClCompile Include="SolverGreedy.cpp" />
     <ClCompile Include="SolverDP.cpp" />
     <ClCompile Include="SolverMain.cpp" />
+    <ClCompile Include="Tests.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Visualization.cpp" />
   </ItemGroup>
@@ -159,6 +160,7 @@
     <ClInclude Include="SolverGreedy.h" />
     <ClInclude Include="SolverDP.h" />
     <ClInclude Include="SolverMain.h" />
+    <ClInclude Include="Tests.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Visualization.h" />
   </ItemGroup>

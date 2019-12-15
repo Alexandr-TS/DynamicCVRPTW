@@ -1,5 +1,4 @@
 #include "SolverMain.h"
-#include "SolverClarkeWright.h"
 #include "SolverDP.h"
 #include "SolverAntColony.h"
 #include "SolverGenetic.h"

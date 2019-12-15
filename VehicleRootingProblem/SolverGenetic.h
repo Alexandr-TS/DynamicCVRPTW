@@ -5,4 +5,4 @@
 //public:
 //	static ProblemSolution Run(InputData input, ProblemMode problemMode, std::vector<double> args);
 //};
-//
+

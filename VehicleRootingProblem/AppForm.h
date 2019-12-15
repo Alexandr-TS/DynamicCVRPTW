@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Tests.h"
 #include "DataClasses.h"
 #include "SolverMain.h"
 #include "Visualization.h"
