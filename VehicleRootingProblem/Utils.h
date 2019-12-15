@@ -4,6 +4,15 @@
 
 #include <random>
 
+
+class Math {
+private:
+public:
+	static int GenInt(int l, int r);
+	static double GenDouble(double l, double r);
+	static double PowInt(double x, int p);
+};
+
 enum class ProblemMode {
 	MINSUM,
 	MINMAXLEN
