@@ -67,8 +67,10 @@ namespace VehicleRootingProblem {
 		std::vector<InputData> DataSets;
 		std::vector<Algo> Algos = {
 			Algo("Greedy", EAlgorithms::Greedy, {})
-			/*Algo("Алгоритм Кларка-Райта", EAlgorithms::ClarkeWright, {}), 
-			Algo("Муравьиный алгоритм", EAlgorithms::AntColony, {
+			/*
+			, Algo("Алгоритм Кларка-Райта", EAlgorithms::ClarkeWright, {}),
+			*/
+			, Algo("Муравьиный алгоритм", EAlgorithms::AntColony, {
 				Param("Alpha", 3, "Показатель степени стойкости феромонов в формуле вероятности выбора ребра"),
 				Param("Betta", 4, "Показатель степени функции видимости в формуле вероятности выбора ребра"),
 				Param("Rho", 0.4, "Коэффициент стойкости феромнов"),
@@ -78,15 +80,17 @@ namespace VehicleRootingProblem {
 				Param("Sigma", 5, "Число элитарных муравьев"),
 				Param("CandList", 0.5, "Доля вершин в списке кандидатов на следующее ребро"),
 				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Imax не учитывается. Если 0, то Imax не учитывается")
-			}),
-			Algo("Генетический алгоритм", EAlgorithms::Genetic, {
+			})
+			/*
+			, Algo("Генетический алгоритм", EAlgorithms::Genetic, {
 				Param("N", 30, "Размер популяции"),
 				Param("Alpha", 3000, "Максимальное количество изменений популяции"),
 				Param("Betta", 1000, "Максимальное количество итераций без улучшения лучшего решения"),
 				Param("Delta", 0.5, "Минимальная разность фитнес-функций двух решений"),
 				Param("P", 0.5, "Вероятность мутации"),
 				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Alpha и Betta не учитываются")
-			})*/
+			})
+			*/
 		};
 		std::vector<Launch> Launches;
 		InputData LoadedInputData;
@@ -928,7 +932,11 @@ namespace VehicleRootingProblem {
 		}
 		else {
 			AppFormVars::DataSets.push_back(AppFormVars::LoadedInputData);
-			auto newitem = gcnew ListViewItem(ToText((int)AppFormVars::DataSets.size()));
+			//auto newitem = gcnew ListViewItem(ToText((int)AppFormVars::DataSets.size()));
+			std::string fn = AppFormVars::DataSets.back().FileName;
+			std::size_t found = fn.find_last_of("/\\");
+			fn = fn.substr(found + 1);
+			auto newitem = gcnew ListViewItem(ToText(fn));
 			newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().DronsCnt));
 			newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().TargetsCnt));
 			newitem->SubItems->Add(ToText(AppFormVars::DataSets.back().MaxDist));

@@ -25,6 +25,7 @@ InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
 }
 
 InputData::InputData(std::string inputFileName) {
+	FileName = inputFileName;
 	std::ifstream fin(inputFileName.c_str(), std::ios::in);
 	try {
 		fin >> DronsCnt >> TargetsCnt;
@@ -111,6 +112,63 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, MatrixDouble
 		SolutionExists = false;
 	}
 }
+
+
+// paths: {{1, 2, 3}, {6, 5, 4, 7}}. without 0. 0 is depot
+ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
+	: Input(input)
+	, Paths(paths)
+{
+	MaxPathLength = 0;
+	SumOfPathLengths = 0;
+	ArrivalTimes = {};
+
+	// Check that solution is valid
+	SolutionExists = true;
+
+	std::vector<int> used(input.TargetsCnt, 0);
+
+	for (int pathInd = 0; pathInd < (int)paths.size(); ++pathInd) {
+		ArrivalTimes.push_back({});
+		double cur_time = 0;
+
+		auto path = paths[pathInd];
+		if (path.size() == 0) {
+			continue;
+		}
+		double currentLength = input.Distance(path.back(), 0);
+		int lastIndex = 0;
+
+		for (int i = 0; i < (int)path.size(); ++i) {
+			auto index = path[i];
+			assert(index > 0 && index <= input.TargetsCnt);
+			double this_dist = input.Distance(lastIndex, index);
+			cur_time = std::max(cur_time + this_dist, input.TimeWindows[index].first);
+			ArrivalTimes.back().push_back(cur_time);
+			if (cur_time > input.TimeWindows[index].second - EPS) {
+				SolutionExists = false;
+				std::cout << "It's ProblemSolution constructor. Solution is not valid because of time windows" << std::endl;
+			}
+			currentLength += this_dist;
+			lastIndex = index;
+			used[index - 1]++;
+		}
+
+		MaxPathLength = std::max(MaxPathLength, currentLength);
+		SumOfPathLengths += currentLength;
+	}
+
+	for (size_t i = 0; i < used.size(); i++) {
+		if (used[i] != 1) {
+			SolutionExists = false;
+		}
+	}
+
+	if (MaxPathLength - EPS > input.MaxDist || (int)paths.size() > input.DronsCnt) {
+		SolutionExists = false;
+	}
+}
+
 
 void ProblemSolution::PrintIntoFile(std::string outputFileName) {
 	std::ofstream fout(outputFileName.c_str(), std::ios::out);

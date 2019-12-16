@@ -23,5 +23,5 @@ public:
 	Solver() = default;
 
 public:
-	static ProblemSolution Run(InputData input, ProblemMode problemMode) {}
+	static ProblemSolution Run(InputData input) {}
 };

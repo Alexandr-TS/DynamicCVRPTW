@@ -43,12 +43,15 @@ public:
 	std::vector<std::pair<double, double>> Points;
 	// Including depot (it's always {-INF, INF})
 	std::vector<std::pair<double, double>> TimeWindows;
+	std::string FileName;
 };
 
 class ProblemSolution {
 public:
 	ProblemSolution();
+	// deprecated
 	ProblemSolution(InputData& input, MatrixInt paths, MatrixDouble arrivalTimes);
+	ProblemSolution(InputData& input, MatrixInt paths);
 
 public:
 	void PrintIntoFile(std::string outputFileName);

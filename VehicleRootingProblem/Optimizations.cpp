@@ -264,16 +264,26 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 }
 
 bool LocalSwapOptimization(std::vector<int>& path, InputData& input) {
+	bool have_0 = (path.back() == 0);
+	if (!have_0) {
+		path.push_back(0);
+	}
 	double len_1 = CalcNewLenForGlobalOpt(input, path);
 	for (size_t i1 = 1; i1 + 1 < path.size(); ++i1) {
 		for (size_t i2 = i1 + 1; i2 + 1 < path.size(); ++i2) {
 			swap(path[i1], path[i2]);
 			double new_len = CalcNewLenForGlobalOpt(input, path);
 			if (new_len + EPS < len_1) {
+				if (!have_0) {
+					path.pop_back();
+				}
 				return true;
 			}
 			swap(path[i1], path[i2]);
 		}
+	}
+	if (!have_0) {
+		path.pop_back();
 	}
 	return false;
 }
