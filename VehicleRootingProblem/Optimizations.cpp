@@ -206,8 +206,29 @@ double CalcNewLenForGlobalOpt(InputData& input, vector<int>& path, int i = 0, in
 	return cur_len;
 }
 
+void AppendZerosToPaths(MatrixInt& paths) {
+	for (auto& path : paths) {
+		path.push_back(0);
+	}
+}
+
+void PopZerosFromPaths(MatrixInt& paths) {
+	for (auto& path : paths) {
+		if (path.empty()) {
+			continue;
+		}
+		assert(path.back() == 0);
+		path.pop_back();
+	}
+}
+
 // each path has format: {0, 3, 4, 1, 0}
 bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
+	bool have_0 = (paths[0].back() == 0);
+	if (!have_0) {
+		AppendZerosToPaths(paths);
+	}
+
 	for (size_t path_1 = 0; path_1 < paths.size(); ++path_1) {
 		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1]);
 		for (size_t path_2 = path_1 + 1; path_2 < paths.size(); ++path_2) {
@@ -219,8 +240,11 @@ bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
 					}
 					double new_len_1 = CalcNewLenForGlobalOpt(input, paths[path_1], i1, paths[path_2][i2]);
 					double new_len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], i2, paths[path_1][i1]);
-					if (new_len_1 + new_len_2 + EPS < len_1 + len_2) {
+					if (new_len_1 + new_len_2 + EPS < len_1 + len_2 && new_len_1 < INF - 1 && new_len_2 < INF - 1) {
 						swap(paths[path_1][i1], paths[path_2][i2]);
+						if (!have_0) {
+							PopZerosFromPaths(paths);
+						}
 						return true;
 					}
 				}
@@ -228,11 +252,18 @@ bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
 		}
 	}
 
+	if (!have_0) {
+		PopZerosFromPaths(paths);
+	}
 	return false;
 }
 
 
 bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
+	bool have_0 = (paths[0].back() == 0);
+	if (!have_0) {
+		AppendZerosToPaths(paths);
+	}
 	for (size_t path_1 = 0; path_1 < paths.size(); ++path_1) {
 		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1], 0, 0);
 		auto cur_path = paths[path_1];
@@ -249,9 +280,12 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 					double new_len_1 = CalcNewLenForGlobalOpt(input, cur_path);
 					// this makes two same adjacent vertices => dist = 0
 					double new_len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], i2, paths[path_2][i2 - 1]);
-					if (new_len_1 + new_len_2 + EPS < len_1 + len_2) {
+					if (new_len_1 + new_len_2 + EPS < len_1 + len_2 && new_len_1 < INF - 1 && new_len_2 < INF - 1) {
 						paths[path_1] = cur_path;
 						paths[path_2].erase(paths[path_2].begin() + i2, paths[path_2].begin() + i2 + 1);
+						if (!have_0) {
+							PopZerosFromPaths(paths);
+						}
 						return true;
 					}
 				}
@@ -260,6 +294,9 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 		}
 	}
 
+	if (!have_0) {
+		PopZerosFromPaths(paths);
+	}
 	return false;
 }
 

@@ -81,7 +81,6 @@ namespace VehicleRootingProblem {
 				Param("CandList", 0.5, "Доля вершин в списке кандидатов на следующее ребро"),
 				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Imax не учитывается. Если 0, то Imax не учитывается")
 			})
-			/*
 			, Algo("Генетический алгоритм", EAlgorithms::Genetic, {
 				Param("N", 30, "Размер популяции"),
 				Param("Alpha", 3000, "Максимальное количество изменений популяции"),
@@ -90,7 +89,6 @@ namespace VehicleRootingProblem {
 				Param("P", 0.5, "Вероятность мутации"),
 				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Alpha и Betta не учитываются")
 			})
-			*/
 		};
 		std::vector<Launch> Launches;
 		InputData LoadedInputData;

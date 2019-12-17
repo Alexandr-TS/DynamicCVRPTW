@@ -102,7 +102,6 @@ void TestAntColonyAlgo() {
 	assert(abs(solution.MaxPathLength - 8) < EPS);
 	assert(abs(solution.SumOfPathLengths - 8) < EPS);
 
-
 	input = InputData(2, 3, 1000, 
 		{ {0, 0}, {0, 3}, {4, 0}, {4, 3} },
 		{ {-INF, INF}, {3, 3.5}, {4, 8.5}, {7, 7.5} });
@@ -113,6 +112,30 @@ void TestAntColonyAlgo() {
 	cout << "________________________________________Test Ant Colony Algo: OK\n";
 }
 
+void TestGeneticAlgo() {
+	auto input = InputData(2, 4, 1000,
+		{ {0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4} },
+		{ {-INF, INF}, {1, 1.5}, {2, 2.5}, {3, 3.5}, {4, 4.5} });
+	vector<double> args = { 30, 30000, 10000, 0.5, 0.05, 0 };
+
+	auto solution = SolverGenetic::Run(input, args);
+
+	assert(solution.SolutionExists);
+	vector<int> expected_path = { 1, 2, 3, 4 };
+	assert(solution.Paths[0] == expected_path);
+	assert(abs(solution.MaxPathLength - 8) < EPS);
+	assert(abs(solution.SumOfPathLengths - 8) < EPS);
+
+	input = InputData(2, 3, 1000, 
+		{ {0, 0}, {0, 3}, {4, 0}, {4, 3} },
+		{ {-INF, INF}, {3, 3.5}, {4, 8.5}, {7, 7.5} });
+	auto solution2 = SolverGenetic::Run(input, args);
+
+	assert(solution2.SolutionExists);
+
+	cout << "________________________________________Test Genetic Algo: OK\n";
+}
+
 void RunTests() {
 	TestMath();
 	TestGlobalSwapOpt();
@@ -120,6 +143,7 @@ void RunTests() {
 	TestLocalSwapOpt1();
 	TestLocalSwapOpt2();
 	TestAntColonyAlgo();
+	TestGeneticAlgo();
 	cout << "_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Unit testing have finished successfully\n";
 }
 

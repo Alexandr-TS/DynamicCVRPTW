@@ -235,7 +235,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 			for (auto& path : paths[antPathLen[i].second]) {
 				LocalSwapOptimization(path, input);
 				for (int j = 0; j < (int)path.size() - 1; ++j) {
-					//assert(dist[path[j]][path[j + 1]] < INF - 1); // After optimization a valid path should become invalid
+					assert(dist[path[j]][path[j + 1]] < INF - 1); // After optimization a valid path should become invalid
 					antPathLen[i].first += dist[path[j]][path[j + 1]];
 				}
 				antPathLen[i].first += dist[path.back()][0];
