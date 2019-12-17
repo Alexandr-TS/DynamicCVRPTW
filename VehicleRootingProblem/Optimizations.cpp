@@ -81,7 +81,7 @@ void MakeStringCross(std::vector<std::vector<int>>& paths, std::vector<std::vect
 }
 
 // Paths have to be in format {{0, 1, 2, 5}, {0, 6, 4}} or {{1, 2, 5}, {6, 4}}
-bool StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& input, 
+bool StringCrossOptimization(MatrixInt& paths, InputData& input, 
 	ProblemMode problemMode, bool pathsHaveFirst0) {
 	for (auto& path: paths)
 		path.emplace_back(0);
@@ -187,19 +187,19 @@ bool IsValidPrecheckForGlobalOpt(InputData& input, vector<int>& path1, vector<in
 
 // path[i - 1], path[i], path[i + 1] ===> path[i - 1], v, path[i + 1]
 // INF if path is invalid
-double CalcNewLenForGlobalOpt(InputData& input, vector<int>& path, int i, int v) {
+double CalcNewLenForGlobalOpt(InputData& input, vector<int>& path, int i = 0, int v = 0) {
 	double cur_time = 0;
 	double cur_len = 0;
 	int path_i = path[i];
 	path[i] = v;
-	for (int i = 1; i < (int)path.size(); ++i) {
-		double next_dist = input.Distance(path[i - 1], path[i]);
-		if (input.TimeWindows[path[i]].second < cur_time + next_dist) {
+	for (int j = 1; j < (int)path.size(); ++j) {
+		double next_dist = input.Distance(path[j - 1], path[j]);
+		if (input.TimeWindows[path[j]].second < cur_time + next_dist) {
 			path[i] = path_i;
 			return INF;
 		}
 		cur_len += next_dist;
-		cur_time = max(input.TimeWindows[path[i]].first, cur_time + next_dist);
+		cur_time = max(input.TimeWindows[path[j]].first, cur_time + next_dist);
 	}
 
 	path[i] = path_i;
@@ -207,11 +207,11 @@ double CalcNewLenForGlobalOpt(InputData& input, vector<int>& path, int i, int v)
 }
 
 // each path has format: {0, 3, 4, 1, 0}
-bool GlobalSwapOptimization(std::vector<std::vector<int>>& paths, InputData& input) {
+bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
 	for (size_t path_1 = 0; path_1 < paths.size(); ++path_1) {
-		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1], 0, 0);
+		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1]);
 		for (size_t path_2 = path_1 + 1; path_2 < paths.size(); ++path_2) {
-			double len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], 0, 0);
+			double len_2 = CalcNewLenForGlobalOpt(input, paths[path_2]);
 			for (size_t i1 = 1; i1 + 1 < paths[path_1].size(); i1++) {
 				for (size_t i2 = 1; i2 + 1 < paths[path_2].size(); i2++) {
 					if (!IsValidPrecheckForGlobalOpt(input, paths[path_1], paths[path_2], i1, i2)) {
@@ -228,5 +228,62 @@ bool GlobalSwapOptimization(std::vector<std::vector<int>>& paths, InputData& inp
 		}
 	}
 
+	return false;
+}
+
+
+bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
+	for (size_t path_1 = 0; path_1 < paths.size(); ++path_1) {
+		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1], 0, 0);
+		auto cur_path = paths[path_1];
+		cur_path.insert(cur_path.begin(), { -1 });
+		for (size_t i1 = 1; i1 + 1 < cur_path.size(); i1++) {
+			swap(cur_path[i1 - 1], cur_path[i1]);
+			for (size_t path_2 = 0; path_2 < paths.size(); ++path_2) {
+				if (path_2 == path_1) {
+					continue;
+				}
+				double len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], 0, 0);
+				for (size_t i2 = 1; i2 + 1 < paths[path_2].size(); i2++) {
+					cur_path[i1] = paths[path_2][i2];
+					double new_len_1 = CalcNewLenForGlobalOpt(input, cur_path);
+					// this makes two same adjacent vertices => dist = 0
+					double new_len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], i2, paths[path_2][i2 - 1]);
+					if (new_len_1 + new_len_2 + EPS < len_1 + len_2) {
+						paths[path_1] = cur_path;
+						paths[path_2].erase(paths[path_2].begin() + i2, paths[path_2].begin() + i2 + 1);
+						return true;
+					}
+				}
+
+			}
+		}
+	}
+
+	return false;
+}
+
+bool LocalSwapOptimization(std::vector<int>& path, InputData& input) {
+	bool have_0 = (path.back() == 0);
+	if (!have_0) {
+		path.push_back(0);
+	}
+	double len_1 = CalcNewLenForGlobalOpt(input, path);
+	for (size_t i1 = 1; i1 + 1 < path.size(); ++i1) {
+		for (size_t i2 = i1 + 1; i2 + 1 < path.size(); ++i2) {
+			swap(path[i1], path[i2]);
+			double new_len = CalcNewLenForGlobalOpt(input, path);
+			if (new_len + EPS < len_1) {
+				if (!have_0) {
+					path.pop_back();
+				}
+				return true;
+			}
+			swap(path[i1], path[i2]);
+		}
+	}
+	if (!have_0) {
+		path.pop_back();
+	}
 	return false;
 }

@@ -4,7 +4,9 @@
 #include "Utils.h"
 
 bool LocalReverseOptimization(std::vector<int>& path, InputData& input, bool pathHasFirst0); 
-bool StringCrossOptimization(std::vector<std::vector<int>>& paths, InputData& input, 
+bool StringCrossOptimization(MatrixInt& paths, InputData& input, 
 	ProblemMode problemMode, bool pathsHaveFirst0 = true);
 
-bool GlobalSwapOptimization(std::vector<std::vector<int>>& paths, InputData& input);
+bool GlobalSwapOptimization(MatrixInt& paths, InputData& input);
+bool GlobalInsertOptimization(MatrixInt& paths, InputData& input);
+bool LocalSwapOptimization(std::vector<int>& path, InputData& input);
