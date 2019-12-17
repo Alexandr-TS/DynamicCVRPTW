@@ -145,7 +145,7 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
 			double this_dist = input.Distance(lastIndex, index);
 			cur_time = std::max(cur_time + this_dist, input.TimeWindows[index].first);
 			ArrivalTimes.back().push_back(cur_time);
-			if (cur_time > input.TimeWindows[index].second - EPS) {
+			if (cur_time > input.TimeWindows[index].second + EPS) {
 				SolutionExists = false;
 				std::cout << "It's ProblemSolution constructor. Solution is not valid because of time windows" << std::endl;
 			}
