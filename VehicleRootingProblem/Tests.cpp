@@ -116,7 +116,7 @@ void TestGeneticAlgo() {
 	auto input = InputData(2, 4, 1000,
 		{ {0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4} },
 		{ {-INF, INF}, {1, 1.5}, {2, 2.5}, {3, 3.5}, {4, 4.5} });
-	vector<double> args = { 30, 30000, 10000, 0.5, 0.05, 0 };
+	vector<double> args = { 30, 1500, 500, 0.5, 0.05, 0 };
 
 	auto solution = SolverGenetic::Run(input, args);
 

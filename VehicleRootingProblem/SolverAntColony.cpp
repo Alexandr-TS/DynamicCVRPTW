@@ -113,7 +113,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 	double bestSolutionMaxPath = 0;
 
 	for (int iteration = 0; iteration < iterations; ++iteration) {
-		if (iteration == iterations / 3 || iteration == iterations / 3 * 2) {
+		if (input.TargetsCnt < iterations && (iteration == iterations / 3 || iteration == iterations / 3 * 2)) {
 			std::cout << "shuffle taus" << endl;
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
@@ -139,13 +139,13 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 
 		fill(objectiveF, objectiveF + n, 0);
 		for (int antIndex = 1; antIndex < n; ++antIndex) {
-			double cur_time = 0;
 
 			fill(visited, visited + n, false);
 			visited[antIndex] = true;
 			visited[0] = true;
 			double curPathLen = dist[0][antIndex];
 			paths[antIndex] = { {0, antIndex} };
+			double cur_time = std::max(dist[0][antIndex], input.TimeWindows[antIndex].first);
 			int cntVisitedTargets = 1;
 			int lastVisited = 0;
 			while (cntVisitedTargets < n - 1) {
@@ -185,12 +185,13 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 					}
 				}
 
+
 				// if nextV is found and addidng edge (v, nextV) is feasible
 				if (nextV != -1 && curPathLen + dist[v][nextV] + dist[nextV][0] <= input.MaxDist && 
 						max(cur_time, input.TimeWindows[v].first) + dist[v][nextV] <= input.TimeWindows[nextV].second) {
 					visited[nextV] = true;
 					curPathLen += dist[v][nextV];
-					paths[antIndex].back().emplace_back(nextV);
+					paths[antIndex].back().push_back(nextV);
 					cntVisitedTargets++;
 					cur_time = max(cur_time + dist[v][nextV], input.TimeWindows[nextV].first);
 				}
@@ -287,6 +288,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 	}
 
 	for (auto& path : bestSolution) {
+		assert(path[0] == 0);
 		path.erase(path.begin());
 	}
 

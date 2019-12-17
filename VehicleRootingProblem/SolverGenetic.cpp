@@ -37,7 +37,7 @@ struct Chromosome {
 		for (int v = 0; v + 1 < n; ++v) {
 			if (dp[v] == INF) continue;
 			double len = 0;
-			double cur_time = input.Distance(0, seq[v + 1]);
+			double cur_time = std::max(input.Distance(0, seq[v + 1]), input.TimeWindows[seq[v + 1]].first);
 			for (int u = v + 1; u < n && len <= input.MaxDist + EPS; ++u) {
 				// relaxing using edge (v, u)
 				len = prefLen[u] - prefLen[v + 1] + input.Distance(0, seq[v + 1]) + input.Distance(seq[u], 0);
@@ -258,7 +258,7 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 			continue;
 		}
 		double len = 0;
-		double cur_time = input.Distance(0, path[v + 1]);
+		double cur_time = std::max(input.Distance(0, path[v + 1]), input.TimeWindows[path[v + 1]].first);
 		for (int u = v + 1; u < n && len <= input.MaxDist + EPS; ++u) {
 			// relaxing using edge (v, u)
 			len = prefLen[u] - prefLen[v + 1] + input.Distance(0, path[v + 1]) + input.Distance(path[u], 0);
@@ -284,6 +284,7 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 		for (int j = i; j > std::max(-1, prev[i]); --j) {
 			paths.back().push_back(path[j]);
 		}
+		std::reverse(paths.back().begin(), paths.back().end());
 	}
 
 	return paths;
@@ -300,13 +301,16 @@ Chromosome Mutation(Chromosome& c, double p, InputData& input) {
 
 	bool improved = true;
 
-	while (improved) {
+	// not more than left_improves improves;
+	int left_improves = 15;
+	while (improved && left_improves > 0) {
 		improved = false;
 		improved |= GlobalInsertOptimization(paths, input);
 		improved |= GlobalSwapOptimization(paths, input);
 		for (auto& path : paths) {
 			improved |= LocalSwapOptimization(path, input);
 		}
+		left_improves--;
 	}
 
 	return Chromosome(paths, input);
@@ -325,21 +329,26 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 		}
 	}
 
-	auto solAnt1 = SolverAntColony::Run(input, { 5, 5, 0.75, 2, 2, 0.3, 6, 0.25, 0 });
-	if (population.Size() < populationSize) {
-		population.Add(solAnt1);
-	}
-	auto solAnt2 = SolverAntColony::Run(input, { 3, 4, 0.4, 2, 3, 0.5, 5, 0.5, 0 });
-	if (population.Size() < populationSize) {
-		population.Add(solAnt2);
-	}
-	auto solAnt3 = SolverAntColony::Run(input, { 4, 4, 0.5, 2, 2, 0.3, 4, 0.4, 0 });
-	if (population.Size() < populationSize) {
-		population.Add(solAnt3);
-	}
-	auto solAnt4 = SolverAntColony::Run(input, { 3, 3, 0.35, 2, 3, 0.3, 6, 0.6, 0 });
-	if (population.Size() < populationSize) {
-		population.Add(solAnt4);
+	std::vector<std::vector<double>> argss = {
+		{ 3, 4, 0.4, 2, 3, 2.5, 5, 0.5, 0 },
+		{ 5, 5, 0.75, 2, 2, 0.4, 6, 0.25, 0 },
+		{ 3, 4, 0.4, 2, 3, 2.5, 5, 0.5, 0 },
+		{ 4, 4, 0.5, 2, 2, 0.4, 4, 0.4, 0 },
+		{ 3, 3, 0.35, 2, 3, 0.4, 6, 0.6, 0 }
+	};
+
+	for (std::vector<double> args: argss) {
+		if (population.Size() == populationSize) {
+			break;
+		}
+		auto sol = SolverAntColony::Run(input, args);
+		if (!sol.SolutionExists) {
+			continue;
+		}
+		auto chromo = Chromosome(sol);
+		if (chromo.IsValid()) {
+			population.Add(chromo);
+		}
 	}
 
 	int leftTries = populationSize * populationSize + 10;
@@ -366,8 +375,21 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 	return population;
 }
 
+int genGoodIndex(int n) {
+	int tmp = Math::GenInt(1, n * (n + 1) * (2 * n + 1) / 6);
+	int cur = n;
+	for (int i = 0; i < n; i++) {
+		if (tmp <= cur * cur) {
+			return i;
+		}
+		tmp -= cur * cur;
+		cur--;
+	}
+	return n - 1;
+}
+
 // Args are: {n, alpha, betta, delta, p, timeLimit}
-// Suggested args: {30, 30000, 10000, 0.5, 0.05, 0}
+// Suggested args: {30, 3000, 1000, 0.5, 0.05, 0}
 ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 	GlobalCntDrons = input.DronsCnt;
 	for (int i = 1; i <= input.TargetsCnt; ++i) {
@@ -403,10 +425,15 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 
 		assert(population.Size() == n);
 
-		int parent1ind = std::min(Math::GenInt(0, n - 1), Math::GenInt(0, n - 1));
+	/*	int parent1ind = std::min(Math::GenInt(0, n - 1), Math::GenInt(0, n - 1));
 		int parent2ind = std::min(Math::GenInt(0, n - 1), Math::GenInt(0, n - 1));
 		while (parent2ind == parent1ind) {
 			parent2ind = std::min(Math::GenInt(0, n - 1), Math::GenInt(0, n - 1));
+		}*/
+		int parent1ind = genGoodIndex(n);
+		int parent2ind = genGoodIndex(n);
+		while (parent2ind == parent1ind) {
+			parent2ind = genGoodIndex(n);
 		}
 		if (parent2ind < parent1ind) {
 			std::swap(parent1ind, parent2ind);
@@ -428,7 +455,7 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 		nonImproveIters++;
 
 		if (nonImproveIters % 50 == 0) {
-			std::cout << "iters: " << nonImproveIters << " " << productiveIters << std::endl;
+			std::cout << "iters: " << nonImproveIters << " " << productiveIters << ", current child: " << mutatedChild.Fitness << std::endl;
 		}
 
 		if (population.IsAddible(mutatedChild)) {
@@ -445,5 +472,6 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 		}
 	}
 	
-	return ProblemSolution(input, SplitPaths(population.Chromosomes[0].Seq, input));
+	auto final_solution = ProblemSolution(input, SplitPaths(population.Chromosomes[0].Seq, input));
+	return final_solution;
 }
