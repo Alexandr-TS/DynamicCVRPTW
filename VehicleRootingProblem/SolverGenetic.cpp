@@ -190,7 +190,8 @@ Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input)
 		std::swap(par1, par2);
 	}
 	int n = par1->Seq.size();
-	int tl = Math::GenInt(0, n - 1);
+//	int tl = Math::GenInt(0, n - 1);
+	int tl = 0;
 	int tr = Math::GenInt(0, n - 1);
 	if (tr < tl) {
 		std::swap(tr, tl);
@@ -238,20 +239,6 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 	std::fill(dp, dp + n, INF);
 	std::fill(prev, prev + n, -1);
 	dp[0] = 0;
-	//for (int v = 0; v < n; ++v) {
-	//	if (dp[v] == INF) continue;
-	//	double len = 0;
-	//	for (int u = v + 1; u < n && len <= input.MaxDist; ++u) {
-	//		// relaxing using edge (v, u)
-	//		len = prefLen[u] - prefLen[v + 1] + input.Distance(0, path[v + 1]) + input.Distance(path[u], 0);
-	//		if (len <= input.MaxDist) {
-	//			if (dp[u] > dp[v] + len) {
-	//				dp[u] = dp[v] + len;
-	//				prev[u] = v;
-	//			}
-	//		}
-	//	}
-	//}
 	
 	for (int v = 0; v + 1 < n; ++v) {
 		if (dp[v] == INF) {
@@ -290,7 +277,7 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 	return paths;
 }
 
-Chromosome Mutation(Chromosome& c, double p, InputData& input) {
+Chromosome Mutation(Chromosome& c, double p, InputData& input, int cnt_improves = 15) {
 	double x = Math::GenDouble(0, 1);
 	if (x > p) {
 		return c;
@@ -302,15 +289,14 @@ Chromosome Mutation(Chromosome& c, double p, InputData& input) {
 	bool improved = true;
 
 	// not more than left_improves improves;
-	int left_improves = 15;
-	while (improved && left_improves > 0) {
+	while (improved && cnt_improves > 0) {
 		improved = false;
 		improved |= GlobalInsertOptimization(paths, input);
 		improved |= GlobalSwapOptimization(paths, input);
 		for (auto& path : paths) {
 			improved |= LocalSwapOptimization(path, input);
 		}
-		left_improves--;
+		cnt_improves--;
 	}
 
 	return Chromosome(paths, input);
@@ -325,31 +311,31 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 		auto chromosomeGreedy = Chromosome(solGreedy);
 		if (chromosomeGreedy.IsValid()) {
 			population.Add(chromosomeGreedy);
-			population.Add(Mutation(chromosomeGreedy, 1, input));
+			population.Add(Mutation(chromosomeGreedy, 1, input, 60));
 		}
 	}
 
 	std::vector<std::vector<double>> argss = {
-		{ 3, 4, 0.4, 2, 3, 2.5, 5, 0.5, 0 },
-		{ 5, 5, 0.75, 2, 2, 0.4, 6, 0.25, 0 },
-		{ 3, 4, 0.4, 2, 3, 2.5, 5, 0.5, 0 },
-		{ 4, 4, 0.5, 2, 2, 0.4, 4, 0.4, 0 },
-		{ 3, 3, 0.35, 2, 3, 0.4, 6, 0.6, 0 }
+		{ 3, 4, 0.4, 2, 3, 0.8, 5, 0.5, 0 },
+		{ 5, 5, 0.75, 2, 2, 0.35, 6, 0.25, 0 },
+		{ 3, 4, 0.4, 2, 3, 0.8, 5, 0.5, 0 },
+		{ 4, 4, 0.5, 2, 2, 0.35, 4, 0.4, 0 },
+		{ 3, 3, 0.35, 2, 3, 0.35, 6, 0.6, 0 }
 	};
 
-	for (std::vector<double> args: argss) {
-		if (population.Size() == populationSize) {
-			break;
-		}
-		auto sol = SolverAntColony::Run(input, args);
-		if (!sol.SolutionExists) {
-			continue;
-		}
-		auto chromo = Chromosome(sol);
-		if (chromo.IsValid()) {
-			population.Add(chromo);
-		}
-	}
+	//for (std::vector<double> args: argss) {
+	//	if (population.Size() == populationSize) {
+	//		break;
+	//	}
+	//	auto sol = SolverAntColony::Run(input, args);
+	//	if (!sol.SolutionExists) {
+	//		continue;
+	//	}
+	//	auto chromo = Chromosome(sol);
+	//	if (chromo.IsValid()) {
+	//		population.Add(chromo);
+	//	}
+	//}
 
 	int leftTries = populationSize * populationSize + 10;
 	while (population.Size() < populationSize) {
@@ -357,7 +343,12 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 		auto chromosomeCur = GenRandomChromosome(input.TargetsCnt, input);
 
 		if (chromosomeCur.IsValid()) {
-			population.Add(chromosomeCur);
+			if (Math::GenInt(0, 5)) {
+				population.Add(Mutation(chromosomeCur, 1, input, 20));
+			}
+			else {
+				population.Add(chromosomeCur);
+			}
 		}
 
 		leftTries--;
@@ -375,17 +366,23 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 	return population;
 }
 
-int genGoodIndex(int n) {
-	int tmp = Math::GenInt(1, n * (n + 1) * (2 * n + 1) / 6);
+int GenGoodIndex(int n) {
+	int tmp = Math::GenInt(0, n * (n + 1) * (2 * n + 1) / 6 - 1) * 2 / 3;
 	int cur = n;
 	for (int i = 0; i < n; i++) {
-		if (tmp <= cur * cur) {
+		if (tmp < cur * cur) {
 			return i;
 		}
 		tmp -= cur * cur;
 		cur--;
 	}
 	return n - 1;
+}
+
+int GenIndexForReplace(int n) {
+	int k = n / 2;
+	int tmp = GenGoodIndex(k);
+	return n - 1 - tmp;
 }
 
 // Args are: {n, alpha, betta, delta, p, timeLimit}
@@ -425,15 +422,10 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 
 		assert(population.Size() == n);
 
-	/*	int parent1ind = std::min(Math::GenInt(0, n - 1), Math::GenInt(0, n - 1));
-		int parent2ind = std::min(Math::GenInt(0, n - 1), Math::GenInt(0, n - 1));
+		int parent1ind = GenGoodIndex(n);
+		int parent2ind = GenGoodIndex(n);
 		while (parent2ind == parent1ind) {
-			parent2ind = std::min(Math::GenInt(0, n - 1), Math::GenInt(0, n - 1));
-		}*/
-		int parent1ind = genGoodIndex(n);
-		int parent2ind = genGoodIndex(n);
-		while (parent2ind == parent1ind) {
-			parent2ind = genGoodIndex(n);
+			parent2ind = GenGoodIndex(n);
 		}
 		if (parent2ind < parent1ind) {
 			std::swap(parent1ind, parent2ind);
@@ -442,7 +434,7 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 		auto child = Crossover(population.Chromosomes[parent1ind], population.Chromosomes[parent2ind], input);
 		auto mutatedChild = Mutation(child, mutationProb, input);
 
-		int replacedInd = Math::GenInt(n / 2, n - 1);
+		int replacedInd = GenIndexForReplace(n);
 
 		auto deletedChromosome = population.Chromosomes[replacedInd];
 
