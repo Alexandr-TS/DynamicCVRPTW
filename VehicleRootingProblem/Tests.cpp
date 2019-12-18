@@ -161,7 +161,7 @@ void TestBruteForceAlgo() {
 
 	assert(solution2.SolutionExists);
 
-	cout << "________________________________________Test Genetic Algo: OK\n";
+	cout << "________________________________________Test Brute Force Algo: OK\n";
 }
 
 void RunTests() {

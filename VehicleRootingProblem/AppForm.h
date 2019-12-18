@@ -66,7 +66,7 @@ namespace VehicleRootingProblem {
 
 		std::vector<InputData> DataSets;
 		std::vector<Algo> Algos = {
-			Algo("Greedy", EAlgorithms::Greedy, {})
+			Algo("Жадный алгоритм", EAlgorithms::Greedy, {})
 			/*
 			, Algo("Алгоритм Кларка-Райта", EAlgorithms::ClarkeWright, {}),
 			*/
