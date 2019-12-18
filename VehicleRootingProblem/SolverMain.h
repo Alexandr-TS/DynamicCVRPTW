@@ -2,7 +2,7 @@
 
 #include "Utils.h"
 
-enum EAlgorithms { DP, ClarkeWright, AntColony, Genetic, Greedy };
+enum EAlgorithms { BruteForce, AntColony, Genetic, Greedy };
 
 class SolverMain: public Solver {
 public:

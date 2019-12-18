@@ -223,11 +223,48 @@ void PopZerosFromPaths(MatrixInt& paths) {
 }
 
 // each path has format: {0, 3, 4, 1, 0}
+//bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
+//	bool have_0 = (paths[0].back() == 0);
+//	if (!have_0) {
+//		AppendZerosToPaths(paths);
+//	}
+//
+//	for (size_t path_1 = 0; path_1 < paths.size(); ++path_1) {
+//		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1]);
+//		for (size_t path_2 = path_1 + 1; path_2 < paths.size(); ++path_2) {
+//			double len_2 = CalcNewLenForGlobalOpt(input, paths[path_2]);
+//			for (size_t i1 = 1; i1 + 1 < paths[path_1].size(); i1++) {
+//				for (size_t i2 = 1; i2 + 1 < paths[path_2].size(); i2++) {
+//					if (!IsValidPrecheckForGlobalOpt(input, paths[path_1], paths[path_2], i1, i2)) {
+//						continue;
+//					}
+//					double new_len_1 = CalcNewLenForGlobalOpt(input, paths[path_1], i1, paths[path_2][i2]);
+//					double new_len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], i2, paths[path_1][i1]);
+//					if (new_len_1 + new_len_2 + EPS < len_1 + len_2 && new_len_1 < INF - 1 && new_len_2 < INF - 1) {
+//						swap(paths[path_1][i1], paths[path_2][i2]);
+//						if (!have_0) {
+//							PopZerosFromPaths(paths);
+//						}
+//						return true;
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	if (!have_0) {
+//		PopZerosFromPaths(paths);
+//	}
+//	return false;
+//}
+
 bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
 	bool have_0 = (paths[0].back() == 0);
 	if (!have_0) {
 		AppendZerosToPaths(paths);
 	}
+
+	bool improved = false;
 
 	for (size_t path_1 = 0; path_1 < paths.size(); ++path_1) {
 		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1]);
@@ -242,10 +279,9 @@ bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
 					double new_len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], i2, paths[path_1][i1]);
 					if (new_len_1 + new_len_2 + EPS < len_1 + len_2 && new_len_1 < INF - 1 && new_len_2 < INF - 1) {
 						swap(paths[path_1][i1], paths[path_2][i2]);
-						if (!have_0) {
-							PopZerosFromPaths(paths);
-						}
-						return true;
+						len_1 = new_len_1;
+						len_2 = new_len_2;
+						improved = true;
 					}
 				}
 			}
@@ -255,8 +291,51 @@ bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
 	if (!have_0) {
 		PopZerosFromPaths(paths);
 	}
-	return false;
+	return improved;
 }
+
+
+//
+//bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
+//	bool have_0 = (paths[0].back() == 0);
+//	if (!have_0) {
+//		AppendZerosToPaths(paths);
+//	}
+//	for (size_t path_1 = 0; path_1 < paths.size(); ++path_1) {
+//		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1], 0, 0);
+//		auto cur_path = paths[path_1];
+//		cur_path.insert(cur_path.begin(), { -1 });
+//		for (size_t i1 = 1; i1 + 1 < cur_path.size(); i1++) {
+//			swap(cur_path[i1 - 1], cur_path[i1]);
+//			for (size_t path_2 = 0; path_2 < paths.size(); ++path_2) {
+//				if (path_2 == path_1) {
+//					continue;
+//				}
+//				double len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], 0, 0);
+//				for (size_t i2 = 1; i2 + 1 < paths[path_2].size(); i2++) {
+//					cur_path[i1] = paths[path_2][i2];
+//					double new_len_1 = CalcNewLenForGlobalOpt(input, cur_path);
+//					// this makes two same adjacent vertices => dist = 0
+//					double new_len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], i2, paths[path_2][i2 - 1]);
+//					if (new_len_1 + new_len_2 + EPS < len_1 + len_2 && new_len_1 < INF - 1 && new_len_2 < INF - 1) {
+//						paths[path_1] = cur_path;
+//						paths[path_2].erase(paths[path_2].begin() + i2, paths[path_2].begin() + i2 + 1);
+//						if (!have_0) {
+//							PopZerosFromPaths(paths);
+//						}
+//						return true;
+//					}
+//				}
+//
+//			}
+//		}
+//	}
+//
+//	if (!have_0) {
+//		PopZerosFromPaths(paths);
+//	}
+//	return false;
+//}
 
 
 bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
@@ -264,18 +343,23 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 	if (!have_0) {
 		AppendZerosToPaths(paths);
 	}
+
+	bool improved = false;
+	bool iter_improved = false;
+
 	for (size_t path_1 = 0; path_1 < paths.size(); ++path_1) {
 		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1], 0, 0);
 		auto cur_path = paths[path_1];
 		cur_path.insert(cur_path.begin(), { -1 });
-		for (size_t i1 = 1; i1 + 1 < cur_path.size(); i1++) {
+		iter_improved = false;
+		for (size_t i1 = 1; !iter_improved && i1 + 1 < cur_path.size(); i1++) {
 			swap(cur_path[i1 - 1], cur_path[i1]);
-			for (size_t path_2 = 0; path_2 < paths.size(); ++path_2) {
+			for (size_t path_2 = 0; !iter_improved && path_2 < paths.size(); ++path_2) {
 				if (path_2 == path_1) {
 					continue;
 				}
 				double len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], 0, 0);
-				for (size_t i2 = 1; i2 + 1 < paths[path_2].size(); i2++) {
+				for (size_t i2 = 1; !iter_improved && i2 + 1 < paths[path_2].size(); i2++) {
 					cur_path[i1] = paths[path_2][i2];
 					double new_len_1 = CalcNewLenForGlobalOpt(input, cur_path);
 					// this makes two same adjacent vertices => dist = 0
@@ -283,10 +367,7 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 					if (new_len_1 + new_len_2 + EPS < len_1 + len_2 && new_len_1 < INF - 1 && new_len_2 < INF - 1) {
 						paths[path_1] = cur_path;
 						paths[path_2].erase(paths[path_2].begin() + i2, paths[path_2].begin() + i2 + 1);
-						if (!have_0) {
-							PopZerosFromPaths(paths);
-						}
-						return true;
+						improved = iter_improved = true;
 					}
 				}
 
@@ -297,30 +378,63 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 	if (!have_0) {
 		PopZerosFromPaths(paths);
 	}
-	return false;
+	return improved;
 }
+
+
+//
+//bool LocalSwapOptimization(std::vector<int>& path, InputData& input) {
+//	bool have_0 = (path.back() == 0);
+//	if (!have_0) {
+//		path.push_back(0);
+//	}
+//
+//	double len_1 = CalcNewLenForGlobalOpt(input, path);
+//	for (size_t i1 = 1; i1 + 1 < path.size(); ++i1) {
+//		for (size_t i2 = i1 + 1; i2 + 1 < path.size(); ++i2) {
+//			swap(path[i1], path[i2]);
+//			double new_len = CalcNewLenForGlobalOpt(input, path);
+//			if (new_len + EPS < len_1) {
+//				if (!have_0) {
+//					path.pop_back();
+//				}
+//				return true;
+//			}
+//			swap(path[i1], path[i2]);
+//		}
+//	}
+//	if (!have_0) {
+//		path.pop_back();
+//	}
+//	return false;
+//}
+
 
 bool LocalSwapOptimization(std::vector<int>& path, InputData& input) {
 	bool have_0 = (path.back() == 0);
 	if (!have_0) {
 		path.push_back(0);
 	}
+
+	bool improved = false;
+
 	double len_1 = CalcNewLenForGlobalOpt(input, path);
 	for (size_t i1 = 1; i1 + 1 < path.size(); ++i1) {
 		for (size_t i2 = i1 + 1; i2 + 1 < path.size(); ++i2) {
 			swap(path[i1], path[i2]);
 			double new_len = CalcNewLenForGlobalOpt(input, path);
 			if (new_len + EPS < len_1) {
-				if (!have_0) {
-					path.pop_back();
-				}
-				return true;
+				improved = true;
+				len_1 = new_len;
 			}
-			swap(path[i1], path[i2]);
+			else {
+				swap(path[i1], path[i2]);
+			}
 		}
 	}
 	if (!have_0) {
 		path.pop_back();
 	}
-	return false;
+	return improved;
 }
+

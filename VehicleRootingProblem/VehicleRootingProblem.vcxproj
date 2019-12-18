@@ -145,7 +145,7 @@
     <ClCompile Include="SolverAntColony.cpp" />
     <ClCompile Include="SolverGenetic.cpp" />
     <ClCompile Include="SolverGreedy.cpp" />
-    <ClCompile Include="SolverDP.cpp" />
+    <ClCompile Include="SolverBruteForce.cpp" />
     <ClCompile Include="SolverMain.cpp" />
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -160,7 +160,7 @@
     <ClInclude Include="SolverAntColony.h" />
     <ClInclude Include="SolverGenetic.h" />
     <ClInclude Include="SolverGreedy.h" />
-    <ClInclude Include="SolverDP.h" />
+    <ClInclude Include="SolverBruteForce.h" />
     <ClInclude Include="SolverMain.h" />
     <ClInclude Include="Tests.h" />
     <ClInclude Include="Utils.h" />

@@ -69,7 +69,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 			double cur_dist = input.Distance(i, j);
 			time_reserves[i][j] = input.TimeWindows[j].second - (input.TimeWindows[i].first + cur_dist);
 			tmp_max_time_reserve = max(tmp_max_time_reserve, time_reserves[i][j]);
-			if (!i && time_reserves[i][j] < 0) {
+			if (!i && input.TimeWindows[j].second < cur_dist) {
 				cout << "Vertex #" << j << " is not attainable from depot because of its time window" << endl;
 				return ProblemSolution();
 			}
@@ -90,8 +90,8 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			// if dist[i][j] == INF (edge i-j is invalid) then eta[i][j] = 0
-			eta[i][j] = max(0., dist[i][0] + dist[0][j] - etaG * dist[i][j] + etaF * abs(dist[i][0] - dist[0][j]) +
-				reserve_coef * min(1.0, (tmp_max_dist / tmp_max_time_reserve)) * time_reserves[i][j]);
+			eta[i][j] = max(0., dist[i][0] + dist[0][j] - etaG * dist[i][j] + etaF * abs(dist[i][0] - dist[0][j]));
+			// + reserve_coef * min(1.0, (tmp_max_dist / tmp_max_time_reserve)) * time_reserves[i][j]);
 		}
 	}
 

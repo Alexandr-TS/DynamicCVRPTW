@@ -28,6 +28,16 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 	for (auto& pt : points)
 		pt = std::make_pair((pt.first - minX) * sz2 / sz1 + 15, 15 + (pt.second - minY) * sz2 / sz1);
 
+	double newMinY = INF, newMaxY = -INF;
+	for (auto pt : points) {
+		newMinY = std::min(newMinY, pt.second);
+		newMaxY = std::max(newMaxY, pt.second);
+	}
+
+	for (auto& pt : points) {
+		pt.second = newMaxY - (pt.second - newMinY);
+	}
+
 	graphics->Clear(Color::White);
 
 	for (auto path : solution.Paths) {

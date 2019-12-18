@@ -1,4 +1,8 @@
 #include "Tests.h"
+#include "Optimizations.h"
+#include "SolverAntColony.h"
+#include "SolverGenetic.h"
+#include "SolverBruteForce.h"
 
 using namespace std;
 
@@ -136,6 +140,30 @@ void TestGeneticAlgo() {
 	cout << "________________________________________Test Genetic Algo: OK\n";
 }
 
+void TestBruteForceAlgo() {
+	auto input = InputData(2, 4, 1000,
+		{ {0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4} },
+		{ {-INF, INF}, {1, 1.5}, {2, 2.5}, {3, 3.5}, {4, 4.5} });
+	vector<double> args = {};
+
+	auto solution = SolverBruteForce::Run(input, args);
+
+	assert(solution.SolutionExists);
+	vector<int> expected_path = { 1, 2, 3, 4 };
+	assert(solution.Paths[0] == expected_path);
+	assert(abs(solution.MaxPathLength - 8) < EPS);
+	assert(abs(solution.SumOfPathLengths - 8) < EPS);
+
+	input = InputData(2, 3, 1000, 
+		{ {0, 0}, {0, 3}, {4, 0}, {4, 3} },
+		{ {-INF, INF}, {3, 3.5}, {4, 8.5}, {7, 7.5} });
+	auto solution2 = SolverBruteForce::Run(input, args);
+
+	assert(solution2.SolutionExists);
+
+	cout << "________________________________________Test Brute Force Algo: OK\n";
+}
+
 void RunTests() {
 	TestMath();
 	TestGlobalSwapOpt();
@@ -144,6 +172,7 @@ void RunTests() {
 	TestLocalSwapOpt2();
 	TestAntColonyAlgo();
 	TestGeneticAlgo();
+	TestBruteForceAlgo();
 	cout << "_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Unit testing have finished successfully\n";
 }
 
