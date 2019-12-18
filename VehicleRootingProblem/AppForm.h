@@ -178,8 +178,8 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ColRecom;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ColComment;
 	private: System::Windows::Forms::Button^ buttonRun;
-	private: System::Windows::Forms::RadioButton^ radioButtonMinMaxLen;
-	private: System::Windows::Forms::RadioButton^ radioButtonMinSum;
+
+
 
 
 
@@ -233,8 +233,6 @@ namespace VehicleRootingProblem {
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->groupBoxLaunches = (gcnew System::Windows::Forms::GroupBox());
 			this->buttonRun = (gcnew System::Windows::Forms::Button());
-			this->radioButtonMinMaxLen = (gcnew System::Windows::Forms::RadioButton());
-			this->radioButtonMinSum = (gcnew System::Windows::Forms::RadioButton());
 			this->comboBoxLaunchAlgo = (gcnew System::Windows::Forms::ComboBox());
 			this->labelChosenAlgo = (gcnew System::Windows::Forms::Label());
 			this->dataGridViewParams = (gcnew System::Windows::Forms::DataGridView());
@@ -303,8 +301,6 @@ namespace VehicleRootingProblem {
 			// groupBoxLaunches
 			// 
 			this->groupBoxLaunches->Controls->Add(this->buttonRun);
-			this->groupBoxLaunches->Controls->Add(this->radioButtonMinMaxLen);
-			this->groupBoxLaunches->Controls->Add(this->radioButtonMinSum);
 			this->groupBoxLaunches->Controls->Add(this->comboBoxLaunchAlgo);
 			this->groupBoxLaunches->Controls->Add(this->labelChosenAlgo);
 			this->groupBoxLaunches->Controls->Add(this->dataGridViewParams);
@@ -326,37 +322,13 @@ namespace VehicleRootingProblem {
 			this->buttonRun->UseVisualStyleBackColor = true;
 			this->buttonRun->Click += gcnew System::EventHandler(this, &AppForm::ButtonRun_Click);
 			// 
-			// radioButtonMinMaxLen
-			// 
-			this->radioButtonMinMaxLen->AutoSize = true;
-			this->radioButtonMinMaxLen->Location = System::Drawing::Point(324, 34);
-			this->radioButtonMinMaxLen->Margin = System::Windows::Forms::Padding(2);
-			this->radioButtonMinMaxLen->Name = L"radioButtonMinMaxLen";
-			this->radioButtonMinMaxLen->Size = System::Drawing::Size(148, 17);
-			this->radioButtonMinMaxLen->TabIndex = 21;
-			this->radioButtonMinMaxLen->Text = L"Минимизировать время";
-			this->radioButtonMinMaxLen->UseVisualStyleBackColor = true;
-			// 
-			// radioButtonMinSum
-			// 
-			this->radioButtonMinSum->AutoSize = true;
-			this->radioButtonMinSum->Checked = true;
-			this->radioButtonMinSum->Location = System::Drawing::Point(324, 12);
-			this->radioButtonMinSum->Margin = System::Windows::Forms::Padding(2);
-			this->radioButtonMinSum->Name = L"radioButtonMinSum";
-			this->radioButtonMinSum->Size = System::Drawing::Size(206, 17);
-			this->radioButtonMinSum->TabIndex = 20;
-			this->radioButtonMinSum->TabStop = true;
-			this->radioButtonMinSum->Text = L"Минимизировать суммарную длину";
-			this->radioButtonMinSum->UseVisualStyleBackColor = true;
-			// 
 			// comboBoxLaunchAlgo
 			// 
 			this->comboBoxLaunchAlgo->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->comboBoxLaunchAlgo->FormattingEnabled = true;
 			this->comboBoxLaunchAlgo->Location = System::Drawing::Point(78, 16);
 			this->comboBoxLaunchAlgo->Name = L"comboBoxLaunchAlgo";
-			this->comboBoxLaunchAlgo->Size = System::Drawing::Size(226, 21);
+			this->comboBoxLaunchAlgo->Size = System::Drawing::Size(306, 21);
 			this->comboBoxLaunchAlgo->TabIndex = 3;
 			this->comboBoxLaunchAlgo->SelectedIndexChanged += gcnew System::EventHandler(this, &AppForm::ComboBoxLaunchAlgo_SelectedIndexChanged);
 			// 
@@ -477,6 +449,7 @@ namespace VehicleRootingProblem {
 			});
 			this->listViewLoadedDataSets->FullRowSelect = true;
 			this->listViewLoadedDataSets->GridLines = true;
+			this->listViewLoadedDataSets->HideSelection = false;
 			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem1 });
 			this->listViewLoadedDataSets->Location = System::Drawing::Point(6, 19);
 			this->listViewLoadedDataSets->MultiSelect = false;
@@ -883,9 +856,7 @@ namespace VehicleRootingProblem {
 	private: System::Void ButtonRun_Click(System::Object^ sender, System::EventArgs^ e) {
 		int algoInd = this->comboBoxLaunchAlgo->SelectedIndex - 1;
 		int dataSetInd = this->listViewLoadedDataSets->SelectedIndices[0];
-		ProblemMode mode = ProblemMode::MINMAXLEN;
-		if (this->radioButtonMinSum->Checked)
-			mode = ProblemMode::MINSUM;
+		ProblemMode mode = ProblemMode::MINSUM;
 		std::vector<double> args;
 		for (int i = 0; i < this->dataGridViewParams->Rows->Count; ++i) {
 			try {
@@ -930,7 +901,6 @@ namespace VehicleRootingProblem {
 		}
 		else {
 			AppFormVars::DataSets.push_back(AppFormVars::LoadedInputData);
-			//auto newitem = gcnew ListViewItem(ToText((int)AppFormVars::DataSets.size()));
 			std::string fn = AppFormVars::DataSets.back().FileName;
 			std::size_t found = fn.find_last_of("/\\");
 			fn = fn.substr(found + 1);

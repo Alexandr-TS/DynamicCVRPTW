@@ -190,9 +190,17 @@ Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input)
 		std::swap(par1, par2);
 	}
 	int n = par1->Seq.size();
-//	int tl = Math::GenInt(0, n - 1);
-	int tl = 0;
+	int tl = Math::GenInt(0, n - 1);
+//	int tl = 0;
 	int tr = Math::GenInt(0, n - 1);
+
+	if (Math::GenInt(0, 1)) {
+		tl = 0;
+	}
+	else {
+		tr = n - 1;
+	}
+
 	if (tr < tl) {
 		std::swap(tr, tl);
 	}
@@ -277,7 +285,7 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 	return paths;
 }
 
-Chromosome Mutation(Chromosome& c, double p, InputData& input, int cnt_improves = 15) {
+Chromosome Mutation(Chromosome& c, double p, InputData& input, int cnt_improves = 4) {
 	double x = Math::GenDouble(0, 1);
 	if (x > p) {
 		return c;
@@ -316,26 +324,25 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 	}
 
 	std::vector<std::vector<double>> argss = {
-		{ 3, 4, 0.4, 2, 3, 0.8, 5, 0.5, 0 },
-		{ 5, 5, 0.75, 2, 2, 0.35, 6, 0.25, 0 },
-		{ 3, 4, 0.4, 2, 3, 0.8, 5, 0.5, 0 },
-		{ 4, 4, 0.5, 2, 2, 0.35, 4, 0.4, 0 },
-		{ 3, 3, 0.35, 2, 3, 0.35, 6, 0.6, 0 }
+		//{ 3, 4, 0.4, 2, 3, 0.4, 5, 0.5, 0 },
+		//{ 5, 5, 0.75, 2, 2, 0.35, 6, 0.25, 0 },
+		//{ 4, 4, 0.5, 2, 2, 0.35, 4, 0.4, 0 },
+		//{ 3, 3, 0.35, 2, 3, 0.35, 6, 0.6, 0 }
 	};
 
-	//for (std::vector<double> args: argss) {
-	//	if (population.Size() == populationSize) {
-	//		break;
-	//	}
-	//	auto sol = SolverAntColony::Run(input, args);
-	//	if (!sol.SolutionExists) {
-	//		continue;
-	//	}
-	//	auto chromo = Chromosome(sol);
-	//	if (chromo.IsValid()) {
-	//		population.Add(chromo);
-	//	}
-	//}
+	for (std::vector<double> args: argss) {
+		if (population.Size() == populationSize) {
+			break;
+		}
+		auto sol = SolverAntColony::Run(input, args);
+		if (!sol.SolutionExists) {
+			continue;
+		}
+		auto chromo = Chromosome(sol);
+		if (chromo.IsValid()) {
+			population.Add(chromo);
+		}
+	}
 
 	int leftTries = populationSize * populationSize + 10;
 	while (population.Size() < populationSize) {
@@ -367,7 +374,7 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 }
 
 int GenGoodIndex(int n) {
-	int tmp = Math::GenInt(0, n * (n + 1) * (2 * n + 1) / 6 - 1) * 2 / 3;
+	int tmp = Math::GenInt(0, n * (n + 1) * (2 * n + 1) / 6 - 1);
 	int cur = n;
 	for (int i = 0; i < n; i++) {
 		if (tmp < cur * cur) {
@@ -380,7 +387,7 @@ int GenGoodIndex(int n) {
 }
 
 int GenIndexForReplace(int n) {
-	int k = n / 2;
+	int k = 2 * n / 3;
 	int tmp = GenGoodIndex(k);
 	return n - 1 - tmp;
 }
