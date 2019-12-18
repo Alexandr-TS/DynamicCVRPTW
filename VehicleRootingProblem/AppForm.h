@@ -83,12 +83,13 @@ namespace VehicleRootingProblem {
 			})
 			, Algo("Генетический алгоритм", EAlgorithms::Genetic, {
 				Param("N", 30, "Размер популяции"),
-				Param("Alpha", 3000, "Максимальное количество изменений популяции"),
-				Param("Betta", 1000, "Максимальное количество итераций без улучшения лучшего решения"),
+				Param("Alpha", 1500, "Максимальное количество изменений популяции"),
+				Param("Betta", 900, "Максимальное количество итераций без улучшения лучшего решения"),
 				Param("Delta", 0.5, "Минимальная разность фитнес-функций двух решений"),
 				Param("P", 0.5, "Вероятность мутации"),
 				Param("TimeLimit", 0, "Ограничение по времени. Если не 0, то Alpha и Betta не учитываются")
 			})
+			, Algo("Полный перебор", EAlgorithms::BruteForce, {})
 		};
 		std::vector<Launch> Launches;
 		InputData LoadedInputData;
@@ -467,7 +468,7 @@ namespace VehicleRootingProblem {
 			// 
 			// colDrons
 			// 
-			this->colDrons->Text = L"Количество БПЛА";
+			this->colDrons->Text = L"Количество ТС";
 			this->colDrons->Width = 108;
 			// 
 			// colTargets
@@ -546,7 +547,9 @@ namespace VehicleRootingProblem {
 			this->dataGridViewResults->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->dataGridViewResults->ClipboardCopyMode = System::Windows::Forms::DataGridViewClipboardCopyMode::EnableAlwaysIncludeHeaderText;
 			this->dataGridViewResults->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridViewResults->Cursor = System::Windows::Forms::Cursors::Arrow;
 			this->dataGridViewResults->Location = System::Drawing::Point(6, 43);
 			this->dataGridViewResults->Name = L"dataGridViewResults";
 			this->dataGridViewResults->ReadOnly = true;
@@ -689,7 +692,7 @@ namespace VehicleRootingProblem {
 
 		if (ind <= 0) {
 			int colInd = 0;
-			for (auto col : { "Номер датасета", "Алгоритм", "Минимизируемая величина", "Количество БПЛА",
+			for (auto col : { "Номер датасета", "Алгоритм", "Минимизируемая величина", "Количество ТС",
 				"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 				this->dataGridViewResults->Columns->Add(ToText(colInd++), ToText((std::string)col));
 			}
@@ -723,7 +726,7 @@ namespace VehicleRootingProblem {
 		}
 		else {
 			int colInd = 0;
-			for (auto col : { "Номер датасета", "Минимизируемая величина", "Количество БПЛА",
+			for (auto col : { "Номер датасета", "Минимизируемая величина", "Количество TC",
 				"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 				this->dataGridViewResults->Columns->Add(ToText(colInd++), ToText((std::string)col));
 			}
@@ -809,7 +812,7 @@ namespace VehicleRootingProblem {
 		this->dataGridViewSelectedRes->Columns->Clear();
 
 		int colInd = 0;
-		for (auto col : { "Номер датасета", "Минимизируемая величина", "Количество БПЛА",
+		for (auto col : { "Номер датасета", "Минимизируемая величина", "Количество TC",
 			"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)col));
 		}

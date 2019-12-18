@@ -39,9 +39,6 @@
     <ClCompile Include="SolverGreedy.cpp">
       <Filter>Solvers</Filter>
     </ClCompile>
-    <ClCompile Include="SolverDP.cpp">
-      <Filter>Solvers</Filter>
-    </ClCompile>
     <ClCompile Include="SolverAntColony.cpp">
       <Filter>Solvers</Filter>
     </ClCompile>
@@ -50,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="Tests.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SolverBruteForce.cpp">
+      <Filter>Solvers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,9 +71,6 @@
     <ClInclude Include="SolverAntColony.h">
       <Filter>Solvers</Filter>
     </ClInclude>
-    <ClInclude Include="SolverDP.h">
-      <Filter>Solvers</Filter>
-    </ClInclude>
     <ClInclude Include="SolverGreedy.h">
       <Filter>Solvers</Filter>
     </ClInclude>
@@ -85,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="Tests.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SolverBruteForce.h">
+      <Filter>Solvers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

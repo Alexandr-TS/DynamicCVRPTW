@@ -272,7 +272,6 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 		}
 	}
 
-
 	std::vector<std::vector<int>> paths;
 	for (int i = n - 1; i != 0; i = prev[i]) {
 		paths.push_back({});
@@ -285,7 +284,7 @@ std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input
 	return paths;
 }
 
-Chromosome Mutation(Chromosome& c, double p, InputData& input, int cnt_improves = 4) {
+Chromosome Mutation(Chromosome& c, double p, InputData& input, int cnt_improves = 3) {
 	double x = Math::GenDouble(0, 1);
 	if (x > p) {
 		return c;
@@ -351,7 +350,7 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 
 		if (chromosomeCur.IsValid()) {
 			if (Math::GenInt(0, 5)) {
-				population.Add(Mutation(chromosomeCur, 1, input, 20));
+				population.Add(Mutation(chromosomeCur, 1, input, 30));
 			}
 			else {
 				population.Add(chromosomeCur);
