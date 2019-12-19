@@ -3,9 +3,6 @@
 #include "SolverGreedy.h"
 #include "Optimizations.h"
 
-ProblemMode GlobalProblemMode;
-int GlobalCntDrons;
-
 struct Chromosome {
 	std::vector<int> Seq;
 	double Fitness;
@@ -64,7 +61,7 @@ struct Chromosome {
 		Fitness = CalcFitness(seq, input);
 	}
 
-	Chromosome(std::vector<std::vector<int>>& paths, InputData& input) {
+	Chromosome(MatrixInt& paths, InputData& input) {
 		for (auto& path : paths) {
 			for (auto x : path) {
 				Seq.push_back(x);
@@ -191,7 +188,6 @@ Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input)
 	}
 	int n = par1->Seq.size();
 	int tl = Math::GenInt(0, n - 1);
-//	int tl = 0;
 	int tr = Math::GenInt(0, n - 1);
 
 	if (Math::GenInt(0, 1)) {
@@ -232,7 +228,7 @@ Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input)
 	return Chromosome(child, input);
 }
 
-std::vector<std::vector<int>> SplitPaths(std::vector<int> path, InputData& input) {
+MatrixInt SplitPaths(std::vector<int> path, InputData& input) {
 	if (path.empty()) {
 		return {};
 	}
@@ -322,13 +318,11 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 		}
 	}
 
+	// Fill args for ACO
 	std::vector<std::vector<double>> argss = {
-		//{ 3, 4, 0.4, 2, 3, 0.4, 5, 0.5, 0 },
-		//{ 5, 5, 0.75, 2, 2, 0.35, 6, 0.25, 0 },
-		//{ 4, 4, 0.5, 2, 2, 0.35, 4, 0.4, 0 },
-		//{ 3, 3, 0.35, 2, 3, 0.35, 6, 0.6, 0 }
+		//{ 3, 4, 0.4, 2, 3, 2, 5, 0.5, 0 },
 	};
-
+	// Ant Colony Algo
 	for (std::vector<double> args: argss) {
 		if (population.Size() == populationSize) {
 			break;
@@ -343,9 +337,8 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 		}
 	}
 
-	int leftTries = populationSize * populationSize + 10;
+	int leftTries = populationSize * populationSize + 100;
 	while (population.Size() < populationSize) {
-
 		auto chromosomeCur = GenRandomChromosome(input.TargetsCnt, input);
 
 		if (chromosomeCur.IsValid()) {
@@ -359,7 +352,10 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 
 		leftTries--;
 		if (leftTries <= 0) {
-			std::cout << "Error: No tries left in init population. Number of done chromosomes: " << population.Size() << std::endl;
+			std::cout << "GA. Error: No tries left in init population. Number of done chromosomes: " << population.Size() << std::endl;
+			if (input.TargetsCnt < 10) {
+				std::cout << "GA. It's fine for small inputs" << std::endl;
+			}
 			break;
 		}
 	}
@@ -368,7 +364,7 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 		assert(x.Fitness < INF - EPS);
 	}
 
-	std::cout << "Population initialized" << std::endl;
+	std::cout << "GA. Population initialized" << std::endl;
 	return population;
 }
 
@@ -394,9 +390,9 @@ int GenIndexForReplace(int n) {
 // Args are: {n, alpha, betta, delta, p, timeLimit}
 // Suggested args: {30, 3000, 1000, 0.5, 0.05, 0}
 ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
-	GlobalCntDrons = input.DronsCnt;
 	for (int i = 1; i <= input.TargetsCnt; ++i) {
-		if (input.Distance(0, i) * 2 > input.MaxDist - 0.001 || input.TimeWindows[i].second < input.Distance(0, i)) {
+		if (input.Distance(0, i) * 2 > input.MaxDist - EPS || 
+			input.TimeWindows[i].second < input.Distance(0, i)) {
 			return ProblemSolution();
 		}
 	}
@@ -452,14 +448,15 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 
 		nonImproveIters++;
 
-		if (nonImproveIters % 50 == 0) {
-			std::cout << "iters: " << nonImproveIters << " " << productiveIters << ", current child: " << mutatedChild.Fitness << std::endl;
+		if (productiveIters % 100 == 0) {
+			std::cout << "GA. Number of productive iterations: " << productiveIters << 
+				". Number of iterations without improving best solution: " << nonImproveIters << std::endl;
 		}
 
 		if (population.IsAddible(mutatedChild)) {
 			if (mutatedChild.Fitness < population.Chromosomes[0].Fitness) {
 				nonImproveIters = 0;
-				std::cout << "New best fitness: " << mutatedChild.Fitness << std::endl;
+				std::cout << "GA. New best solution found: " << mutatedChild.Fitness << std::endl;
 			}
 			productiveIters++;
 

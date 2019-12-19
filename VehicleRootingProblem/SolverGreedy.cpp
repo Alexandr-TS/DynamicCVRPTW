@@ -46,7 +46,7 @@ ProblemSolution RunMinSum(InputData input) {
 				input.TimeWindows[targetIndex].second) {
 				works = false;
 			}
-			// too long path
+			// path is too long 
 			if (doneDistance[i] + input.Distance(pointIndexOfDron[i], targetIndex) + 
 				input.Distance(targetIndex, 0) > input.MaxDist) {
 				works = false;
@@ -63,7 +63,7 @@ ProblemSolution RunMinSum(InputData input) {
 		}
 		
 		if (dronIndex == -1) {
-			return ProblemSolution(init_input, paths, times);
+			return ProblemSolution(init_input, paths);
 		}
 
 		doneDistance[dronIndex] += input.Distance(pointIndexOfDron[dronIndex], targetIndex);
@@ -74,7 +74,7 @@ ProblemSolution RunMinSum(InputData input) {
 		paths[dronIndex].push_back(targetsPermutation[targetIndex]);
 	}
 
-	return ProblemSolution(init_input, paths, times);
+	return ProblemSolution(init_input, paths);
 }
 
 
@@ -94,7 +94,8 @@ ProblemSolution SolverGreedy::Run(InputData input, ProblemMode problemMode, std:
 			double tm = (tl + tr) / 2;
 			bool works = true;
 			for (int i = 1; i < (int)input.TimeWindows.size(); i++) {
-				input_copy.TimeWindows[i].second = std::min(input.TimeWindows[i].second, tm - input_copy.Distance(i, 0));
+				input_copy.TimeWindows[i].second = 
+					std::min(input.TimeWindows[i].second, tm - input_copy.Distance(i, 0));
 				if (input_copy.TimeWindows[i].first > input_copy.TimeWindows[i].second) {
 					works = false;
 				}
@@ -113,6 +114,6 @@ ProblemSolution SolverGreedy::Run(InputData input, ProblemMode problemMode, std:
 				tl = tm;
 			}
 		}
-		return ProblemSolution(input, answer_solution.Paths, answer_solution.ArrivalTimes);
+		return ProblemSolution(input, answer_solution.Paths);
 	}
 }

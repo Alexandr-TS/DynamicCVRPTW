@@ -23,26 +23,21 @@ ProblemSolution SolverMain::Run(InputData input, ProblemMode problemMode,
 		solution = SolverBruteForce::Run(input, args);
 	}
 
-	cout << "\n\n\n__________________________________________________";
-	cout << "TOTAL TIME OF ALGORITHM: " << fixed << setprecision(2) << (clock() - start_time) / CLOCKS_PER_SEC << " " << endl;
+	cout << "\n\n__________________________________________________\n";
+	cout << "TOTAL WORK TIME: " << fixed << setprecision(2) << (clock() - start_time) / CLOCKS_PER_SEC << " " << endl;
 	if (solution.SolutionExists) {
-		cout << fixed << setprecision(2) << solution.SumOfPathLengths << endl;
+		cout << "SOLUTION SUM OF LENGTHS: " << fixed << setprecision(2) << solution.SumOfPathLengths << endl;
 	}
 	else {
-		cout << "-1.0" << endl;
+		cout << "Solution not found" << endl;
 	}
 	cout << "__________________________________________________\n\n";
 	return solution;
-	/*
-	else if (algorithm == EAlgorithms::ClarkeWright) {
-		return SolverClarkeWright::Run(input, problemMode, args);
-	} 
-	*/
 }
 
-/*ProblemSolution SolverMain::Run(InputData input, ProblemMode problemMode, 
+// Useful to run all the algos with selected input 
+ProblemSolution RunAllAlgos(InputData input, ProblemMode problemMode, 
 	EAlgorithms algorithm, std::vector<double> args) {
-
 	vector<pair<double, double>> answer;
 
 	auto solution = ProblemSolution();
@@ -51,7 +46,6 @@ ProblemSolution SolverMain::Run(InputData input, ProblemMode problemMode,
 		{}, {3, 4, 0.4, 2, 3, 2, 5, 0.5, 0}, {30, 1500, 900, 0.5, 0.5, 0}, {} 
 	};
 
-	
 	double start_time = clock();
 	solution = SolverGreedy::Run(input, problemMode, argss[0]);
 	if (solution.SolutionExists)
@@ -83,11 +77,10 @@ ProblemSolution SolverMain::Run(InputData input, ProblemMode problemMode,
 	}
 
 	cout << "\n\n\n__________________________________________________";
-	cout << "TOTAL TIME OF ALGORITHM: " << endl;
+	cout << "TOTAL WORK TIME: " << endl;
 	for (auto x : answer) {
 		cout << fixed << setprecision(2) << x.first << " " << x.second << " ";
 	}
 	cout << "__________________________________________________\n\n";
 	return solution;
 }
-*/
