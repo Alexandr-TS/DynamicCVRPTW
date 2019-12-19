@@ -63,57 +63,6 @@ ProblemSolution::ProblemSolution() {
 	SumOfPathLengths = 0;
 }
 
-
-// paths: {{1, 2, 3}, {6, 5, 4, 7}}. without 0. 0 is depot
-ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, MatrixDouble arrivalTimes)
-	: Input(input)
-	, Paths(paths)
-	, ArrivalTimes(arrivalTimes)
-{
-	MaxPathLength = 0;
-	SumOfPathLengths = 0;
-
-	// Check that solution is valid
-	SolutionExists = true;
-
-	std::vector<int> used(input.TargetsCnt, 0);
-
-	assert(paths.size() == arrivalTimes.size());
-
-	for (int pathInd = 0; pathInd < (int)paths.size(); ++pathInd) {
-		auto path = paths[pathInd];
-		if (path.size() == 0)
-			continue;
-		double currentLength = input.Distance(path.back(), 0);
-		int lastIndex = 0;
-
-		for (int i = 0; i < (int)path.size(); ++i) {
-			auto index = path[i];
-			assert(path.size() == arrivalTimes[pathInd].size());
-			if (input.TimeWindows[index].first - EPS > arrivalTimes[pathInd][i] || 
-				input.TimeWindows[index].second + EPS < arrivalTimes[pathInd][i]) {
-				SolutionExists = false;
-			}
-			assert(index > 0 && index <= input.TargetsCnt);
-			currentLength += input.Distance(lastIndex, index);
-			lastIndex = index;
-			used[index - 1]++;
-		}
-
-		MaxPathLength = std::max(MaxPathLength, currentLength);
-		SumOfPathLengths += currentLength;
-	}
-
-	for (size_t i = 0; i < used.size(); i++)
-		if (used[i] != 1)
-			SolutionExists = false;
-
-	if (MaxPathLength - EPS > input.MaxDist || (int)paths.size() > input.DronsCnt) {
-		SolutionExists = false;
-	}
-}
-
-
 // paths: {{1, 2, 3}, {6, 5, 4, 7}}. without 0. 0 is depot
 ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
 	: Input(input)
@@ -147,7 +96,7 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
 			ArrivalTimes.back().push_back(cur_time);
 			if (cur_time > input.TimeWindows[index].second + EPS) {
 				SolutionExists = false;
-				std::cout << "It's ProblemSolution constructor. Solution is not valid because of time windows" << std::endl;
+				std::cout << "ProblemSolution constructor. Solution is not valid because of time windows" << std::endl;
 			}
 			currentLength += this_dist;
 			lastIndex = index;
@@ -161,11 +110,18 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
 	for (size_t i = 0; i < used.size(); i++) {
 		if (used[i] != 1) {
 			SolutionExists = false;
+			std::cout << "ProblemSolution constructor. Solution is not valid because not all the vertices were visited" << std::endl;
 		}
 	}
 
-	if (MaxPathLength - EPS > input.MaxDist || (int)paths.size() > input.DronsCnt) {
+	if (MaxPathLength - EPS > input.MaxDist) { 
 		SolutionExists = false;
+		std::cout << "ProblemSolution constructor. Solution is not valid because one of the paths is longer than MaxDist" << std::endl;
+	}
+	if ((int)paths.size() > input.DronsCnt) {
+		SolutionExists = false;
+		std::cout << "ProblemSolution constructor. Solution is not valid because there are more paths than vehicles" << std::endl;
+
 	}
 }
 

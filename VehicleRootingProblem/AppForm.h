@@ -67,9 +67,6 @@ namespace VehicleRootingProblem {
 		std::vector<InputData> DataSets;
 		std::vector<Algo> Algos = {
 			Algo("Жадный алгоритм", EAlgorithms::Greedy, {})
-			/*
-			, Algo("Алгоритм Кларка-Райта", EAlgorithms::ClarkeWright, {}),
-			*/
 			, Algo("Муравьиный алгоритм", EAlgorithms::AntColony, {
 				Param("Alpha", 3, "Показатель степени стойкости феромонов в формуле вероятности выбора ребра"),
 				Param("Betta", 4, "Показатель степени функции видимости в формуле вероятности выбора ребра"),
@@ -692,7 +689,7 @@ namespace VehicleRootingProblem {
 
 		if (ind <= 0) {
 			int colInd = 0;
-			for (auto col : { "Номер датасета", "Алгоритм", "Минимизируемая величина", "Количество ТС",
+			for (auto col : { "Имя файла", "Алгоритм", "Количество ТС",
 				"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 				this->dataGridViewResults->Columns->Add(ToText(colInd++), ToText((std::string)col));
 			}
@@ -708,25 +705,23 @@ namespace VehicleRootingProblem {
 				this->dataGridViewResults->Rows[rowInd]->Cells[1]->Value = 
 					ToText(AppFormVars::Algos[launch.AlgoIndex].Name);
 				this->dataGridViewResults->Rows[rowInd]->Cells[2]->Value = 
-					ToText(launch.Mode == ProblemMode::MINMAXLEN ? "Макс длина пути" : "Сумма длин путей");
-				this->dataGridViewResults->Rows[rowInd]->Cells[3]->Value = 
 					ToText(AppFormVars::DataSets[launch.DataSetIndex].DronsCnt);
-				this->dataGridViewResults->Rows[rowInd]->Cells[4]->Value = 
+				this->dataGridViewResults->Rows[rowInd]->Cells[3]->Value = 
 					ToText(AppFormVars::DataSets[launch.DataSetIndex].TargetsCnt);
-				this->dataGridViewResults->Rows[rowInd]->Cells[5]->Value = 
+				this->dataGridViewResults->Rows[rowInd]->Cells[4]->Value = 
 					ToText(AppFormVars::DataSets[launch.DataSetIndex].MaxDist);
-				this->dataGridViewResults->Rows[rowInd]->Cells[6]->Value = 
+				this->dataGridViewResults->Rows[rowInd]->Cells[5]->Value = 
 					ToText(launch.Solution.SumOfPathLengths);
-				this->dataGridViewResults->Rows[rowInd]->Cells[7]->Value = 
+				this->dataGridViewResults->Rows[rowInd]->Cells[6]->Value = 
 					ToText(launch.Solution.MaxPathLength);
 
-				this->dataGridViewResults->Rows[rowInd]->Cells[8]->Value = ToText(rowInd);
+				this->dataGridViewResults->Rows[rowInd]->Cells[7]->Value = ToText(rowInd);
 			}
 			return;
 		}
 		else {
 			int colInd = 0;
-			for (auto col : { "Номер датасета", "Минимизируемая величина", "Количество TC",
+			for (auto col : { "Номер датасета", "Количество TC",
 				"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 				this->dataGridViewResults->Columns->Add(ToText(colInd++), ToText((std::string)col));
 			}
@@ -746,18 +741,16 @@ namespace VehicleRootingProblem {
 				this->dataGridViewResults->Rows[rowInd]->Cells[0]->Value = 
 					ToText(launch.DataSetIndex + 1);
 				this->dataGridViewResults->Rows[rowInd]->Cells[1]->Value = 
-					ToText(launch.Mode == ProblemMode::MINMAXLEN ? "Макс длина пути" : "Сумма длин путей");
-				this->dataGridViewResults->Rows[rowInd]->Cells[2]->Value = 
 					ToText(AppFormVars::DataSets[launch.DataSetIndex].DronsCnt);
-				this->dataGridViewResults->Rows[rowInd]->Cells[3]->Value = 
+				this->dataGridViewResults->Rows[rowInd]->Cells[2]->Value = 
 					ToText(AppFormVars::DataSets[launch.DataSetIndex].TargetsCnt);
-				this->dataGridViewResults->Rows[rowInd]->Cells[4]->Value = 
+				this->dataGridViewResults->Rows[rowInd]->Cells[3]->Value = 
 					ToText(AppFormVars::DataSets[launch.DataSetIndex].MaxDist);
-				this->dataGridViewResults->Rows[rowInd]->Cells[5]->Value = 
+				this->dataGridViewResults->Rows[rowInd]->Cells[4]->Value = 
 					ToText(launch.Solution.SumOfPathLengths);
-				this->dataGridViewResults->Rows[rowInd]->Cells[6]->Value = 
+				this->dataGridViewResults->Rows[rowInd]->Cells[5]->Value = 
 					ToText(launch.Solution.MaxPathLength);
-				int curCol = 7;
+				int curCol = 6;
 				for (auto& param : launch.ParamsVals) {
 					this->dataGridViewResults->Rows[rowInd]->Cells[curCol++]->Value = ToText(param);
 				}
@@ -812,7 +805,7 @@ namespace VehicleRootingProblem {
 		this->dataGridViewSelectedRes->Columns->Clear();
 
 		int colInd = 0;
-		for (auto col : { "Номер датасета", "Минимизируемая величина", "Количество TC",
+		for (auto col : { "Номер датасета", "Количество TC",
 			"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)col));
 		}
@@ -824,19 +817,16 @@ namespace VehicleRootingProblem {
 		this->dataGridViewSelectedRes->Rows[0]->Cells[0]->Value = 
 			ToText(AppFormVars::Launches[launchInd].DataSetIndex + 1);
 		this->dataGridViewSelectedRes->Rows[0]->Cells[1]->Value = 
-			ToText(AppFormVars::Launches[launchInd].Mode == 
-				ProblemMode::MINMAXLEN ? "Макс длина пути" : "Сумма длин путей");
-		this->dataGridViewSelectedRes->Rows[0]->Cells[2]->Value = 
 			ToText(AppFormVars::DataSets[AppFormVars::Launches[launchInd].DataSetIndex].DronsCnt);
-		this->dataGridViewSelectedRes->Rows[0]->Cells[3]->Value = 
+		this->dataGridViewSelectedRes->Rows[0]->Cells[2]->Value = 
 			ToText(AppFormVars::DataSets[AppFormVars::Launches[launchInd].DataSetIndex].TargetsCnt);
-		this->dataGridViewSelectedRes->Rows[0]->Cells[4]->Value = 
+		this->dataGridViewSelectedRes->Rows[0]->Cells[3]->Value = 
 			ToText(AppFormVars::DataSets[AppFormVars::Launches[launchInd].DataSetIndex].MaxDist);
-		this->dataGridViewSelectedRes->Rows[0]->Cells[5]->Value = 
+		this->dataGridViewSelectedRes->Rows[0]->Cells[4]->Value = 
 			ToText(AppFormVars::Launches[launchInd].Solution.SumOfPathLengths);
-		this->dataGridViewSelectedRes->Rows[0]->Cells[6]->Value = 
+		this->dataGridViewSelectedRes->Rows[0]->Cells[5]->Value = 
 			ToText(AppFormVars::Launches[launchInd].Solution.MaxPathLength);
-		int curCol = 7;
+		int curCol = 6;
 		for (auto& param : AppFormVars::Launches[launchInd].ParamsVals) {
 			this->dataGridViewSelectedRes->Rows[0]->Cells[curCol++]->Value = ToText(param);
 		}
@@ -900,7 +890,7 @@ namespace VehicleRootingProblem {
 	private: System::Void ButtonUploadFile_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (!AppFormVars::LoadedInputData.DronsCnt && !AppFormVars::LoadedInputData.TargetsCnt) {
 			MessageBox::Show("Неверный формат файла. Требуемый формат:\n" +
-				"КоличествоДронов КоличествоЦелей ДальностьПолёта\n Список пар координат");
+				"Количество ТС КоличествоЦелей ДальностьПолёта\n Список пар координат\nСписок временных окон");
 		}
 		else {
 			AppFormVars::DataSets.push_back(AppFormVars::LoadedInputData);

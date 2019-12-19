@@ -4,7 +4,7 @@
 using namespace std;
 
 // Args are: {alpha, betta, p, f, g, iterations coef, sigma, candList coef}
-// Suggested args: {5, 5, 0.75, 2, 2, 2, 6, 0.25}
+// Suggested args: { 3, 4, 0.4, 2, 3, 2, 5, 0.5, 0 },
 // Iterations coef - is a coefficent which will be multiplied by number of targets
 // candList coef sets fraction of viewed neares vertices
 ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) {
@@ -21,8 +21,9 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 	double etaG = (int)args[4];
 	// Number of iterations
 	int iterations = (int)(args[5] * input.TargetsCnt);
-	if (timeLimit > EPS)
+	if (timeLimit > EPS) {
 		iterations = INF;
+	}
 	// Number of elitist ants
 	int sigma = std::min((int)args[6], input.TargetsCnt);
 	// Coefficient for candidate list. ListSize = n * candListCoef
@@ -63,18 +64,15 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 		fill(time_reserves[i], time_reserves[i] + n, 0);
 	}
 
-	double tmp_max_dist = 0, tmp_max_time_reserve = 0;
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			double cur_dist = input.Distance(i, j);
 			time_reserves[i][j] = input.TimeWindows[j].second - (input.TimeWindows[i].first + cur_dist);
-			tmp_max_time_reserve = max(tmp_max_time_reserve, time_reserves[i][j]);
 			if (!i && input.TimeWindows[j].second < cur_dist) {
-				cout << "Vertex #" << j << " is not attainable from depot because of its time window" << endl;
+				cout << "ACO. Vertex #" << j << " is not attainable from depot because of its time window" << endl;
 				return ProblemSolution();
 			}
 			dist[i][j] = (time_reserves[i][j] < 0 ? INF : cur_dist);
-			tmp_max_dist = max(tmp_max_dist, cur_dist);
 			if (j) {
 				candList[i][j - 1] = { dist[i][j], j };
 			}
@@ -83,15 +81,15 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 	}
 
 	if (*max_element(dist[0], dist[0] + n) * 2 > input.MaxDist) {
-		cout << "There is an element no attainable because of its distance and MaxDronDistance" << endl;
+		cout << "ACO. There is an element no attainable because of its distance and MaxDronDistance" << endl;
 		return ProblemSolution();
 	}
 
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
 			// if dist[i][j] == INF (edge i-j is invalid) then eta[i][j] = 0
-			eta[i][j] = max(0., dist[i][0] + dist[0][j] - etaG * dist[i][j] + etaF * abs(dist[i][0] - dist[0][j]));
-			// + reserve_coef * min(1.0, (tmp_max_dist / tmp_max_time_reserve)) * time_reserves[i][j]);
+			eta[i][j] = max(0., dist[i][0] + dist[0][j] - 
+				etaG * dist[i][j] + etaF * abs(dist[i][0] - dist[0][j]));
 		}
 	}
 
@@ -103,7 +101,6 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 	// During the algorithm the paths have format {{0, 1, 5}, {0, 2, 3, 4}} - 1st is always depot, all others - targets
 	MatrixInt* paths = new MatrixInt[n];
 
-	std::cout << "shuffle taus" << endl;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			tau[i][j] = Math::GenDouble(0.1, 1);
@@ -113,8 +110,9 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 	double bestSolutionMaxPath = 0;
 
 	for (int iteration = 0; iteration < iterations; ++iteration) {
-		if (input.TargetsCnt < iterations && (iteration == iterations / 3 || iteration == iterations / 3 * 2)) {
-			std::cout << "shuffle taus" << endl;
+		if (input.TargetsCnt < iterations && 
+			(iteration == iterations / 3 || iteration == iterations / 3 * 2)) {
+			std::cout << "ACO. Shuffle pheromones" << endl;
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
 					tau[i][j] = Math::GenDouble(0.1, 1);
@@ -123,7 +121,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 		}
 
 		if (timeLimit > EPS && clock() - startClock > CLOCKS_PER_SEC * timeLimit) {
-			std::cout << "time limit finished. break" << endl;
+			std::cout << "ACO. Time limit finished. break" << endl;
 			break;
 		}
 
@@ -139,7 +137,6 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 
 		fill(objectiveF, objectiveF + n, 0);
 		for (int antIndex = 1; antIndex < n; ++antIndex) {
-
 			fill(visited, visited + n, false);
 			visited[antIndex] = true;
 			visited[0] = true;
@@ -149,7 +146,8 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 			int cntVisitedTargets = 1;
 			int lastVisited = 0;
 			while (cntVisitedTargets < n - 1) {
-				if (cntVisitedTargets == lastVisited && paths[antIndex].back().back() != 0 || cntVisitedTargets < lastVisited) {
+				if (cntVisitedTargets == lastVisited && 
+					paths[antIndex].back().back() != 0 || cntVisitedTargets < lastVisited) {
 					assert(false);
 				}
 				lastVisited = cntVisitedTargets;
@@ -170,10 +168,12 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 				}
 
 				double tmp;
-				if (probDenominator > EPS)
+				if (probDenominator > EPS) {
 					tmp = Math::GenDouble(0, probDenominator);
-				else
+				}
+				else {
 					tmp = 0;
+				}
 				int nextV = -1;
 				for (int i = 0; i < cntToCheck && nextV == -1; ++i) {
 					int u = candList[v][i].second;
@@ -184,7 +184,6 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 						}
 					}
 				}
-
 
 				// if nextV is found and addidng edge (v, nextV) is feasible
 				if (nextV != -1 && curPathLen + dist[v][nextV] + dist[nextV][0] <= input.MaxDist && 
@@ -264,26 +263,17 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 			bestSolution = paths[antPathLen[0].second];
 		}
 
-		if ((iteration % 10 == 0) && (int)paths[antPathLen[0].second].size() > input.DronsCnt) {
-			cout << "More drons: " << paths[antPathLen[0].second].size() << endl;
-		}
-		if (iteration % 10 == 0) {
-			cout << "Best objective: " << objectiveFBest << ",  Current best path: " << antPathLen[0].first << 
-				",  Current cnt of paths: " << paths[antPathLen[0].second].size() << endl;
-		}
-
 		for (auto& path : bestSolution) {
 			for (int i = 1; i < (int)path.size(); ++i) {
 				tau[path[i - 1]][path[i]] += sigma / objectiveFBest;
 			}
 		}
 
-		if (*max_element(dist[0], dist[0] + n) * 2 > input.MaxDist) {
-			break;
+		if (iteration % 20 == 0 && timeLimit < EPS) {
+			cout << "ACO. Iteration: " << iteration << "/" << iterations << ". Best found value: " << fixed << setprecision(6) << objectiveFBest << " " << endl;
 		}
-
-		if (iteration % 10 == 0) {
-			cout << iteration << ", best: " << fixed << setprecision(6) << objectiveFBest << " " << endl;
+		else if (iteration % 20 == 0) {
+			cout << "ACO. Iterations done: " << iteration << ". Best found value: " << fixed << setprecision(6) << objectiveFBest << " " << endl;
 		}
 	}
 

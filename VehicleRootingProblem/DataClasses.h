@@ -49,8 +49,6 @@ public:
 class ProblemSolution {
 public:
 	ProblemSolution();
-	// deprecated
-	ProblemSolution(InputData& input, MatrixInt paths, MatrixDouble arrivalTimes);
 	ProblemSolution(InputData& input, MatrixInt paths);
 
 public:
