@@ -10,6 +10,7 @@ ProblemSolution SolverMain::Run(InputData input, ProblemMode problemMode,
 	EAlgorithms algorithm, std::vector<double> args) {
 	auto solution = ProblemSolution();
 	double start_time = clock();
+
 	if (algorithm == EAlgorithms::Greedy) {
 		solution = SolverGreedy::Run(input, problemMode, args);
 	}

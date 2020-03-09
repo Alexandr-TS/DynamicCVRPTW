@@ -116,14 +116,11 @@ namespace VehicleRootingProblem {
 		AppForm(void)
 		{
 			InitializeComponent();
-			comboBoxLaunchAlgo->Items->Clear();
 			comboBoxResAlgo->Items->Clear();
-			comboBoxLaunchAlgo->Items->Add("");
 			comboBoxResAlgo->Items->Add("");
 			listViewLoadedDataSets->Items->Clear();
 
 			for (auto algo : AppFormVars::Algos) {
-				comboBoxLaunchAlgo->Items->Add(ToText(algo.Name.c_str()));
 				comboBoxResAlgo->Items->Add(ToText(algo.Name.c_str()));
 			}
 
@@ -160,7 +157,7 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::ColumnHeader^ colTargets;
 	private: System::Windows::Forms::ColumnHeader^ colMaxDist;
 	private: System::Windows::Forms::TabPage^ tabPage2;
-	private: System::Windows::Forms::DataGridView^ dataGridViewParams;
+
 
 	private: System::Windows::Forms::GroupBox^ groupBoxLaunches;
 
@@ -168,13 +165,13 @@ namespace VehicleRootingProblem {
 
 
 	private: System::Windows::Forms::GroupBox^ groupBoxLoadedDataSets;
-	private: System::Windows::Forms::ComboBox^ comboBoxLaunchAlgo;
+
 
 	private: System::Windows::Forms::Label^ labelChosenAlgo;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ColParam;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ColVal;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ColRecom;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ColComment;
+
+
+
+
 	private: System::Windows::Forms::Button^ buttonRun;
 
 
@@ -225,19 +222,12 @@ namespace VehicleRootingProblem {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
 			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->groupBoxLaunches = (gcnew System::Windows::Forms::GroupBox());
 			this->buttonRun = (gcnew System::Windows::Forms::Button());
-			this->comboBoxLaunchAlgo = (gcnew System::Windows::Forms::ComboBox());
 			this->labelChosenAlgo = (gcnew System::Windows::Forms::Label());
-			this->dataGridViewParams = (gcnew System::Windows::Forms::DataGridView());
-			this->ColParam = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ColVal = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ColRecom = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ColComment = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->groupBoxLoadedDataSets = (gcnew System::Windows::Forms::GroupBox());
 			this->labelLoadedFile = (gcnew System::Windows::Forms::Label());
 			this->buttonUploadFile = (gcnew System::Windows::Forms::Button());
@@ -264,7 +254,6 @@ namespace VehicleRootingProblem {
 			this->tabControlLeft->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->groupBoxLaunches->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewParams))->BeginInit();
 			this->groupBoxLoadedDataSets->SuspendLayout();
 			this->tabPage2->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewSelectedRes))->BeginInit();
@@ -299,9 +288,7 @@ namespace VehicleRootingProblem {
 			// groupBoxLaunches
 			// 
 			this->groupBoxLaunches->Controls->Add(this->buttonRun);
-			this->groupBoxLaunches->Controls->Add(this->comboBoxLaunchAlgo);
 			this->groupBoxLaunches->Controls->Add(this->labelChosenAlgo);
-			this->groupBoxLaunches->Controls->Add(this->dataGridViewParams);
 			this->groupBoxLaunches->Location = System::Drawing::Point(6, 316);
 			this->groupBoxLaunches->Name = L"groupBoxLaunches";
 			this->groupBoxLaunches->Size = System::Drawing::Size(545, 357);
@@ -320,16 +307,6 @@ namespace VehicleRootingProblem {
 			this->buttonRun->UseVisualStyleBackColor = true;
 			this->buttonRun->Click += gcnew System::EventHandler(this, &AppForm::ButtonRun_Click);
 			// 
-			// comboBoxLaunchAlgo
-			// 
-			this->comboBoxLaunchAlgo->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
-			this->comboBoxLaunchAlgo->FormattingEnabled = true;
-			this->comboBoxLaunchAlgo->Location = System::Drawing::Point(78, 16);
-			this->comboBoxLaunchAlgo->Name = L"comboBoxLaunchAlgo";
-			this->comboBoxLaunchAlgo->Size = System::Drawing::Size(306, 21);
-			this->comboBoxLaunchAlgo->TabIndex = 3;
-			this->comboBoxLaunchAlgo->SelectedIndexChanged += gcnew System::EventHandler(this, &AppForm::ComboBoxLaunchAlgo_SelectedIndexChanged);
-			// 
 			// labelChosenAlgo
 			// 
 			this->labelChosenAlgo->AutoSize = true;
@@ -338,62 +315,6 @@ namespace VehicleRootingProblem {
 			this->labelChosenAlgo->Size = System::Drawing::Size(59, 13);
 			this->labelChosenAlgo->TabIndex = 2;
 			this->labelChosenAlgo->Text = L"Алгоритм:";
-			// 
-			// dataGridViewParams
-			// 
-			this->dataGridViewParams->AllowUserToAddRows = false;
-			this->dataGridViewParams->AllowUserToDeleteRows = false;
-			this->dataGridViewParams->AllowUserToResizeRows = false;
-			this->dataGridViewParams->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridViewParams->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(4) {
-				this->ColParam,
-					this->ColVal, this->ColRecom, this->ColComment
-			});
-			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle1->BackColor = System::Drawing::SystemColors::Window;
-			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::ControlText;
-			dataGridViewCellStyle1->NullValue = nullptr;
-			dataGridViewCellStyle1->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle1->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
-			this->dataGridViewParams->DefaultCellStyle = dataGridViewCellStyle1;
-			this->dataGridViewParams->Location = System::Drawing::Point(15, 56);
-			this->dataGridViewParams->Name = L"dataGridViewParams";
-			this->dataGridViewParams->Size = System::Drawing::Size(524, 223);
-			this->dataGridViewParams->TabIndex = 1;
-			this->dataGridViewParams->EditingControlShowing += gcnew System::Windows::Forms::DataGridViewEditingControlShowingEventHandler(this, &AppForm::dataGridViewParams_EditingControlShowing);
-			// 
-			// ColParam
-			// 
-			this->ColParam->HeaderText = L"Параметр";
-			this->ColParam->Name = L"ColParam";
-			this->ColParam->ReadOnly = true;
-			this->ColParam->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
-			// 
-			// ColVal
-			// 
-			this->ColVal->HeaderText = L"Значение";
-			this->ColVal->Name = L"ColVal";
-			this->ColVal->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
-			this->ColVal->Width = 90;
-			// 
-			// ColRecom
-			// 
-			this->ColRecom->HeaderText = L"Рекомендуемое";
-			this->ColRecom->Name = L"ColRecom";
-			this->ColRecom->ReadOnly = true;
-			this->ColRecom->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
-			this->ColRecom->Width = 90;
-			// 
-			// ColComment
-			// 
-			this->ColComment->HeaderText = L"Комментарий";
-			this->ColComment->Name = L"ColComment";
-			this->ColComment->ReadOnly = true;
-			this->ColComment->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
-			this->ColComment->Width = 200;
 			// 
 			// groupBoxLoadedDataSets
 			// 
@@ -650,7 +571,6 @@ namespace VehicleRootingProblem {
 			this->tabPage1->ResumeLayout(false);
 			this->groupBoxLaunches->ResumeLayout(false);
 			this->groupBoxLaunches->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewParams))->EndInit();
 			this->groupBoxLoadedDataSets->ResumeLayout(false);
 			this->groupBoxLoadedDataSets->PerformLayout();
 			this->tabPage2->ResumeLayout(false);
@@ -674,7 +594,7 @@ namespace VehicleRootingProblem {
 	}
 
 	void UpdateRunButton() {
-		if (listViewLoadedDataSets->SelectedIndices->Count == 1 && comboBoxLaunchAlgo->SelectedIndex >= 1) {
+		if (listViewLoadedDataSets->SelectedIndices->Count == 1) {
 			this->buttonRun->Enabled = true;
 		}
 		else {
@@ -847,21 +767,26 @@ namespace VehicleRootingProblem {
 
 
 	private: System::Void ButtonRun_Click(System::Object^ sender, System::EventArgs^ e) {
-		int algoInd = this->comboBoxLaunchAlgo->SelectedIndex - 1;
 		int dataSetInd = this->listViewLoadedDataSets->SelectedIndices[0];
 		ProblemMode mode = ProblemMode::MINSUM;
-		std::vector<double> args;
-		for (int i = 0; i < this->dataGridViewParams->Rows->Count; ++i) {
-			try {
-				std::string x = msclr::interop::marshal_as<std::string>(this->dataGridViewParams->Rows[i]->Cells[1]->Value->ToString());
-				double z = atof(x.c_str());
-				args.push_back(z);
-			}
-			catch(...) {
-				MessageBox::Show("Не удалось считать параметр");
-				args.push_back(AppFormVars::Algos[algoInd].Params[i].Recommend);
-			}	
+
+		int algoInd = 0;
+		if (AppFormVars::DataSets[dataSetInd].TargetsCnt <= 9) {
+			algoInd = 3;
 		}
+		else if (AppFormVars::DataSets[dataSetInd].TargetsCnt > 90) {
+			algoInd = 1;
+		}
+		else {
+			algoInd = 2;
+		}
+
+		std::vector<double> args;
+		for (int i = 0; i < (int)AppFormVars::Algos[algoInd].Params.size(); ++i) {
+			args.push_back(AppFormVars::Algos[algoInd].Params[i].Recommend);
+		}
+
+
 		ProblemSolution solution = SolverMain::Run(AppFormVars::DataSets[dataSetInd], mode, AppFormVars::Algos[algoInd].Ealgo, args);
 
 		if (!solution.SolutionExists) {
@@ -907,30 +832,6 @@ namespace VehicleRootingProblem {
 		this->labelLoadedFile->Text = "Файл не выбран";
 		buttonUploadFile->Enabled = false;
 		UpdateListViewLoaded();
-	}
-
-	private: System::Void ComboBoxLaunchAlgo_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-		int ind = comboBoxLaunchAlgo->SelectedIndex;
-		dataGridViewParams->Rows->Clear();
-		UpdateRunButton();
-		if (ind > 0) {
-			for (auto& param : AppFormVars::Algos[ind - 1].Params) {
-				int i = dataGridViewParams->Rows->Count;
-				dataGridViewParams->Rows->Add();
-				dataGridViewParams->Rows[i]->Cells[0]->Value = ToText(param.Name);
-				dataGridViewParams->Rows[i]->Cells[1]->Value = ToText(param.Recommend);
-				dataGridViewParams->Rows[i]->Cells[2]->Value = ToText(param.Recommend);
-				dataGridViewParams->Rows[i]->Cells[3]->Value = ToText(param.Comment);
-			}
-		}
-		dataGridViewParams->Refresh();
-	}
-
-	private: System::Void dataGridViewParams_EditingControlShowing(System::Object^ sender, System::Windows::Forms::DataGridViewEditingControlShowingEventArgs^ e) {
-		if (dataGridViewParams->CurrentCell->ColumnIndex == 1)
-		{
-			e->Control->KeyPress += gcnew KeyPressEventHandler(this, &AppForm::tb_KeyPress);
-		}
 	}
 
 	private: void tb_KeyPress(System::Object^ sender, KeyPressEventArgs^ e) {
