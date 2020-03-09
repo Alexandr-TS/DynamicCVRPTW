@@ -73,7 +73,7 @@ void TestLocalSwapOpt1() {
 	ans = LocalSwapOptimization(path, input);
 	assert(!ans);
 
-	cout << "________________________________________Test Local Swap Opt: OK\n";
+	cout << "________________________________________Test Local Swap Opt 1: OK\n";
 }
 
 void TestLocalSwapOpt2() {
@@ -90,7 +90,7 @@ void TestLocalSwapOpt2() {
 	ans = LocalSwapOptimization(path, input);
 	assert(!ans);
 
-	cout << "________________________________________Test Local Swap Opt: OK\n";
+	cout << "________________________________________Test Local Swap Opt 2: OK\n";
 }
 
 void TestAntColonyAlgo() {
@@ -164,6 +164,75 @@ void TestBruteForceAlgo() {
 	cout << "________________________________________Test Brute Force Algo: OK\n";
 }
 
+void TestOptSingleStringExchange1() {
+	auto input = InputData(2, 4, 1000,
+		{ {0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4} },
+		{ {-INF, INF}, {1, 1.5}, {2, 2.5}, {3, 3.5}, {4, 4.5} });
+	vector<int> path = { 0, 4, 2, 3, 1, 0 };
+
+	bool ans = OptSingleStringExchange(path, input);
+	assert(ans);
+	vector<int> expected_path = { 0, 1, 2, 3, 4, 0 };
+	assert(expected_path == path);
+
+	ans = OptSingleStringExchange(path, input);
+	assert(!ans);
+
+	cout << "________________________________________Test Single String Exchange 1: OK\n";
+}
+
+void TestOptSingleStringExchange2() {
+	auto input = InputData(2, 4, 1000,
+		{ {0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4} },
+		{ {-INF, INF}, {1, 1.5}, {2, 2.5}, {3, 3.5}, {4, 4.5} });
+	vector<int> path = { 0, 4, 2, 3, 1 };
+
+	bool ans = OptSingleStringExchange(path, input);
+	assert(ans);
+	vector<int> expected_path = { 0, 1, 2, 3, 4 };
+	assert(expected_path == path);
+
+	ans = OptSingleStringExchange(path, input);
+	assert(!ans);
+
+	cout << "________________________________________Test Single String Exchange 2: OK\n";
+}
+
+void TestOptSingleStringRelocation1() {
+	auto input = InputData(2, 3, 1000,
+		{ {0, 0}, {0, 1}, {1, 1}, {1, 0} },
+		{ {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF} });
+	vector<int> path = { 0, 2, 1, 3 };
+
+	bool ans = OptSingleStringRelocation(path, input);
+	assert(ans);
+	vector<int> expected_path = { 0, 1, 2, 3 };
+	assert(expected_path == path);
+
+	ans = OptSingleStringExchange(path, input);
+	assert(!ans);
+
+	cout << "________________________________________Test Single String Relocation 1: OK\n";
+}
+
+void TestOptSingleStringRelocation2() {
+	auto input = InputData(2, 3, 1000,
+		{ {0, 0}, {0, 1}, {1, 1}, {1, 0} },
+		{ {-INF, INF}, {2.4, 3.1}, {1, 2.5}, {1, 10} });
+	vector<int> path = { 0, 2, 1, 3, 0 };
+
+	bool ans = OptSingleStringRelocation(path, input);
+	assert(ans);
+	vector<int> expected_path = { 0, 3, 2, 1, 0 };
+	assert(expected_path == path);
+
+	ans = OptSingleStringExchange(path, input);
+	assert(!ans);
+
+	cout << "________________________________________Test Single String Relocation 2: OK\n";
+}
+
+
 void RunTests() {
 	TestMath();
 	TestGlobalSwapOpt();
@@ -173,6 +242,12 @@ void RunTests() {
 	TestAntColonyAlgo();
 	TestGeneticAlgo();
 	TestBruteForceAlgo();
+
+	TestOptSingleStringExchange1();
+	TestOptSingleStringExchange2();
+	TestOptSingleStringRelocation1();
+	TestOptSingleStringRelocation2();
+
 	cout << "_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Unit testing have finished successfully\n";
 }
 

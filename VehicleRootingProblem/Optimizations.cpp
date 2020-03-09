@@ -149,7 +149,7 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 	return improved;
 }
 
-bool LocalSwapOptimization(std::vector<int>& path, InputData& input) {
+bool LocalSwapOptimization(vector<int>& path, InputData& input) {
 	bool have_0 = (path.back() == 0);
 	if (!have_0) {
 		path.push_back(0);
@@ -177,3 +177,58 @@ bool LocalSwapOptimization(std::vector<int>& path, InputData& input) {
 	return improved;
 }
 
+
+bool OptSingleStringExchange(vector<int>& path, InputData& input) {
+	return LocalSwapOptimization(path, input);
+}
+
+bool OptSingleStringRelocation(vector<int>& path, InputData& input) {
+	bool have_0 = (path.back() == 0);
+	if (!have_0) {
+		path.push_back(0);
+	}
+
+	bool improved = false;
+
+	double len_1 = CalcNewLenForGlobalOpt(input, path);
+
+	for (size_t l = 1; l + 1 < path.size(); ++l) {
+		for (size_t r = l; r + 1 < path.size(); ++r) {
+			for (size_t i = 1; i + 1 < path.size(); ++i) {
+				if (i + 1 >= l && i <= r) {
+					i = r;
+					continue;
+				}
+
+				vector<int> cur_path{ path.begin(), path.end() };
+
+				if (i < l) {
+					cur_path.erase(cur_path.begin() + l, cur_path.begin() + r + 1);
+					cur_path.insert(cur_path.begin() + i, path.begin() + l, path.begin() + r + 1);
+				}
+				else {
+					cur_path.insert(cur_path.begin() + i, path.begin() + l, path.begin() + r + 1);
+					cur_path.erase(cur_path.begin() + l, cur_path.begin() + r + 1);
+				}
+
+				double new_len = CalcNewLenForGlobalOpt(input, cur_path);
+				if (new_len + EPS < len_1) {
+					improved = true;
+					len_1 = new_len;
+					path = cur_path;
+				}
+			}
+		}
+	}
+
+	if (!have_0) {
+		path.pop_back();
+	}
+	return improved;
+
+}
+
+bool OptStringExchange(MatrixInt& paths, InputData& input) {
+	bool improved = GlobalSwapOptimization(paths, input);
+	return improved | GlobalInsertOptimization(paths, input);
+}
