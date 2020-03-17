@@ -247,7 +247,7 @@ namespace VehicleRootingProblem {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::ListViewItem^ listViewItem2 = (gcnew System::Windows::Forms::ListViewItem(L""));
+			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
 			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->buttonRunProcess = (gcnew System::Windows::Forms::Button());
@@ -266,33 +266,33 @@ namespace VehicleRootingProblem {
 			this->pictureBoxRes = (gcnew System::Windows::Forms::PictureBox());
 			this->openFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->groupBoxResults = (gcnew System::Windows::Forms::GroupBox());
+			this->tbTime = (gcnew System::Windows::Forms::MaskedTextBox());
+			this->groupBoxEvents = (gcnew System::Windows::Forms::GroupBox());
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->numericUpDownYCoord = (gcnew System::Windows::Forms::NumericUpDown());
+			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->numericUpDownXCoord = (gcnew System::Windows::Forms::NumericUpDown());
+			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->numericUpDownTargetId = (gcnew System::Windows::Forms::NumericUpDown());
+			this->butUpdTW = (gcnew System::Windows::Forms::Button());
+			this->tbTWClose = (gcnew System::Windows::Forms::MaskedTextBox());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->tbTWOpen = (gcnew System::Windows::Forms::MaskedTextBox());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->butDeleteTarget = (gcnew System::Windows::Forms::Button());
+			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->buttonSavePathsToFile = (gcnew System::Windows::Forms::Button());
+			this->butX2 = (gcnew System::Windows::Forms::Button());
+			this->butX3 = (gcnew System::Windows::Forms::Button());
+			this->butX1 = (gcnew System::Windows::Forms::Button());
+			this->butPause = (gcnew System::Windows::Forms::Button());
+			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->labelPathsList = (gcnew System::Windows::Forms::Label());
 			this->dataGridViewPaths = (gcnew System::Windows::Forms::DataGridView());
 			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->saveFileDialog = (gcnew System::Windows::Forms::SaveFileDialog());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->butPause = (gcnew System::Windows::Forms::Button());
-			this->butX1 = (gcnew System::Windows::Forms::Button());
-			this->butX3 = (gcnew System::Windows::Forms::Button());
-			this->butX2 = (gcnew System::Windows::Forms::Button());
-			this->groupBoxEvents = (gcnew System::Windows::Forms::GroupBox());
-			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->butDeleteTarget = (gcnew System::Windows::Forms::Button());
-			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->tbTime = (gcnew System::Windows::Forms::MaskedTextBox());
-			this->tbTWOpen = (gcnew System::Windows::Forms::MaskedTextBox());
-			this->label4 = (gcnew System::Windows::Forms::Label());
-			this->tbTWClose = (gcnew System::Windows::Forms::MaskedTextBox());
-			this->butUpdTW = (gcnew System::Windows::Forms::Button());
-			this->numericUpDownTargetId = (gcnew System::Windows::Forms::NumericUpDown());
-			this->label5 = (gcnew System::Windows::Forms::Label());
-			this->label6 = (gcnew System::Windows::Forms::Label());
-			this->numericUpDownXCoord = (gcnew System::Windows::Forms::NumericUpDown());
-			this->numericUpDownYCoord = (gcnew System::Windows::Forms::NumericUpDown());
-			this->label7 = (gcnew System::Windows::Forms::Label());
-			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->tabControlLeft->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->groupBoxLoadedDataSets->SuspendLayout();
@@ -300,11 +300,11 @@ namespace VehicleRootingProblem {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewSelectedRes))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBoxRes))->BeginInit();
 			this->groupBoxResults->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewPaths))->BeginInit();
 			this->groupBoxEvents->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownTargetId))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownXCoord))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownYCoord))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownXCoord))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownTargetId))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewPaths))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// tabControlLeft
@@ -405,7 +405,7 @@ namespace VehicleRootingProblem {
 			this->listViewLoadedDataSets->FullRowSelect = true;
 			this->listViewLoadedDataSets->GridLines = true;
 			this->listViewLoadedDataSets->HideSelection = false;
-			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem2 });
+			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem1 });
 			this->listViewLoadedDataSets->Location = System::Drawing::Point(6, 19);
 			this->listViewLoadedDataSets->MultiSelect = false;
 			this->listViewLoadedDataSets->Name = L"listViewLoadedDataSets";
@@ -459,7 +459,7 @@ namespace VehicleRootingProblem {
 			this->dataGridViewSelectedRes->Name = L"dataGridViewSelectedRes";
 			this->dataGridViewSelectedRes->ReadOnly = true;
 			this->dataGridViewSelectedRes->RowHeadersWidthSizeMode = System::Windows::Forms::DataGridViewRowHeadersWidthSizeMode::AutoSizeToAllHeaders;
-			this->dataGridViewSelectedRes->Size = System::Drawing::Size(547, 0);
+			this->dataGridViewSelectedRes->Size = System::Drawing::Size(547, 82);
 			this->dataGridViewSelectedRes->TabIndex = 32;
 			// 
 			// pictureBoxRes
@@ -495,6 +495,158 @@ namespace VehicleRootingProblem {
 			this->groupBoxResults->TabStop = false;
 			this->groupBoxResults->Text = L"Результаты";
 			// 
+			// tbTime
+			// 
+			this->tbTime->Location = System::Drawing::Point(119, 385);
+			this->tbTime->Mask = L"00:00";
+			this->tbTime->Name = L"tbTime";
+			this->tbTime->Size = System::Drawing::Size(38, 20);
+			this->tbTime->TabIndex = 40;
+			this->tbTime->ValidatingType = System::DateTime::typeid;
+			// 
+			// groupBoxEvents
+			// 
+			this->groupBoxEvents->Controls->Add(this->button1);
+			this->groupBoxEvents->Controls->Add(this->numericUpDownYCoord);
+			this->groupBoxEvents->Controls->Add(this->label7);
+			this->groupBoxEvents->Controls->Add(this->numericUpDownXCoord);
+			this->groupBoxEvents->Controls->Add(this->label6);
+			this->groupBoxEvents->Controls->Add(this->label5);
+			this->groupBoxEvents->Controls->Add(this->numericUpDownTargetId);
+			this->groupBoxEvents->Controls->Add(this->butUpdTW);
+			this->groupBoxEvents->Controls->Add(this->tbTWClose);
+			this->groupBoxEvents->Controls->Add(this->label4);
+			this->groupBoxEvents->Controls->Add(this->tbTWOpen);
+			this->groupBoxEvents->Controls->Add(this->label3);
+			this->groupBoxEvents->Controls->Add(this->butDeleteTarget);
+			this->groupBoxEvents->Controls->Add(this->label2);
+			this->groupBoxEvents->Location = System::Drawing::Point(9, 421);
+			this->groupBoxEvents->Name = L"groupBoxEvents";
+			this->groupBoxEvents->Size = System::Drawing::Size(515, 179);
+			this->groupBoxEvents->TabIndex = 36;
+			this->groupBoxEvents->TabStop = false;
+			this->groupBoxEvents->Text = L"События";
+			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(283, 142);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(146, 24);
+			this->button1->TabIndex = 51;
+			this->button1->Text = L"Обновить координаты";
+			this->button1->UseVisualStyleBackColor = true;
+			// 
+			// numericUpDownYCoord
+			// 
+			this->numericUpDownYCoord->Location = System::Drawing::Point(214, 146);
+			this->numericUpDownYCoord->Name = L"numericUpDownYCoord";
+			this->numericUpDownYCoord->Size = System::Drawing::Size(56, 20);
+			this->numericUpDownYCoord->TabIndex = 50;
+			// 
+			// label7
+			// 
+			this->label7->AutoSize = true;
+			this->label7->Location = System::Drawing::Point(190, 148);
+			this->label7->Name = L"label7";
+			this->label7->Size = System::Drawing::Size(21, 13);
+			this->label7->TabIndex = 49;
+			this->label7->Text = L"y =";
+			// 
+			// numericUpDownXCoord
+			// 
+			this->numericUpDownXCoord->Location = System::Drawing::Point(123, 146);
+			this->numericUpDownXCoord->Name = L"numericUpDownXCoord";
+			this->numericUpDownXCoord->Size = System::Drawing::Size(56, 20);
+			this->numericUpDownXCoord->TabIndex = 48;
+			// 
+			// label6
+			// 
+			this->label6->AutoSize = true;
+			this->label6->Location = System::Drawing::Point(99, 148);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(21, 13);
+			this->label6->TabIndex = 47;
+			this->label6->Text = L"x =";
+			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Location = System::Drawing::Point(23, 148);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(72, 13);
+			this->label5->TabIndex = 46;
+			this->label5->Text = L"Координаты:";
+			// 
+			// numericUpDownTargetId
+			// 
+			this->numericUpDownTargetId->Location = System::Drawing::Point(121, 30);
+			this->numericUpDownTargetId->Name = L"numericUpDownTargetId";
+			this->numericUpDownTargetId->Size = System::Drawing::Size(56, 20);
+			this->numericUpDownTargetId->TabIndex = 45;
+			// 
+			// butUpdTW
+			// 
+			this->butUpdTW->Location = System::Drawing::Point(229, 81);
+			this->butUpdTW->Name = L"butUpdTW";
+			this->butUpdTW->Size = System::Drawing::Size(167, 24);
+			this->butUpdTW->TabIndex = 44;
+			this->butUpdTW->Text = L"Обновить временное окно";
+			this->butUpdTW->UseVisualStyleBackColor = true;
+			// 
+			// tbTWClose
+			// 
+			this->tbTWClose->Location = System::Drawing::Point(185, 84);
+			this->tbTWClose->Mask = L"00:00";
+			this->tbTWClose->Name = L"tbTWClose";
+			this->tbTWClose->Size = System::Drawing::Size(38, 20);
+			this->tbTWClose->TabIndex = 43;
+			this->tbTWClose->ValidatingType = System::DateTime::typeid;
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(167, 87);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(12, 13);
+			this->label4->TabIndex = 42;
+			this->label4->Text = L"–";
+			// 
+			// tbTWOpen
+			// 
+			this->tbTWOpen->Location = System::Drawing::Point(123, 84);
+			this->tbTWOpen->Mask = L"00:00";
+			this->tbTWOpen->Name = L"tbTWOpen";
+			this->tbTWOpen->Size = System::Drawing::Size(38, 20);
+			this->tbTWOpen->TabIndex = 41;
+			this->tbTWOpen->ValidatingType = System::DateTime::typeid;
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(23, 87);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(94, 13);
+			this->label3->TabIndex = 39;
+			this->label3->Text = L"Временное окно:";
+			// 
+			// butDeleteTarget
+			// 
+			this->butDeleteTarget->Location = System::Drawing::Point(188, 28);
+			this->butDeleteTarget->Name = L"butDeleteTarget";
+			this->butDeleteTarget->Size = System::Drawing::Size(113, 24);
+			this->butDeleteTarget->TabIndex = 37;
+			this->butDeleteTarget->Text = L"Удалить цель";
+			this->butDeleteTarget->UseVisualStyleBackColor = true;
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(35, 32);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(71, 13);
+			this->label2->TabIndex = 0;
+			this->label2->Text = L"Номер цели:";
+			// 
 			// buttonSavePathsToFile
 			// 
 			this->buttonSavePathsToFile->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
@@ -506,6 +658,51 @@ namespace VehicleRootingProblem {
 			this->buttonSavePathsToFile->Text = L"Сохранить пути в файл";
 			this->buttonSavePathsToFile->UseVisualStyleBackColor = true;
 			this->buttonSavePathsToFile->Click += gcnew System::EventHandler(this, &AppForm::ButtonSavePathsToFile_Click);
+			// 
+			// butX2
+			// 
+			this->butX2->Location = System::Drawing::Point(290, 381);
+			this->butX2->Name = L"butX2";
+			this->butX2->Size = System::Drawing::Size(46, 26);
+			this->butX2->TabIndex = 35;
+			this->butX2->Text = L"x5";
+			this->butX2->UseVisualStyleBackColor = true;
+			// 
+			// butX3
+			// 
+			this->butX3->Location = System::Drawing::Point(340, 381);
+			this->butX3->Name = L"butX3";
+			this->butX3->Size = System::Drawing::Size(46, 26);
+			this->butX3->TabIndex = 34;
+			this->butX3->Text = L"x100";
+			this->butX3->UseVisualStyleBackColor = true;
+			// 
+			// butX1
+			// 
+			this->butX1->Location = System::Drawing::Point(240, 381);
+			this->butX1->Name = L"butX1";
+			this->butX1->Size = System::Drawing::Size(46, 26);
+			this->butX1->TabIndex = 33;
+			this->butX1->Text = L"x1";
+			this->butX1->UseVisualStyleBackColor = true;
+			// 
+			// butPause
+			// 
+			this->butPause->Location = System::Drawing::Point(180, 381);
+			this->butPause->Name = L"butPause";
+			this->butPause->Size = System::Drawing::Size(56, 26);
+			this->butPause->TabIndex = 32;
+			this->butPause->Text = L"пауза";
+			this->butPause->UseVisualStyleBackColor = true;
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(23, 388);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(90, 13);
+			this->label1->TabIndex = 31;
+			this->label1->Text = L"Текущее время:";
 			// 
 			// labelPathsList
 			// 
@@ -552,203 +749,6 @@ namespace VehicleRootingProblem {
 			this->Column2->ReadOnly = true;
 			this->Column2->Width = 155;
 			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(23, 388);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(90, 13);
-			this->label1->TabIndex = 31;
-			this->label1->Text = L"Текущее время:";
-			// 
-			// butPause
-			// 
-			this->butPause->Location = System::Drawing::Point(180, 381);
-			this->butPause->Name = L"butPause";
-			this->butPause->Size = System::Drawing::Size(56, 26);
-			this->butPause->TabIndex = 32;
-			this->butPause->Text = L"пауза";
-			this->butPause->UseVisualStyleBackColor = true;
-			// 
-			// butX1
-			// 
-			this->butX1->Location = System::Drawing::Point(240, 381);
-			this->butX1->Name = L"butX1";
-			this->butX1->Size = System::Drawing::Size(46, 26);
-			this->butX1->TabIndex = 33;
-			this->butX1->Text = L"x1";
-			this->butX1->UseVisualStyleBackColor = true;
-			// 
-			// butX3
-			// 
-			this->butX3->Location = System::Drawing::Point(340, 381);
-			this->butX3->Name = L"butX3";
-			this->butX3->Size = System::Drawing::Size(46, 26);
-			this->butX3->TabIndex = 34;
-			this->butX3->Text = L"x100";
-			this->butX3->UseVisualStyleBackColor = true;
-			// 
-			// butX2
-			// 
-			this->butX2->Location = System::Drawing::Point(290, 381);
-			this->butX2->Name = L"butX2";
-			this->butX2->Size = System::Drawing::Size(46, 26);
-			this->butX2->TabIndex = 35;
-			this->butX2->Text = L"x5";
-			this->butX2->UseVisualStyleBackColor = true;
-			// 
-			// groupBoxEvents
-			// 
-			this->groupBoxEvents->Controls->Add(this->button1);
-			this->groupBoxEvents->Controls->Add(this->numericUpDownYCoord);
-			this->groupBoxEvents->Controls->Add(this->label7);
-			this->groupBoxEvents->Controls->Add(this->numericUpDownXCoord);
-			this->groupBoxEvents->Controls->Add(this->label6);
-			this->groupBoxEvents->Controls->Add(this->label5);
-			this->groupBoxEvents->Controls->Add(this->numericUpDownTargetId);
-			this->groupBoxEvents->Controls->Add(this->butUpdTW);
-			this->groupBoxEvents->Controls->Add(this->tbTWClose);
-			this->groupBoxEvents->Controls->Add(this->label4);
-			this->groupBoxEvents->Controls->Add(this->tbTWOpen);
-			this->groupBoxEvents->Controls->Add(this->label3);
-			this->groupBoxEvents->Controls->Add(this->butDeleteTarget);
-			this->groupBoxEvents->Controls->Add(this->label2);
-			this->groupBoxEvents->Location = System::Drawing::Point(9, 421);
-			this->groupBoxEvents->Name = L"groupBoxEvents";
-			this->groupBoxEvents->Size = System::Drawing::Size(515, 179);
-			this->groupBoxEvents->TabIndex = 36;
-			this->groupBoxEvents->TabStop = false;
-			this->groupBoxEvents->Text = L"События";
-			// 
-			// label2
-			// 
-			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(35, 32);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(71, 13);
-			this->label2->TabIndex = 0;
-			this->label2->Text = L"Номер цели:";
-			// 
-			// butDeleteTarget
-			// 
-			this->butDeleteTarget->Location = System::Drawing::Point(188, 28);
-			this->butDeleteTarget->Name = L"butDeleteTarget";
-			this->butDeleteTarget->Size = System::Drawing::Size(113, 24);
-			this->butDeleteTarget->TabIndex = 37;
-			this->butDeleteTarget->Text = L"Удалить цель";
-			this->butDeleteTarget->UseVisualStyleBackColor = true;
-			// 
-			// label3
-			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(23, 87);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(94, 13);
-			this->label3->TabIndex = 39;
-			this->label3->Text = L"Временное окно:";
-			// 
-			// tbTime
-			// 
-			this->tbTime->Location = System::Drawing::Point(119, 385);
-			this->tbTime->Mask = L"00:00";
-			this->tbTime->Name = L"tbTime";
-			this->tbTime->Size = System::Drawing::Size(38, 20);
-			this->tbTime->TabIndex = 40;
-			this->tbTime->ValidatingType = System::DateTime::typeid;
-			// 
-			// tbTWOpen
-			// 
-			this->tbTWOpen->Location = System::Drawing::Point(123, 84);
-			this->tbTWOpen->Mask = L"00:00";
-			this->tbTWOpen->Name = L"tbTWOpen";
-			this->tbTWOpen->Size = System::Drawing::Size(38, 20);
-			this->tbTWOpen->TabIndex = 41;
-			this->tbTWOpen->ValidatingType = System::DateTime::typeid;
-			// 
-			// label4
-			// 
-			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(167, 87);
-			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(12, 13);
-			this->label4->TabIndex = 42;
-			this->label4->Text = L"–";
-			// 
-			// tbTWClose
-			// 
-			this->tbTWClose->Location = System::Drawing::Point(185, 84);
-			this->tbTWClose->Mask = L"00:00";
-			this->tbTWClose->Name = L"tbTWClose";
-			this->tbTWClose->Size = System::Drawing::Size(38, 20);
-			this->tbTWClose->TabIndex = 43;
-			this->tbTWClose->ValidatingType = System::DateTime::typeid;
-			// 
-			// butUpdTW
-			// 
-			this->butUpdTW->Location = System::Drawing::Point(229, 81);
-			this->butUpdTW->Name = L"butUpdTW";
-			this->butUpdTW->Size = System::Drawing::Size(167, 24);
-			this->butUpdTW->TabIndex = 44;
-			this->butUpdTW->Text = L"Обновить временное окно";
-			this->butUpdTW->UseVisualStyleBackColor = true;
-			// 
-			// numericUpDownTargetId
-			// 
-			this->numericUpDownTargetId->Location = System::Drawing::Point(121, 30);
-			this->numericUpDownTargetId->Name = L"numericUpDownTargetId";
-			this->numericUpDownTargetId->Size = System::Drawing::Size(56, 20);
-			this->numericUpDownTargetId->TabIndex = 45;
-			// 
-			// label5
-			// 
-			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(23, 148);
-			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(72, 13);
-			this->label5->TabIndex = 46;
-			this->label5->Text = L"Координаты:";
-			// 
-			// label6
-			// 
-			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(99, 148);
-			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(21, 13);
-			this->label6->TabIndex = 47;
-			this->label6->Text = L"x =";
-			// 
-			// numericUpDownXCoord
-			// 
-			this->numericUpDownXCoord->Location = System::Drawing::Point(123, 146);
-			this->numericUpDownXCoord->Name = L"numericUpDownXCoord";
-			this->numericUpDownXCoord->Size = System::Drawing::Size(56, 20);
-			this->numericUpDownXCoord->TabIndex = 48;
-			// 
-			// numericUpDownYCoord
-			// 
-			this->numericUpDownYCoord->Location = System::Drawing::Point(214, 146);
-			this->numericUpDownYCoord->Name = L"numericUpDownYCoord";
-			this->numericUpDownYCoord->Size = System::Drawing::Size(56, 20);
-			this->numericUpDownYCoord->TabIndex = 50;
-			// 
-			// label7
-			// 
-			this->label7->AutoSize = true;
-			this->label7->Location = System::Drawing::Point(190, 148);
-			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(21, 13);
-			this->label7->TabIndex = 49;
-			this->label7->Text = L"y =";
-			// 
-			// button1
-			// 
-			this->button1->Location = System::Drawing::Point(283, 142);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(146, 24);
-			this->button1->TabIndex = 51;
-			this->button1->Text = L"Обновить координаты";
-			this->button1->UseVisualStyleBackColor = true;
-			// 
 			// AppForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -767,12 +767,12 @@ namespace VehicleRootingProblem {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBoxRes))->EndInit();
 			this->groupBoxResults->ResumeLayout(false);
 			this->groupBoxResults->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewPaths))->EndInit();
 			this->groupBoxEvents->ResumeLayout(false);
 			this->groupBoxEvents->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownTargetId))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownXCoord))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownYCoord))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownXCoord))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownTargetId))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewPaths))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -867,8 +867,9 @@ namespace VehicleRootingProblem {
 		
 		this->tabControlLeft->SelectedTab = this->tabControlLeft->TabPages[1];
 		this->tabControlLeft->Refresh();
-		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution, 
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, 0);
+
+		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution,
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, 80);
 	}
 
 
