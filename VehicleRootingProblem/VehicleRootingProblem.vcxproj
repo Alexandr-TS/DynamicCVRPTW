@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClCompile Include="AppForm.cpp" />
     <ClCompile Include="DataClasses.cpp" />
+    <ClCompile Include="EventsHandler.cpp" />
     <ClCompile Include="Optimizations.cpp" />
     <ClCompile Include="SolverAntColony.cpp" />
     <ClCompile Include="SolverGenetic.cpp" />
@@ -157,6 +158,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="DataClasses.h" />
+    <ClInclude Include="EventsHandler.h" />
     <ClInclude Include="Optimizations.h" />
     <ClInclude Include="SolverAntColony.h" />
     <ClInclude Include="SolverGenetic.h" />

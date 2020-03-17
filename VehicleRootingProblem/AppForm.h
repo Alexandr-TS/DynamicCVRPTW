@@ -4,6 +4,7 @@
 #include "DataClasses.h"
 #include "SolverMain.h"
 #include "Visualization.h"
+#include "EventsHandler.h"
 
 #include <memory>
 #include <msclr\marshal_cppstd.h>
@@ -92,6 +93,8 @@ namespace VehicleRootingProblem {
 		InputData LoadedInputData;
 		ProblemSolution CurrentSolution;
 		int PrintedLaunchPathsIndex;
+		int CntMinutesPassed = 0;
+		int MinutesPerTick = 1;
 	}
 
 	System::String^ ToText(std::string s) {
@@ -154,6 +157,7 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::Button^ butX3;
 	private: System::Windows::Forms::Button^ butX1;
 	private: System::Windows::Forms::Button^ butPause;
+	private: System::Windows::Forms::Timer^ timer1;
 
 
 	public:
@@ -247,6 +251,7 @@ namespace VehicleRootingProblem {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
 			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
@@ -293,6 +298,7 @@ namespace VehicleRootingProblem {
 			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->saveFileDialog = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->tabControlLeft->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->groupBoxLoadedDataSets->SuspendLayout();
@@ -637,6 +643,7 @@ namespace VehicleRootingProblem {
 			this->butDeleteTarget->TabIndex = 37;
 			this->butDeleteTarget->Text = L"Удалить цель";
 			this->butDeleteTarget->UseVisualStyleBackColor = true;
+			this->butDeleteTarget->Click += gcnew System::EventHandler(this, &AppForm::butDeleteTarget_Click);
 			// 
 			// label2
 			// 
@@ -653,7 +660,7 @@ namespace VehicleRootingProblem {
 				| System::Windows::Forms::AnchorStyles::Left));
 			this->buttonSavePathsToFile->Location = System::Drawing::Point(422, 332);
 			this->buttonSavePathsToFile->Name = L"buttonSavePathsToFile";
-			this->buttonSavePathsToFile->Size = System::Drawing::Size(134, 21);
+			this->buttonSavePathsToFile->Size = System::Drawing::Size(134, 25);
 			this->buttonSavePathsToFile->TabIndex = 29;
 			this->buttonSavePathsToFile->Text = L"Сохранить пути в файл";
 			this->buttonSavePathsToFile->UseVisualStyleBackColor = true;
@@ -667,6 +674,7 @@ namespace VehicleRootingProblem {
 			this->butX2->TabIndex = 35;
 			this->butX2->Text = L"x5";
 			this->butX2->UseVisualStyleBackColor = true;
+			this->butX2->Click += gcnew System::EventHandler(this, &AppForm::butX2_Click);
 			// 
 			// butX3
 			// 
@@ -674,8 +682,9 @@ namespace VehicleRootingProblem {
 			this->butX3->Name = L"butX3";
 			this->butX3->Size = System::Drawing::Size(46, 26);
 			this->butX3->TabIndex = 34;
-			this->butX3->Text = L"x100";
+			this->butX3->Text = L"x50";
 			this->butX3->UseVisualStyleBackColor = true;
+			this->butX3->Click += gcnew System::EventHandler(this, &AppForm::butX3_Click);
 			// 
 			// butX1
 			// 
@@ -685,6 +694,7 @@ namespace VehicleRootingProblem {
 			this->butX1->TabIndex = 33;
 			this->butX1->Text = L"x1";
 			this->butX1->UseVisualStyleBackColor = true;
+			this->butX1->Click += gcnew System::EventHandler(this, &AppForm::butX1_Click);
 			// 
 			// butPause
 			// 
@@ -694,6 +704,7 @@ namespace VehicleRootingProblem {
 			this->butPause->TabIndex = 32;
 			this->butPause->Text = L"пауза";
 			this->butPause->UseVisualStyleBackColor = true;
+			this->butPause->Click += gcnew System::EventHandler(this, &AppForm::butPause_Click);
 			// 
 			// label1
 			// 
@@ -748,6 +759,12 @@ namespace VehicleRootingProblem {
 			this->Column2->Name = L"Column2";
 			this->Column2->ReadOnly = true;
 			this->Column2->Width = 155;
+			// 
+			// timer1
+			// 
+			this->timer1->Enabled = true;
+			this->timer1->Interval = 1000;
+			this->timer1->Tick += gcnew System::EventHandler(this, &AppForm::timer1_Tick);
 			// 
 			// AppForm
 			// 
@@ -869,7 +886,7 @@ namespace VehicleRootingProblem {
 		this->tabControlLeft->Refresh();
 
 		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution,
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, 80);
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, 0);
 	}
 
 
@@ -982,11 +999,62 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void buttonRunProcess_Click(System::Object^ sender, System::EventArgs^ e) {
+		timer1->Stop();
+		timer1->Start();
 		int launchInd = (int)AppFormVars::Launches.size() - 1;
 		UpdateVisualization(launchInd);
 		UpdateDataGridViewPaths(AppFormVars::Launches[launchInd].Solution);
 		this->Width = 1175;
 		this->groupBoxResults->Visible = true;
+	}
+
+	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+		if (AppFormVars::Launches.empty()) {
+			return;
+		}
+		AppFormVars::CntMinutesPassed += AppFormVars::MinutesPerTick;
+		if (!AppFormVars::MinutesPerTick) {
+			return;
+		}
+		std::string hours = std::to_string(AppFormVars::CntMinutesPassed / 60);
+		while (hours.size() < 2) {
+			hours = "0" + hours;
+		}
+		std::string minutes = std::to_string(AppFormVars::CntMinutesPassed % 60);
+		while (minutes.size() < 2) {
+			minutes = "0" + minutes;
+		}
+
+		this->tbTime->Text = System::String((hours + ":" + minutes).c_str()).ToString();
+		int launchInd = (int)AppFormVars::Launches.size() - 1;
+		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution,
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+	}
+
+	private: System::Void butPause_Click(System::Object^ sender, System::EventArgs^ e) {
+		AppFormVars::MinutesPerTick = 0;
+	}
+
+	private: System::Void butX1_Click(System::Object^ sender, System::EventArgs^ e) {
+		AppFormVars::MinutesPerTick = 1;
+	}
+
+	private: System::Void butX2_Click(System::Object^ sender, System::EventArgs^ e) {
+		AppFormVars::MinutesPerTick = 5;
+	}
+
+	private: System::Void butX3_Click(System::Object^ sender, System::EventArgs^ e) {
+		AppFormVars::MinutesPerTick = 50;
+	}
+
+	private: System::Void butDeleteTarget_Click(System::Object^ sender, System::EventArgs^ e) {
+		std::string target_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Text);
+		int target_id = atoi(target_id_str.c_str());
+		int launchInd = (int)AppFormVars::Launches.size() - 1;
+		EventsHandler::UpdateOnRemoveTarget(AppFormVars::Launches[launchInd].Solution, 
+			target_id, AppFormVars::CntMinutesPassed);
+		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution,
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
 	}
 };
 }

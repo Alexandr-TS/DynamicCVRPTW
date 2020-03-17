@@ -49,20 +49,19 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 		path.push_back(0);
 		path.push_back(0);
 		rotate(path.begin(), path.begin() + path.size() - 1, path.end());
-		// blue
 		auto pen = (gcnew Pen(Color::FromArgb(120, 10, 10, 255), 1));
 		for (int i = 0; i + 1 < (int)path.size(); ++i) {
 			graphics->DrawLine(pen, (int)points[path[i]].first, (int)points[path[i]].second,
 									(int)points[path[i + 1]].first, (int)points[path[i + 1]].second);
 		}
 
-		double left_time = cur_time;
-		// red
+		double tmp_time = 0;
+		double prev_time = 0;
 		pen = (gcnew Pen(Color::FromArgb(180, 10, 10, 255), 2));
 		for (int i = 0; i + 1 < (int)path.size(); ++i) {
-			double len = solution.Input.Distance(path[i], path[i + 1]);
-			if (len <= left_time) {
-				left_time -= len;
+			prev_time = tmp_time;
+			tmp_time = std::max(solution.Input.TimeWindows[path[i + 1]].first, tmp_time + solution.Input.Distance(path[i], path[i + 1]));
+			if (tmp_time <= cur_time) {
 				graphics->DrawLine(pen, (int)points[path[i]].first, (int)points[path[i]].second,
 									(int)points[path[i + 1]].first, (int)points[path[i + 1]].second);
 			}
@@ -70,8 +69,10 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 				auto second_point = points[path[i]];
 				auto move_vector = std::make_pair(points[path[i + 1]].first - points[path[i]].first, 
 										     points[path[i + 1]].second - points[path[i]].second);
-				second_point.first += move_vector.first * left_time / len;
-				second_point.second += move_vector.second * left_time / len;
+				double end_time = prev_time + solution.Input.Distance(path[i], path[i + 1]);
+				double len_coef = std::min(1.0, (cur_time - prev_time) / (end_time - prev_time));
+				second_point.first += move_vector.first * len_coef;
+				second_point.second += move_vector.second * len_coef;
 				graphics->DrawLine(pen, (int)points[path[i]].first, (int)points[path[i]].second,
 					(int)second_point.first, (int)second_point.second);
 				break;

@@ -170,12 +170,12 @@ void TestOptSingleStringExchange1() {
 		{ {-INF, INF}, {1, 1.5}, {2, 2.5}, {3, 3.5}, {4, 4.5} });
 	vector<int> path = { 0, 4, 2, 3, 1, 0 };
 
-	bool ans = OptSingleStringExchange(path, input);
+	bool ans = OptSingleStringExchange(path, input, 0);
 	assert(ans);
 	vector<int> expected_path = { 0, 1, 2, 3, 4, 0 };
 	assert(expected_path == path);
 
-	ans = OptSingleStringExchange(path, input);
+	ans = OptSingleStringExchange(path, input, 0);
 	assert(!ans);
 
 	cout << "________________________________________Test Single String Exchange 1: OK\n";
@@ -187,12 +187,12 @@ void TestOptSingleStringExchange2() {
 		{ {-INF, INF}, {1, 1.5}, {2, 2.5}, {3, 3.5}, {4, 4.5} });
 	vector<int> path = { 0, 4, 2, 3, 1 };
 
-	bool ans = OptSingleStringExchange(path, input);
+	bool ans = OptSingleStringExchange(path, input, 0);
 	assert(ans);
 	vector<int> expected_path = { 0, 1, 2, 3, 4 };
 	assert(expected_path == path);
 
-	ans = OptSingleStringExchange(path, input);
+	ans = OptSingleStringExchange(path, input, 0);
 	assert(!ans);
 
 	cout << "________________________________________Test Single String Exchange 2: OK\n";
@@ -204,12 +204,12 @@ void TestOptSingleStringRelocation1() {
 		{ {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF} });
 	vector<int> path = { 0, 2, 1, 3 };
 
-	bool ans = OptSingleStringRelocation(path, input);
+	bool ans = OptSingleStringRelocation(path, input, 0);
 	assert(ans);
 	vector<int> expected_path = { 0, 1, 2, 3 };
 	assert(expected_path == path);
 
-	ans = OptSingleStringExchange(path, input);
+	ans = OptSingleStringExchange(path, input, 0);
 	assert(!ans);
 
 	cout << "________________________________________Test Single String Relocation 1: OK\n";
@@ -221,12 +221,14 @@ void TestOptSingleStringRelocation2() {
 		{ {-INF, INF}, {2.4, 3.1}, {1, 2.5}, {1, 10} });
 	vector<int> path = { 0, 2, 1, 3, 0 };
 
-	bool ans = OptSingleStringRelocation(path, input);
+	bool ans = OptSingleStringRelocation(path, input, 13);
+	assert(!ans);
+	ans = OptSingleStringRelocation(path, input, 0);
 	assert(ans);
 	vector<int> expected_path = { 0, 3, 2, 1, 0 };
 	assert(expected_path == path);
 
-	ans = OptSingleStringExchange(path, input);
+	ans = OptSingleStringExchange(path, input, 0);
 	assert(!ans);
 
 	cout << "________________________________________Test Single String Relocation 2: OK\n";

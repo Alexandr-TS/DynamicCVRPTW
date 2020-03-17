@@ -2,6 +2,21 @@
 
 using namespace std;
 
+// each path has format: {0, 1, 2, 3, 0}
+size_t FirstPossibleToMoveElement(vector<int>& path, InputData& input, double cur_time) {
+	if (cur_time < EPS) {
+		return 1;
+	}
+	double tmp_time = 0;
+	for (size_t i = 1; i < path.size(); ++i) {
+		tmp_time = max(input.TimeWindows[path[i]].first, tmp_time + input.Distance(path[i - 1], path[i]));
+		if (tmp_time + EPS >= cur_time) {
+			return i + 1;
+		}
+	}
+	return path.size();
+}
+
 /* 
 a1-a2-a3 
 b1-b2-b3
@@ -177,24 +192,51 @@ bool LocalSwapOptimization(vector<int>& path, InputData& input) {
 	return improved;
 }
 
-
-bool OptSingleStringExchange(vector<int>& path, InputData& input) {
-	return LocalSwapOptimization(path, input);
-}
-
-bool OptSingleStringRelocation(vector<int>& path, InputData& input) {
+bool OptSingleStringExchange(vector<int>& path, InputData& input, double cur_time) {
 	bool have_0 = (path.back() == 0);
 	if (!have_0) {
 		path.push_back(0);
 	}
 
+	auto first_possible_to_move = FirstPossibleToMoveElement(path, input, cur_time);
+
+	bool improved = false;
+
+	double len_1 = CalcNewLenForGlobalOpt(input, path);
+	for (size_t i1 = first_possible_to_move; i1 + 1 < path.size(); ++i1) {
+		for (size_t i2 = i1 + 1; i2 + 1 < path.size(); ++i2) {
+			swap(path[i1], path[i2]);
+			double new_len = CalcNewLenForGlobalOpt(input, path);
+			if (new_len + EPS < len_1) {
+				improved = true;
+				len_1 = new_len;
+			}
+			else {
+				swap(path[i1], path[i2]);
+			}
+		}
+	}
+	if (!have_0) {
+		path.pop_back();
+	}
+	return improved;
+}
+
+bool OptSingleStringRelocation(vector<int>& path, InputData& input, double cur_time) {
+	bool have_0 = (path.back() == 0);
+	if (!have_0) {
+		path.push_back(0);
+	}
+
+	auto first_possible_to_move = FirstPossibleToMoveElement(path, input, cur_time);
+
 	bool improved = false;
 
 	double len_1 = CalcNewLenForGlobalOpt(input, path);
 
-	for (size_t l = 1; l + 1 < path.size(); ++l) {
+	for (size_t l = first_possible_to_move; l + 1 < path.size(); ++l) {
 		for (size_t r = l; r + 1 < path.size(); ++r) {
-			for (size_t i = 1; i + 1 < path.size(); ++i) {
+			for (size_t i = first_possible_to_move; i + 1 < path.size(); ++i) {
 				if (i + 1 >= l && i <= r) {
 					i = r;
 					continue;
@@ -228,7 +270,10 @@ bool OptSingleStringRelocation(vector<int>& path, InputData& input) {
 
 }
 
-bool OptStringExchange(MatrixInt& paths, InputData& input) {
-	bool improved = GlobalSwapOptimization(paths, input);
-	return improved | GlobalInsertOptimization(paths, input);
+bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time) {
+	return false;
+}
+
+bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time) {
+	return false;
 }

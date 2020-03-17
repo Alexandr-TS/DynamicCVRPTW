@@ -51,6 +51,9 @@
     <ClCompile Include="SolverBruteForce.cpp">
       <Filter>Solvers</Filter>
     </ClCompile>
+    <ClCompile Include="EventsHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataClasses.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="SolverBruteForce.h">
       <Filter>Solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="EventsHandler.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
