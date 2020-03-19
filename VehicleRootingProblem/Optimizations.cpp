@@ -270,7 +270,16 @@ bool OptSingleStringRelocation(vector<int>& path, InputData& input, double cur_t
 
 }
 
-bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time) {
+bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size_t max_segment_length) {
+	/*
+	for (size_t path_id_1 = 0; path_id_1 < paths.size(); ++path_id_1) {
+		auto first_pos_1 = FirstPossibleToMoveElement(paths[path_id_1], input, cur_time);
+		for (size_t path_id_2 = 0; path_id_2 < paths.size(); ++path_id_2) {
+			auto first_pos_2 = FirstPossibleToMoveElement(paths[path_id_2], input, cur_time);
+
+		}
+	}
+	*/
 	return false;
 }
 

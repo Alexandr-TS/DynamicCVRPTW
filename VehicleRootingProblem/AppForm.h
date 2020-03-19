@@ -109,6 +109,20 @@ namespace VehicleRootingProblem {
 		return System::Double(x).ToString()->Replace(",", ".");
 	}
 
+	System::String^ PrettyTime(int minutes) {
+		std::string hours = std::to_string(minutes / 60);
+		while (hours.size() < 2) {
+			hours = "0" + hours;
+		}
+		std::string mins = std::to_string(minutes % 60);
+		while (mins.size() < 2) {
+			mins = "0" + mins;
+		}
+
+		return System::String((hours + ":" + mins).c_str()).ToString();
+	}
+
+
 	/// <summary>
 	/// Сводка для AppForm
 	/// </summary>
@@ -139,7 +153,8 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::MaskedTextBox^ tbTime;
 	private: System::Windows::Forms::GroupBox^ groupBoxEvents;
-	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::Button^ butUpdCoors;
+
 	private: System::Windows::Forms::NumericUpDown^ numericUpDownYCoord;
 	private: System::Windows::Forms::Label^ label7;
 	private: System::Windows::Forms::NumericUpDown^ numericUpDownXCoord;
@@ -252,7 +267,7 @@ namespace VehicleRootingProblem {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
+			System::Windows::Forms::ListViewItem^ listViewItem2 = (gcnew System::Windows::Forms::ListViewItem(L""));
 			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->buttonRunProcess = (gcnew System::Windows::Forms::Button());
@@ -273,7 +288,7 @@ namespace VehicleRootingProblem {
 			this->groupBoxResults = (gcnew System::Windows::Forms::GroupBox());
 			this->tbTime = (gcnew System::Windows::Forms::MaskedTextBox());
 			this->groupBoxEvents = (gcnew System::Windows::Forms::GroupBox());
-			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->butUpdCoors = (gcnew System::Windows::Forms::Button());
 			this->numericUpDownYCoord = (gcnew System::Windows::Forms::NumericUpDown());
 			this->label7 = (gcnew System::Windows::Forms::Label());
 			this->numericUpDownXCoord = (gcnew System::Windows::Forms::NumericUpDown());
@@ -341,9 +356,9 @@ namespace VehicleRootingProblem {
 			this->buttonRunProcess->Location = System::Drawing::Point(207, 318);
 			this->buttonRunProcess->Margin = System::Windows::Forms::Padding(2);
 			this->buttonRunProcess->Name = L"buttonRunProcess";
-			this->buttonRunProcess->Size = System::Drawing::Size(145, 39);
+			this->buttonRunProcess->Size = System::Drawing::Size(201, 39);
 			this->buttonRunProcess->TabIndex = 23;
-			this->buttonRunProcess->Text = L"Запустить доставку";
+			this->buttonRunProcess->Text = L"Запустить доставку для последнего построенного решения";
 			this->buttonRunProcess->UseVisualStyleBackColor = true;
 			this->buttonRunProcess->Click += gcnew System::EventHandler(this, &AppForm::buttonRunProcess_Click);
 			// 
@@ -411,7 +426,7 @@ namespace VehicleRootingProblem {
 			this->listViewLoadedDataSets->FullRowSelect = true;
 			this->listViewLoadedDataSets->GridLines = true;
 			this->listViewLoadedDataSets->HideSelection = false;
-			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem1 });
+			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem2 });
 			this->listViewLoadedDataSets->Location = System::Drawing::Point(6, 19);
 			this->listViewLoadedDataSets->MultiSelect = false;
 			this->listViewLoadedDataSets->Name = L"listViewLoadedDataSets";
@@ -512,7 +527,7 @@ namespace VehicleRootingProblem {
 			// 
 			// groupBoxEvents
 			// 
-			this->groupBoxEvents->Controls->Add(this->button1);
+			this->groupBoxEvents->Controls->Add(this->butUpdCoors);
 			this->groupBoxEvents->Controls->Add(this->numericUpDownYCoord);
 			this->groupBoxEvents->Controls->Add(this->label7);
 			this->groupBoxEvents->Controls->Add(this->numericUpDownXCoord);
@@ -533,18 +548,21 @@ namespace VehicleRootingProblem {
 			this->groupBoxEvents->TabStop = false;
 			this->groupBoxEvents->Text = L"События";
 			// 
-			// button1
+			// butUpdCoors
 			// 
-			this->button1->Location = System::Drawing::Point(283, 142);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(146, 24);
-			this->button1->TabIndex = 51;
-			this->button1->Text = L"Обновить координаты";
-			this->button1->UseVisualStyleBackColor = true;
+			this->butUpdCoors->Location = System::Drawing::Point(283, 142);
+			this->butUpdCoors->Name = L"butUpdCoors";
+			this->butUpdCoors->Size = System::Drawing::Size(146, 24);
+			this->butUpdCoors->TabIndex = 51;
+			this->butUpdCoors->Text = L"Обновить координаты";
+			this->butUpdCoors->UseVisualStyleBackColor = true;
+			this->butUpdCoors->Click += gcnew System::EventHandler(this, &AppForm::butUpdCoors_Click);
 			// 
 			// numericUpDownYCoord
 			// 
 			this->numericUpDownYCoord->Location = System::Drawing::Point(214, 146);
+			this->numericUpDownYCoord->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
+			this->numericUpDownYCoord->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, System::Int32::MinValue });
 			this->numericUpDownYCoord->Name = L"numericUpDownYCoord";
 			this->numericUpDownYCoord->Size = System::Drawing::Size(56, 20);
 			this->numericUpDownYCoord->TabIndex = 50;
@@ -561,6 +579,8 @@ namespace VehicleRootingProblem {
 			// numericUpDownXCoord
 			// 
 			this->numericUpDownXCoord->Location = System::Drawing::Point(123, 146);
+			this->numericUpDownXCoord->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
+			this->numericUpDownXCoord->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, System::Int32::MinValue });
 			this->numericUpDownXCoord->Name = L"numericUpDownXCoord";
 			this->numericUpDownXCoord->Size = System::Drawing::Size(56, 20);
 			this->numericUpDownXCoord->TabIndex = 48;
@@ -586,9 +606,13 @@ namespace VehicleRootingProblem {
 			// numericUpDownTargetId
 			// 
 			this->numericUpDownTargetId->Location = System::Drawing::Point(121, 30);
+			this->numericUpDownTargetId->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 999, 0, 0, 0 });
+			this->numericUpDownTargetId->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			this->numericUpDownTargetId->Name = L"numericUpDownTargetId";
 			this->numericUpDownTargetId->Size = System::Drawing::Size(56, 20);
 			this->numericUpDownTargetId->TabIndex = 45;
+			this->numericUpDownTargetId->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->numericUpDownTargetId->ValueChanged += gcnew System::EventHandler(this, &AppForm::numericUpDownTargetId_ValueChanged);
 			// 
 			// butUpdTW
 			// 
@@ -598,6 +622,7 @@ namespace VehicleRootingProblem {
 			this->butUpdTW->TabIndex = 44;
 			this->butUpdTW->Text = L"Обновить временное окно";
 			this->butUpdTW->UseVisualStyleBackColor = true;
+			this->butUpdTW->Click += gcnew System::EventHandler(this, &AppForm::butUpdTW_Click);
 			// 
 			// tbTWClose
 			// 
@@ -843,7 +868,7 @@ namespace VehicleRootingProblem {
 	}
 
 	// rowInd is clicked row in dataGridViewResults
-	void UpdateVisualization(int launchInd) {
+	void UpdateVisualization(int launchInd, ProblemSolution& solution) {
 		this->dataGridViewSelectedRes->Rows->Clear();
 		this->dataGridViewSelectedRes->Columns->Clear();
 
@@ -885,7 +910,7 @@ namespace VehicleRootingProblem {
 		this->tabControlLeft->SelectedTab = this->tabControlLeft->TabPages[1];
 		this->tabControlLeft->Refresh();
 
-		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution,
+		DrawPaths(Graphics, AppFormVars::CurrentSolution,
 			this->pictureBoxRes->Height, this->pictureBoxRes->Width, 0);
 	}
 
@@ -917,7 +942,7 @@ namespace VehicleRootingProblem {
 		}
 		else {
 			AppFormVars::Launches.push_back(AppFormVars::Launch(algoInd, dataSetInd, args, mode, AppFormVars::CurrentSolution));
-			UpdateDataGridViewPaths(AppFormVars::Launches.back().Solution);
+			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 			AppFormVars::PrintedLaunchPathsIndex = (int)AppFormVars::Launches.size() - 1;
 			this->buttonSavePathsToFile->Enabled = true;
 			this->buttonRunProcess->Enabled = true;
@@ -999,35 +1024,31 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void buttonRunProcess_Click(System::Object^ sender, System::EventArgs^ e) {
+		AppFormVars::CntMinutesPassed = 0;
+		AppFormVars::MinutesPerTick = 1;
 		timer1->Stop();
 		timer1->Start();
 		int launchInd = (int)AppFormVars::Launches.size() - 1;
-		UpdateVisualization(launchInd);
-		UpdateDataGridViewPaths(AppFormVars::Launches[launchInd].Solution);
+		AppFormVars::CurrentSolution = AppFormVars::Launches.back().Solution;
+		UpdateTWAndCoors(1);
+		UpdateVisualization(launchInd, AppFormVars::CurrentSolution);
+		UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		this->Width = 1175;
 		this->groupBoxResults->Visible = true;
 	}
 
+
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
-		if (AppFormVars::Launches.empty()) {
+		if (AppFormVars::Launches.empty() || !AppFormVars::CurrentSolution.SolutionExists) {
 			return;
 		}
 		AppFormVars::CntMinutesPassed += AppFormVars::MinutesPerTick;
 		if (!AppFormVars::MinutesPerTick) {
 			return;
 		}
-		std::string hours = std::to_string(AppFormVars::CntMinutesPassed / 60);
-		while (hours.size() < 2) {
-			hours = "0" + hours;
-		}
-		std::string minutes = std::to_string(AppFormVars::CntMinutesPassed % 60);
-		while (minutes.size() < 2) {
-			minutes = "0" + minutes;
-		}
 
-		this->tbTime->Text = System::String((hours + ":" + minutes).c_str()).ToString();
-		int launchInd = (int)AppFormVars::Launches.size() - 1;
-		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution,
+		this->tbTime->Text = PrettyTime(AppFormVars::CntMinutesPassed);
+		DrawPaths(Graphics, AppFormVars::CurrentSolution,
 			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
 	}
 
@@ -1047,14 +1068,109 @@ namespace VehicleRootingProblem {
 		AppFormVars::MinutesPerTick = 50;
 	}
 
+	private: bool CheckSelectedVertexPresence(ProblemSolution& solution, bool with_msgbox) {
+		std::string target_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Value.ToString());
+		int target_id = atoi(target_id_str.c_str());
+		bool found_target = false;
+		for (auto& path : solution.Paths) {
+			for (auto vertex : path) {
+				if (vertex == target_id) {
+					found_target = true;
+				}
+			}
+		}
+		if (!found_target) {
+			if (with_msgbox) {
+				MessageBox::Show("Вершины с указанным номером не существует");
+			}
+			return false;
+		}
+		return true;
+	}
+
+	private: void UpdateTWAndCoors(int target_id) {
+		this->tbTWOpen->Text = PrettyTime(AppFormVars::CurrentSolution.Input.TimeWindows[target_id].first);
+		this->tbTWClose->Text = PrettyTime(AppFormVars::CurrentSolution.Input.TimeWindows[target_id].second);
+		this->numericUpDownXCoord->Value = System::Int32(AppFormVars::CurrentSolution.Input.Points[target_id].first);
+		this->numericUpDownYCoord->Value = System::Int32(AppFormVars::CurrentSolution.Input.Points[target_id].second);
+	}
+
+	private: System::Void numericUpDownTargetId_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (!CheckSelectedVertexPresence(AppFormVars::CurrentSolution, false)) {
+			this->tbTWClose->Text = ToText("");
+			this->tbTWOpen->Text = ToText("");
+			this->numericUpDownXCoord->Value = System::Decimal(0);
+			this->numericUpDownYCoord->Value = System::Decimal(0);
+			return;
+		}
+		std::string target_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Value.ToString());
+		int target_id = atoi(target_id_str.c_str());
+		UpdateTWAndCoors(target_id);
+	}
+
 	private: System::Void butDeleteTarget_Click(System::Object^ sender, System::EventArgs^ e) {
 		std::string target_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Text);
 		int target_id = atoi(target_id_str.c_str());
-		int launchInd = (int)AppFormVars::Launches.size() - 1;
-		EventsHandler::UpdateOnRemoveTarget(AppFormVars::Launches[launchInd].Solution, 
-			target_id, AppFormVars::CntMinutesPassed);
-		DrawPaths(Graphics, AppFormVars::Launches[launchInd].Solution,
+		if (!CheckSelectedVertexPresence(AppFormVars::CurrentSolution, true)) {
+			return;
+		}
+		try {
+			EventsHandler::UpdateOnRemoveTarget(AppFormVars::CurrentSolution,
+				target_id, AppFormVars::CntMinutesPassed);
+		} 
+		catch (ChangeVisitedVertexException&) {
+			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
+		}
+		DrawPaths(Graphics, AppFormVars::CurrentSolution,
 			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
 	}
+
+	private: System::Void butUpdTW_Click(System::Object^ sender, System::EventArgs^ e) {
+		std::string target_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Text);
+		int target_id = atoi(target_id_str.c_str());
+		if (!CheckSelectedVertexPresence(AppFormVars::CurrentSolution, true)) {
+			return;
+		}
+		std::string start_time = msclr::interop::marshal_as<std::string>(this->tbTWOpen->Text);
+		std::string end_time = msclr::interop::marshal_as<std::string>(this->tbTWClose->Text);
+		double new_start = static_cast<double>(600 * (start_time[0] - '0') + 60 * (start_time[1] - '0') + 10 * (start_time[3] - '0') + (start_time[4] - '0'));
+		double new_end = static_cast<double>(600 * (end_time[0] - '0') + 60 * (end_time[1] - '0') + 10 * (end_time[3] - '0') + (end_time[4] - '0'));
+		try {
+			EventsHandler::UpdateOnTimeWindowUpdate(AppFormVars::CurrentSolution, target_id, AppFormVars::CntMinutesPassed, new_start, new_end);
+		}
+		catch (NoValidSolutionException&) {
+			MessageBox::Show("Не удаётся построить решение после изменения");
+		}
+		catch (ChangeVisitedVertexException&) {
+			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
+		}
+		DrawPaths(Graphics, AppFormVars::CurrentSolution,
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+	}
+
+	private: System::Void butUpdCoors_Click(System::Object^ sender, System::EventArgs^ e) {
+		std::string target_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Text);
+		int target_id = atoi(target_id_str.c_str());
+		if (!CheckSelectedVertexPresence(AppFormVars::CurrentSolution, true)) {
+			return;
+		}
+		std::string new_x_str = msclr::interop::marshal_as<std::string>(this->numericUpDownXCoord->Value.ToString());
+		std::string new_y_str = msclr::interop::marshal_as<std::string>(this->numericUpDownYCoord->Value.ToString());
+		double new_x = static_cast<double>(atoi(new_x_str.c_str()));
+		double new_y = static_cast<double>(atoi(new_y_str.c_str()));
+		try {
+			EventsHandler::UpdateOnCoordinatesUpdate(AppFormVars::CurrentSolution, 
+				target_id, AppFormVars::CntMinutesPassed, new_x, new_y);
+		}
+		catch (NoValidSolutionException&) {
+			MessageBox::Show("Не удаётся построить решение после изменения");
+		}
+		catch (ChangeVisitedVertexException&) {
+			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
+		}
+		DrawPaths(Graphics, AppFormVars::CurrentSolution,
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+	}
+
 };
 }

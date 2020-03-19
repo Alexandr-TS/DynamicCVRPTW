@@ -14,17 +14,17 @@ bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_i
 		}
 		int i = it - path.begin();
 		if (!i && cur_time > 0) {
-			return false;
+			throw ChangeVisitedVertexException();
 		}
 		if (i && solution.ArrivalTimes[path_id][i - 1] < cur_time) {
-			return false;
+			throw ChangeVisitedVertexException();
 		}
 		path.erase(it);
 		OptSingleStringExchange(path, solution.Input, cur_time);
 		OptSingleStringRelocation(path, solution.Input, cur_time);
 		return true;
 	}
-	return false;
+	throw NoSuchTargetException();
 }
 
 bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, int target_id, double cur_time, double new_start, double new_end) {
@@ -37,24 +37,25 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, int targ
 		}
 		int i = it - path.begin();
 		if (!i && cur_time > 0) {
-			return false;
+			throw ChangeVisitedVertexException();
 		}
 		if (i && solution.ArrivalTimes[path_id][i - 1] < cur_time) {
-			return false;
+			throw ChangeVisitedVertexException();
 		}
-		solution.Input.TimeWindows[path[i]] = { new_start, new_end };
-		OptSingleStringExchange(path, solution.Input, cur_time);
-		OptSingleStringRelocation(path, solution.Input, cur_time);
-		OptStringCross(solution.Paths, solution.Input, cur_time);
-		OptStringExchange(solution.Paths, solution.Input, cur_time);
-		ProblemSolution new_solution = ProblemSolution(solution.Input, solution.Paths);
+		auto new_solution = solution;
+		new_solution.Input.TimeWindows[path[i]] = { new_start, new_end };
+		OptSingleStringExchange(path, new_solution.Input, cur_time);
+		OptSingleStringRelocation(path, new_solution.Input, cur_time);
+		OptStringCross(new_solution.Paths, new_solution.Input, cur_time);
+		OptStringExchange(new_solution.Paths, new_solution.Input, cur_time);
+		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;
 			return true;
 		}
-		return false;
+		throw NoValidSolutionException();
 	}
-	return false;
+	throw NoSuchTargetException();
 }
 
 bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int target_id, double cur_time, double new_x, double new_y) {
@@ -67,23 +68,23 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		}
 		int i = it - path.begin();
 		if (!i && cur_time > 0) {
-			return false;
+			throw ChangeVisitedVertexException();
 		}
 		if (i && solution.ArrivalTimes[path_id][i - 1] < cur_time) {
-			return false;
+			throw ChangeVisitedVertexException();
 		}
-		solution.Input.Points[path[i]] = { new_x, new_y };
-		OptSingleStringExchange(path, solution.Input, cur_time);
-		OptSingleStringRelocation(path, solution.Input, cur_time);
-		OptStringCross(solution.Paths, solution.Input, cur_time);
-		OptStringExchange(solution.Paths, solution.Input, cur_time);
-		ProblemSolution new_solution = ProblemSolution(solution.Input, solution.Paths);
+		auto new_solution = solution;
+		new_solution.Input.Points[path[i]] = { new_x, new_y };
+		OptSingleStringExchange(path, new_solution.Input, cur_time);
+		OptSingleStringRelocation(path, new_solution.Input, cur_time);
+		OptStringCross(new_solution.Paths, new_solution.Input, cur_time);
+		OptStringExchange(new_solution.Paths, new_solution.Input, cur_time);
+		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;
 			return true;
 		}
-		return false;
+		throw NoValidSolutionException();
 	}
-	return false;
-
+	throw NoSuchTargetException();
 }

@@ -64,7 +64,7 @@ ProblemSolution::ProblemSolution() {
 }
 
 // paths: {{1, 2, 3}, {6, 5, 4, 7}}. without 0. 0 is depot
-ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
+ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, EProblemSolutionCtorType type)
 	: Input(input)
 	, Paths(paths)
 {
@@ -107,10 +107,12 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
 		SumOfPathLengths += currentLength;
 	}
 
-	for (size_t i = 0; i < used.size(); i++) {
-		if (used[i] != 1) {
-			SolutionExists = false;
-			std::cout << "ProblemSolution constructor. Solution is not valid because not all the vertices were visited" << std::endl;
+	if (type == EProblemSolutionCtorType::CHECK_PRESENCE) {
+		for (size_t i = 0; i < used.size(); i++) {
+			if (used[i] != 1) {
+				SolutionExists = false;
+				std::cout << "ProblemSolution constructor. Solution is not valid because not all the vertices were visited" << std::endl;
+			}
 		}
 	}
 
@@ -121,7 +123,6 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths)
 	if ((int)paths.size() > input.DronsCnt) {
 		SolutionExists = false;
 		std::cout << "ProblemSolution constructor. Solution is not valid because there are more paths than vehicles" << std::endl;
-
 	}
 }
 

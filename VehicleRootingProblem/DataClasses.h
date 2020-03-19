@@ -10,6 +10,7 @@
 #include <fstream>
 #include <functional>
 #include <iomanip>
+#include <exception>
 #include <iostream>
 #include <limits>
 #include <map>
@@ -22,6 +23,12 @@ const double INF = 2e9;
 
 typedef std::vector<std::vector<double> > MatrixDouble;
 typedef std::vector<std::vector<int> > MatrixInt;
+
+enum class EProblemSolutionCtorType { CHECK_PRESENCE, SKIP_PRESENCE };
+
+class ChangeVisitedVertexException : public std::exception {};
+class NoValidSolutionException : public std::exception {};
+class NoSuchTargetException : public std::exception {};
 
 class InputData {
 public:
@@ -49,7 +56,7 @@ public:
 class ProblemSolution {
 public:
 	ProblemSolution();
-	ProblemSolution(InputData& input, MatrixInt paths);
+	ProblemSolution(InputData& input, MatrixInt paths, EProblemSolutionCtorType type = EProblemSolutionCtorType::CHECK_PRESENCE);
 
 public:
 	void PrintIntoFile(std::string outputFileName);
