@@ -234,6 +234,59 @@ void TestOptSingleStringRelocation2() {
 	cout << "________________________________________Test Single String Relocation 2: OK\n";
 }
 
+void TestOptStringExchange() {
+	auto input = InputData(2, 6, 1000,
+		{ {0, 0}, {-5, 1}, {-6, 0}, {-5, -1}, {5, 1}, {6, 0}, {5, -1} },
+		{  {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF} });
+	MatrixInt paths = { {1, 4, 5}, {6, 3, 2} };
+
+	bool ans = true;
+	double prev_len = 2 * (sqrt(26) + 10 + sqrt(2) + 6);
+	double first_len = prev_len;
+	while (ans) {
+		ans = OptStringExchange(paths, input, 1);
+		ProblemSolution solution = ProblemSolution(input, paths, EProblemSolutionCtorType::CHECK_PRESENCE);
+		assert(solution.SolutionExists);
+		if (ans) {
+			assert(solution.SumOfPathLengths + EPS < prev_len);
+			prev_len = solution.SumOfPathLengths;
+		}
+	}
+	assert(prev_len + EPS < first_len);
+	MatrixInt expected_paths = { {1, 2, 3}, {6, 4, 5} };
+	assert(paths[0].size() == (size_t)3);
+	assert(paths[1].size() == (size_t)3);
+	assert(paths[0][0] == 1);
+	// 2,3 or 3,2
+	assert(paths[0][1] + paths[0][2] == 5);
+	assert(paths[1][0] == 6);
+	// 4,5 or 5,4
+	assert(paths[1][1] + paths[1][2] == 9);
+
+	ans = OptStringExchange(paths, input, 1);
+	assert(!ans);
+	cout << "________________________________________Test String Exchange: OK\n";
+}
+
+void TestOptStringCross() {
+	auto input = InputData(2, 6, 1000,
+		{ {0, 0}, {-5, 1}, {-6, 0}, {-5, -1}, {5, 1}, {6, 0}, {5, -1} },
+		{  {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF}, {-INF, INF} });
+	MatrixInt paths = { {1, 5, 4}, {6, 2, 3} };
+
+	bool ans = OptStringCross(paths, input, 1);
+	ProblemSolution solution = ProblemSolution(input, paths, EProblemSolutionCtorType::CHECK_PRESENCE);
+	assert(solution.SolutionExists);
+	
+	MatrixInt expected_paths = { {1, 2, 3}, {6, 5, 4} };
+	assert(paths[0] == expected_paths[0]);
+	assert(paths[1] == expected_paths[1]);
+
+	ans = OptStringCross(paths, input, 0);
+	assert(!ans);
+	cout << "________________________________________Test String Cross: OK\n";
+}
+
 
 void RunTests() {
 	TestMath();
@@ -249,6 +302,9 @@ void RunTests() {
 	TestOptSingleStringExchange2();
 	TestOptSingleStringRelocation1();
 	TestOptSingleStringRelocation2();
+
+	TestOptStringExchange();
+	TestOptStringCross();
 
 	cout << "_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_Unit testing have finished successfully\n";
 }

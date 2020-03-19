@@ -13,3 +13,5 @@ bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time);
 bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size_t max_segment_length = 3);
 bool OptSingleStringRelocation(std::vector<int>& path, InputData& input, double cur_time);
 bool OptSingleStringExchange(std::vector<int>& path, InputData& input, double cur_time);
+
+bool MultiOptimization(MatrixInt& paths, InputData& input, double cur_time);

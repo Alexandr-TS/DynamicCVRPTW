@@ -20,8 +20,12 @@ bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_i
 			throw ChangeVisitedVertexException();
 		}
 		path.erase(it);
-		OptSingleStringExchange(path, solution.Input, cur_time);
-		OptSingleStringRelocation(path, solution.Input, cur_time);
+		bool improved = true;
+		while (improved) {
+			improved = false;
+			improved |= OptSingleStringExchange(path, solution.Input, cur_time);
+			improved |= OptSingleStringRelocation(path, solution.Input, cur_time);
+		}
 		return true;
 	}
 	throw NoSuchTargetException();
@@ -44,10 +48,9 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, int targ
 		}
 		auto new_solution = solution;
 		new_solution.Input.TimeWindows[path[i]] = { new_start, new_end };
-		OptSingleStringExchange(path, new_solution.Input, cur_time);
-		OptSingleStringRelocation(path, new_solution.Input, cur_time);
-		OptStringCross(new_solution.Paths, new_solution.Input, cur_time);
-		OptStringExchange(new_solution.Paths, new_solution.Input, cur_time);
+
+		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
+
 		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;
@@ -75,10 +78,9 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		}
 		auto new_solution = solution;
 		new_solution.Input.Points[path[i]] = { new_x, new_y };
-		OptSingleStringExchange(path, new_solution.Input, cur_time);
-		OptSingleStringRelocation(path, new_solution.Input, cur_time);
-		OptStringCross(new_solution.Paths, new_solution.Input, cur_time);
-		OptStringExchange(new_solution.Paths, new_solution.Input, cur_time);
+
+		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
+
 		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;

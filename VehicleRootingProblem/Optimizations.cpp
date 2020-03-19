@@ -164,11 +164,29 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 	return improved;
 }
 
-bool LocalSwapOptimization(vector<int>& path, InputData& input) {
-	bool have_0 = (path.back() == 0);
-	if (!have_0) {
+pair<bool, bool> PreparePathWithZeros(vector<int>& path) {
+	bool have_0_start = (path[0] == 0);
+	if (!have_0_start) {
+		path.insert(path.begin(), 0);
+	}
+	bool have_0_end = (path.back() == 0);
+	if (!have_0_end) {
 		path.push_back(0);
 	}
+	return { have_0_start, have_0_end };
+}
+
+void UndoPreparePathWithZeroz(vector<int>& path, pair<bool, bool> info) {
+	if (!info.first) {
+		path.erase(path.begin());
+	}
+	if (!info.second) {
+		path.pop_back();
+	}
+}
+
+bool LocalSwapOptimization(vector<int>& path, InputData& input) {
+	auto zeros_info = PreparePathWithZeros(path);
 
 	bool improved = false;
 
@@ -186,17 +204,13 @@ bool LocalSwapOptimization(vector<int>& path, InputData& input) {
 			}
 		}
 	}
-	if (!have_0) {
-		path.pop_back();
-	}
+
+	UndoPreparePathWithZeroz(path, zeros_info);
 	return improved;
 }
 
 bool OptSingleStringExchange(vector<int>& path, InputData& input, double cur_time) {
-	bool have_0 = (path.back() == 0);
-	if (!have_0) {
-		path.push_back(0);
-	}
+	auto zeros_info = PreparePathWithZeros(path);
 
 	auto first_possible_to_move = FirstPossibleToMoveElement(path, input, cur_time);
 
@@ -216,17 +230,13 @@ bool OptSingleStringExchange(vector<int>& path, InputData& input, double cur_tim
 			}
 		}
 	}
-	if (!have_0) {
-		path.pop_back();
-	}
+
+	UndoPreparePathWithZeroz(path, zeros_info);
 	return improved;
 }
 
 bool OptSingleStringRelocation(vector<int>& path, InputData& input, double cur_time) {
-	bool have_0 = (path.back() == 0);
-	if (!have_0) {
-		path.push_back(0);
-	}
+	auto zeros_info = PreparePathWithZeros(path);
 
 	auto first_possible_to_move = FirstPossibleToMoveElement(path, input, cur_time);
 
@@ -263,26 +273,124 @@ bool OptSingleStringRelocation(vector<int>& path, InputData& input, double cur_t
 		}
 	}
 
-	if (!have_0) {
-		path.pop_back();
-	}
+	UndoPreparePathWithZeroz(path, zeros_info);
 	return improved;
-
 }
 
 bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size_t max_segment_length) {
-	/*
-	for (size_t path_id_1 = 0; path_id_1 < paths.size(); ++path_id_1) {
-		auto first_pos_1 = FirstPossibleToMoveElement(paths[path_id_1], input, cur_time);
-		for (size_t path_id_2 = 0; path_id_2 < paths.size(); ++path_id_2) {
-			auto first_pos_2 = FirstPossibleToMoveElement(paths[path_id_2], input, cur_time);
+	pair<bool, bool> zeros_info;
+	for (auto& path : paths) {
+		zeros_info = PreparePathWithZeros(path);
+	}
 
+	bool improved = false;
+	for (size_t path_id_1 = 0; path_id_1 < paths.size(); ++path_id_1) {
+		auto first_pos_1 = max((size_t)1, FirstPossibleToMoveElement(paths[path_id_1], input, cur_time));
+		double path_1_len = CalcNewLenForGlobalOpt(input, paths[path_id_1]);
+		for (size_t path_id_2 = path_id_1 + 1; path_id_2 < paths.size(); ++path_id_2) {
+			auto first_pos_2 = max((size_t)1, FirstPossibleToMoveElement(paths[path_id_2], input, cur_time));
+			double path_2_len = CalcNewLenForGlobalOpt(input, paths[path_id_2]);
+
+			bool improved_local = false;
+
+			for (size_t l_1 = first_pos_1; l_1 < paths[path_id_1].size(); ++l_1) {
+				if (improved_local) break;
+				for (size_t r_1 = l_1; r_1 < min(l_1 + max_segment_length + 1, paths[path_id_1].size()); ++r_1) {
+					if (improved_local) break;
+
+					auto path_1_copy(paths[path_id_1]);
+					vector<int>path_1_mid{ paths[path_id_1].begin() + l_1, paths[path_id_1].begin() + r_1 };
+					path_1_copy.erase(path_1_copy.begin() + l_1, path_1_copy.begin() + r_1);
+
+					for (size_t l_2 = first_pos_2; l_2 < paths[path_id_2].size(); ++l_2) {
+						if (improved_local) break;
+						for (size_t r_2 = l_2; r_2 < min(l_2 + max_segment_length + 1, paths[path_id_2].size()); ++r_2) {
+							if (improved_local) break;
+							auto path_2_copy(paths[path_id_2]);
+							path_2_copy.erase(path_2_copy.begin() + l_2, path_2_copy.begin() + r_2);
+							path_2_copy.insert(path_2_copy.begin() + l_2, path_1_mid.begin(), path_1_mid.end());
+							path_1_copy.insert(path_1_copy.begin() + l_1, paths[path_id_2].begin() + l_2, paths[path_id_2].begin() + r_2);
+
+							double new_path_1_len = CalcNewLenForGlobalOpt(input, path_1_copy);
+							double new_path_2_len = CalcNewLenForGlobalOpt(input, path_2_copy);
+							if (new_path_1_len + new_path_2_len < INF && new_path_1_len + new_path_2_len + EPS < path_1_len + path_2_len) {
+								paths[path_id_1] = path_1_copy;
+								paths[path_id_2] = path_2_copy;
+								path_1_len = new_path_1_len;
+								path_2_len = new_path_2_len;
+								improved_local = true;
+							}
+							path_1_copy.erase(path_1_copy.begin() + l_1, path_1_copy.begin() + l_1 + (r_2 - l_2));
+						}
+					}
+				}
+			}
+			improved |= improved_local;
 		}
 	}
-	*/
-	return false;
+
+	for (auto& path : paths) {
+		UndoPreparePathWithZeroz(path, zeros_info);
+	}
+	return improved;
 }
 
 bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time) {
-	return false;
+	pair<bool, bool> zeros_info;
+	for (auto& path : paths) {
+		zeros_info = PreparePathWithZeros(path);
+	}
+
+	bool improved = false;
+	for (size_t path_id_1 = 0; path_id_1 < paths.size(); ++path_id_1) {
+		auto first_pos_1 = max((size_t)1, FirstPossibleToMoveElement(paths[path_id_1], input, cur_time));
+		double path_1_len = CalcNewLenForGlobalOpt(input, paths[path_id_1]);
+		for (size_t path_id_2 = path_id_1 + 1; path_id_2 < paths.size(); ++path_id_2) {
+			auto first_pos_2 = max((size_t)1, FirstPossibleToMoveElement(paths[path_id_2], input, cur_time));
+			double path_2_len = CalcNewLenForGlobalOpt(input, paths[path_id_2]);
+
+			for (size_t i_1 = first_pos_1; i_1 + 1 < paths[path_id_1].size(); ++i_1) {
+				for (size_t i_2 = first_pos_2; i_2 + 1 < paths[path_id_2].size(); ++i_2) {
+					vector<int> path_1_copy{ paths[path_id_1].begin(), paths[path_id_1].begin() + i_1 };
+					copy(paths[path_id_2].begin() + i_2, paths[path_id_2].end(), back_inserter(path_1_copy));
+					vector<int> path_2_copy{ paths[path_id_2].begin(), paths[path_id_2].begin() + i_2 };
+					copy(paths[path_id_1].begin() + i_1, paths[path_id_1].end(), back_inserter(path_2_copy));
+					double new_path_1_len = CalcNewLenForGlobalOpt(input, path_1_copy);
+					double new_path_2_len = CalcNewLenForGlobalOpt(input, path_2_copy);
+					if (new_path_1_len + new_path_2_len < INF && new_path_1_len + new_path_2_len + EPS < path_1_len + path_2_len) {
+						paths[path_id_1] = path_1_copy;
+						paths[path_id_2] = path_2_copy;
+						path_1_len = new_path_1_len;
+						path_2_len = new_path_2_len;
+						improved = true;
+					}
+				}
+			}
+		}
+	}
+
+	for (auto& path : paths) {
+		UndoPreparePathWithZeroz(path, zeros_info);
+	}
+	return improved;
+}
+
+bool MultiOptimization(MatrixInt& paths, InputData& input, double cur_time) {
+	bool improved = false;
+	bool flag = true;
+	double start_time = clock();
+	while (flag) {
+		if (clock() - start_time > 2.0 * CLOCKS_PER_SEC) {
+			break;
+		}
+		flag = false;
+		for (auto& path : paths) {
+			flag |= OptSingleStringExchange(path, input, cur_time);
+			flag |= OptSingleStringRelocation(path, input, cur_time);
+		}
+		flag |= OptStringCross(paths, input, cur_time);
+		flag |= OptStringExchange(paths, input, cur_time, 5);
+		improved |= flag;
+	}
+	return improved;
 }
