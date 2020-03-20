@@ -3,24 +3,22 @@
 using namespace std;
 
 ProblemSolution RunMinSum(InputData input) {
-	double startTime = (double)clock() / CLOCKS_PER_SEC;
-
-	input.DronsCnt = std::min(input.DronsCnt, input.TargetsCnt);
+	input.DronsCnt = min(input.DronsCnt, input.TargetsCnt);
 	auto init_input = input;
 
 	int n = input.TargetsCnt;
 	int drons = input.DronsCnt;
 
-	std::vector<int> pointIndexOfDron(input.DronsCnt, 0);
-	std::vector<double> doneDistance(input.DronsCnt, 0);
-	std::vector<double> currentDronTime(input.DronsCnt, 0);
+	vector<int> pointIndexOfDron(input.DronsCnt, 0);
+	vector<double> doneDistance(input.DronsCnt, 0);
+	vector<double> currentDronTime(input.DronsCnt, 0);
 
 	MatrixInt paths(drons);
 	MatrixDouble times(drons);
 
 	assert(n + 1 == input.TimeWindows.size());
 	assert(n + 1 == input.Points.size());
-	std::vector<int> targetsPermutation;
+	vector<int> targetsPermutation;
 	for (int i = 0; i < n + 1; ++i) {
 		targetsPermutation.push_back(i);
 	}
@@ -37,7 +35,7 @@ ProblemSolution RunMinSum(InputData input) {
 
 	for (int targetIndex = 1; targetIndex < input.TargetsCnt + 1; ++targetIndex) {
 		int dronIndex = -1;
-		double minDistance = std::numeric_limits<double>::max();
+		double minDistance = numeric_limits<double>::max();
 
 		for (int i = 0; i < drons; ++i) {
 			bool works = true;
@@ -67,8 +65,9 @@ ProblemSolution RunMinSum(InputData input) {
 		}
 
 		doneDistance[dronIndex] += input.Distance(pointIndexOfDron[dronIndex], targetIndex);
-		currentDronTime[dronIndex] = std::max(currentDronTime[dronIndex] + 
-			input.Distance(pointIndexOfDron[dronIndex], targetIndex), input.TimeWindows[targetIndex].first);
+		currentDronTime[dronIndex] = max(currentDronTime[dronIndex] + 
+			input.Distance(pointIndexOfDron[dronIndex], targetIndex), 
+			input.TimeWindows[targetIndex].first);
 		times[dronIndex].push_back(currentDronTime[dronIndex]);
 		pointIndexOfDron[dronIndex] = targetIndex;
 		paths[dronIndex].push_back(targetsPermutation[targetIndex]);
@@ -78,7 +77,7 @@ ProblemSolution RunMinSum(InputData input) {
 }
 
 
-ProblemSolution SolverGreedy::Run(InputData input, ProblemMode problemMode, std::vector<double> args) {
+ProblemSolution SolverGreedy::Run(InputData input, ProblemMode problemMode, vector<double> args) {
 	if (problemMode == ProblemMode::MINSUM) {
 		return RunMinSum(input);
 	}
@@ -86,7 +85,7 @@ ProblemSolution SolverGreedy::Run(InputData input, ProblemMode problemMode, std:
 		// times when all drons should return to depot
 		double tl = 0, tr = 0;
 		for (int i = 1; i < (int)input.TimeWindows.size(); ++i) {
-			tr = std::max(tr, input.TimeWindows[i].second + input.Distance(i, 0));
+			tr = max(tr, input.TimeWindows[i].second + input.Distance(i, 0));
 		}
 		auto answer_solution = ProblemSolution();
 		auto input_copy = input;
@@ -95,7 +94,7 @@ ProblemSolution SolverGreedy::Run(InputData input, ProblemMode problemMode, std:
 			bool works = true;
 			for (int i = 1; i < (int)input.TimeWindows.size(); i++) {
 				input_copy.TimeWindows[i].second = 
-					std::min(input.TimeWindows[i].second, tm - input_copy.Distance(i, 0));
+					min(input.TimeWindows[i].second, tm - input_copy.Distance(i, 0));
 				if (input_copy.TimeWindows[i].first > input_copy.TimeWindows[i].second) {
 					works = false;
 				}

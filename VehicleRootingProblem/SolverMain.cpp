@@ -7,7 +7,7 @@
 using namespace std;
 
 ProblemSolution SolverMain::Run(InputData input, ProblemMode problemMode, 
-	EAlgorithms algorithm, std::vector<double> args) {
+	EAlgorithms algorithm, vector<double> args) {
 	auto solution = ProblemSolution();
 	double start_time = clock();
 
@@ -25,9 +25,11 @@ ProblemSolution SolverMain::Run(InputData input, ProblemMode problemMode,
 	}
 
 	cout << "\n\n__________________________________________________\n";
-	cout << "TOTAL WORK TIME: " << fixed << setprecision(2) << (clock() - start_time) / CLOCKS_PER_SEC << " " << endl;
+	cout << "TOTAL WORK TIME: " << fixed << setprecision(2) << 
+		(clock() - start_time) / CLOCKS_PER_SEC << " " << endl;
 	if (solution.SolutionExists) {
-		cout << "SOLUTION SUM OF LENGTHS: " << fixed << setprecision(2) << solution.SumOfPathLengths << endl;
+		cout << "SOLUTION SUM OF LENGTHS: " << fixed << setprecision(2) << 
+			solution.SumOfPathLengths << endl;
 	}
 	else {
 		cout << "Solution not found" << endl;
@@ -38,12 +40,12 @@ ProblemSolution SolverMain::Run(InputData input, ProblemMode problemMode,
 
 // Useful to run all the algos with selected input 
 ProblemSolution RunAllAlgos(InputData input, ProblemMode problemMode, 
-	EAlgorithms algorithm, std::vector<double> args) {
+	EAlgorithms algorithm, vector<double> args) {
 	vector<pair<double, double>> answer;
 
 	auto solution = ProblemSolution();
 	
-	std::vector<std::vector<double>> argss = {
+	vector<vector<double>> argss = {
 		{}, {3, 4, 0.4, 2, 3, 2, 5, 0.5, 0}, {30, 1500, 900, 0.5, 0.5, 0}, {} 
 	};
 

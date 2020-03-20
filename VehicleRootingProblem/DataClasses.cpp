@@ -41,8 +41,9 @@ InputData::InputData(std::string inputFileName) {
 			fin >> TimeWindows[i + 1].first >> TimeWindows[i + 1].second;
 		}
 	}
-	catch(int error) {
-		DronsCnt = TargetsCnt = MaxDist = 0;
+	catch(...) {
+		DronsCnt = TargetsCnt = 0;
+		MaxDist = 0.0;
 	}
 	fin.close();
 }
@@ -96,7 +97,8 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, EProblemSolu
 			ArrivalTimes.back().push_back(cur_time);
 			if (cur_time > input.TimeWindows[index].second + EPS) {
 				SolutionExists = false;
-				std::cout << "ProblemSolution constructor. Solution is not valid because of time windows" << std::endl;
+				std::cout << "ProblemSolution constructor. Solution is not valid because " <<
+					"of time windows" << std::endl;
 			}
 			currentLength += this_dist;
 			lastIndex = index;
@@ -111,18 +113,21 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, EProblemSolu
 		for (size_t i = 0; i < used.size(); i++) {
 			if (used[i] != 1) {
 				SolutionExists = false;
-				std::cout << "ProblemSolution constructor. Solution is not valid because not all the vertices were visited" << std::endl;
+				std::cout << "ProblemSolution constructor. Solution is not valid because not " <<
+					"all the vertices were visited" << std::endl;
 			}
 		}
 	}
 
 	if (MaxPathLength - EPS > input.MaxDist) { 
 		SolutionExists = false;
-		std::cout << "ProblemSolution constructor. Solution is not valid because one of the paths is longer than MaxDist" << std::endl;
+		std::cout << "ProblemSolution constructor. Solution is not valid because one of the " << 
+			"paths is longer than MaxDist" << std::endl;
 	}
-	if ((int)paths.size() > input.DronsCnt) {
+	if (static_cast<int>(paths.size()) > input.DronsCnt) {
 		SolutionExists = false;
-		std::cout << "ProblemSolution constructor. Solution is not valid because there are more paths than vehicles" << std::endl;
+		std::cout << "ProblemSolution constructor. Solution is not valid because there are " << 
+			"more paths than vehicles" << std::endl;
 	}
 }
 
@@ -136,8 +141,10 @@ void ProblemSolution::PrintIntoFile(std::string outputFileName) {
 		return;
 	}
 
-	fout << "Number of drons: " << Input.DronsCnt << ", Number of targets: " << Input.TargetsCnt << std::endl;
-	fout << "Max distance of drone: " << Input.MaxDist << std::endl;	fout << std::endl;
+	fout << "Number of drons: " << Input.DronsCnt << ", Number of targets: " << 
+		Input.TargetsCnt << std::endl;
+	fout << "Max distance of drone: " << Input.MaxDist << std::endl;	
+	fout << std::endl;
 	fout << "Max Path Length: " << MaxPathLength << std::endl;
 	fout << "Sum of lengths: " << SumOfPathLengths << std::endl;
 	fout << "Paths: " << std::endl;

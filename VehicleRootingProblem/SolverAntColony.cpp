@@ -187,7 +187,8 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 
 				// if nextV is found and addidng edge (v, nextV) is feasible
 				if (nextV != -1 && curPathLen + dist[v][nextV] + dist[nextV][0] <= input.MaxDist && 
-						max(cur_time, input.TimeWindows[v].first) + dist[v][nextV] <= input.TimeWindows[nextV].second) {
+						max(cur_time, input.TimeWindows[v].first) + 
+						dist[v][nextV] <= input.TimeWindows[nextV].second) {
 					visited[nextV] = true;
 					curPathLen += dist[v][nextV];
 					paths[antIndex].back().push_back(nextV);
@@ -221,7 +222,8 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 			for (auto& path : paths[antPathLen[i].second]) {
 				LocalSwapOptimization(path, input);
 				for (int j = 0; j < (int)path.size() - 1; ++j) {
-					assert(dist[path[j]][path[j + 1]] < INF - 1); // After optimization a valid path should become invalid
+					// After optimization a valid path should become invalid
+					assert(dist[path[j]][path[j + 1]] < INF - 1); 
 					antPathLen[i].first += dist[path[j]][path[j + 1]];
 				}
 				antPathLen[i].first += dist[path.back()][0];
@@ -235,7 +237,8 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 			for (auto& path : paths[antPathLen[i].second]) {
 				LocalSwapOptimization(path, input);
 				for (int j = 0; j < (int)path.size() - 1; ++j) {
-					assert(dist[path[j]][path[j + 1]] < INF - 1); // After optimization a valid path should become invalid
+					// After optimization a valid path should become invalid
+					assert(dist[path[j]][path[j + 1]] < INF - 1); 
 					antPathLen[i].first += dist[path[j]][path[j + 1]];
 				}
 				antPathLen[i].first += dist[path.back()][0];
@@ -258,7 +261,8 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 			}
 		}
 
-		if (antPathLen[0].first < objectiveFBest && (int)paths[antPathLen[0].second].size() <= input.DronsCnt) {
+		if (antPathLen[0].first < objectiveFBest && 
+			static_cast<int>(paths[antPathLen[0].second].size()) <= input.DronsCnt) {
 			objectiveFBest = antPathLen[0].first;
 			bestSolution = paths[antPathLen[0].second];
 		}
@@ -270,10 +274,12 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 		}
 
 		if (iteration % 20 == 0 && timeLimit < EPS) {
-			cout << "ACO. Iteration: " << iteration << "/" << iterations << ". Best found value: " << fixed << setprecision(6) << objectiveFBest << " " << endl;
+			cout << "ACO. Iteration: " << iteration << "/" << iterations << 
+				". Best found value: " << fixed << setprecision(6) << objectiveFBest << " " << endl;
 		}
 		else if (iteration % 20 == 0) {
-			cout << "ACO. Iterations done: " << iteration << ". Best found value: " << fixed << setprecision(6) << objectiveFBest << " " << endl;
+			cout << "ACO. Iterations done: " << iteration << ". Best found value: " 
+				<< fixed << setprecision(6) << objectiveFBest << " " << endl;
 		}
 	}
 

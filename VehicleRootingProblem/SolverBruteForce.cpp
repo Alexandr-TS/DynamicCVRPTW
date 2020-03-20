@@ -3,7 +3,7 @@
 
 using namespace std;
 
-ProblemSolution SolverBruteForce::Run(InputData input, std::vector<double>args) {
+ProblemSolution SolverBruteForce::Run(InputData input, vector<double>args) {
 	vector<int> permutation;
 	for (int i = 1; i <= input.TargetsCnt; ++i) {
 		permutation.push_back(i);
@@ -14,7 +14,8 @@ ProblemSolution SolverBruteForce::Run(InputData input, std::vector<double>args) 
 
 	// Check if any feasible solution exists
 	for (int i = 1; i <= input.TargetsCnt; ++i) {
-		if (input.Distance(0, i) * 2 > input.MaxDist || input.TimeWindows[i].second < input.Distance(0, i)) {
+		if (input.Distance(0, i) * 2 > input.MaxDist || 
+			input.TimeWindows[i].second < input.Distance(0, i)) {
 			return bestSolution;
 		}
 	}

@@ -8,9 +8,9 @@ struct Chromosome {
 	double Fitness;
 
 	Chromosome() {}
-	Chromosome(std::vector<int>& seq, double fitness) :
-		Seq(seq),
-		Fitness(fitness)
+	Chromosome(std::vector<int>& seq, double fitness)
+		: Seq(seq)
+		, Fitness(fitness)
 	{}
 
 	static double CalcFitness(std::vector<int>& seq, InputData& input) {
@@ -18,7 +18,7 @@ struct Chromosome {
 			return 0;
 		}
 		seq.insert(seq.begin(), { 0 });
-		int n = seq.size();
+		int n = static_cast<int>(seq.size());
 
 		double* prefLen = new double[n];
 		std::fill(prefLen, prefLen + n, 0);
@@ -136,7 +136,8 @@ struct Population {
 	}
 
 	bool IsAddible(Chromosome& x) {
-		return (Delta == 0 || !FitByDelta.count((int)(x.Fitness / Delta)) || FitByDelta[(int)(x.Fitness / Delta)] == 0);
+		return (Delta == 0 || !FitByDelta.count((int)(x.Fitness / Delta)) || 
+			FitByDelta[(int)(x.Fitness / Delta)] == 0);
 	}
 
 	void Del(Chromosome& x) {
@@ -168,7 +169,7 @@ struct Population {
 		Chromosomes.erase(it);
 	}
 
-	int Size() {
+	size_t Size() {
 		return Chromosomes.size();
 	}
 };
@@ -186,7 +187,7 @@ Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input)
 	if (Math::GenInt(0, 1)) {
 		std::swap(par1, par2);
 	}
-	int n = par1->Seq.size();
+	int n = static_cast<int>(par1->Seq.size());
 	int tl = Math::GenInt(0, n - 1);
 	int tr = Math::GenInt(0, n - 1);
 
@@ -233,7 +234,7 @@ MatrixInt SplitPaths(std::vector<int> path, InputData& input) {
 		return {};
 	}
 	path.insert(path.begin(), { 0 });
-	int n = path.size();
+	int n = static_cast<int>(path.size());
 
 	std::fill(prefLen, prefLen + n, 0);
 	for (int i = 1; i < n; i++) {
@@ -269,9 +270,10 @@ MatrixInt SplitPaths(std::vector<int> path, InputData& input) {
 	}
 
 	std::vector<std::vector<int>> paths;
-	for (int i = n - 1; i != 0; i = prev[i]) {
+	// min() to fix warning
+	for (size_t i = n - 1; i != 0; i = prev[std::min((size_t)N - 1, i)]) {
 		paths.push_back({});
-		for (int j = i; j > std::max(-1, prev[i]); --j) {
+		for (int j = (int)i; j > std::max(-1, prev[i]); --j) {
 			paths.back().push_back(path[j]);
 		}
 		std::reverse(paths.back().begin(), paths.back().end());
@@ -324,7 +326,7 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 	};
 	// Ant Colony Algo
 	for (std::vector<double> args: argss) {
-		if (population.Size() == populationSize) {
+		if (population.Size() == static_cast<size_t>(populationSize)) {
 			break;
 		}
 		auto sol = SolverAntColony::Run(input, args);
@@ -338,7 +340,7 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 	}
 
 	int leftTries = populationSize * populationSize + 100;
-	while (population.Size() < populationSize) {
+	while (population.Size() < static_cast<size_t>(populationSize)) {
 		auto chromosomeCur = GenRandomChromosome(input.TargetsCnt, input);
 
 		if (chromosomeCur.IsValid()) {
@@ -352,7 +354,8 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 
 		leftTries--;
 		if (leftTries <= 0) {
-			std::cout << "GA. Error: No tries left in init population. Number of done chromosomes: " << population.Size() << std::endl;
+			std::cout << "GA. Error: No tries left in init population. Number of done chromosomes: " << 
+				population.Size() << std::endl;
 			if (input.TargetsCnt < 10) {
 				std::cout << "GA. It's fine for small inputs" << std::endl;
 			}
@@ -417,12 +420,12 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 	int productiveIters = 0;
 	int nonImproveIters = 0;
 
-	int n = population.Size();
+	int n = static_cast<int>(population.Size());
 
 	while (timeLimit ? clock() - startT < timeLimit * CLOCKS_PER_SEC :
 		productiveIters < maxProductiveIters && nonImproveIters < maxNonImproveIters) {
 
-		assert(population.Size() == n);
+		assert(population.Size() == static_cast<size_t>(n));
 
 		int parent1ind = GenGoodIndex(n);
 		int parent2ind = GenGoodIndex(n);

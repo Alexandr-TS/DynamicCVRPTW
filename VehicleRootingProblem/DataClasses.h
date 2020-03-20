@@ -18,8 +18,8 @@
 #include <tuple>
 #include <vector>
 
+const double INF = 2000'000'000.0;
 const double EPS = 1e-8;
-const double INF = 2e9;
 
 typedef std::vector<std::vector<double> > MatrixDouble;
 typedef std::vector<std::vector<int> > MatrixInt;
@@ -36,7 +36,8 @@ public:
 	InputData(int dronsCnt, int targetsCnt, double maxDist, 
 		std::vector<std::pair<double, double>> timeWindows);
 	InputData(int dronsCnt, int targetsCnt, double maxDist, 
-		std::vector<std::pair<double, double>> points, std::vector<std::pair<double, double>> timeWindows);
+		std::vector<std::pair<double, double>> points, 
+		std::vector<std::pair<double, double>> timeWindows);
 	InputData(std::string inputFileName);
 	~InputData();
 public:
@@ -56,7 +57,8 @@ public:
 class ProblemSolution {
 public:
 	ProblemSolution();
-	ProblemSolution(InputData& input, MatrixInt paths, EProblemSolutionCtorType type = EProblemSolutionCtorType::CHECK_PRESENCE);
+	ProblemSolution(InputData& input, MatrixInt paths, 
+		EProblemSolutionCtorType type = EProblemSolutionCtorType::CHECK_PRESENCE);
 
 public:
 	void PrintIntoFile(std::string outputFileName);

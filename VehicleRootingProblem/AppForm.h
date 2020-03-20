@@ -56,7 +56,8 @@ namespace VehicleRootingProblem {
 			ProblemSolution Solution;
 			
 			Launch() {}
-			Launch(int algoIndex, int dataSetIndex, std::vector<double> paramsVals, ProblemMode mode, ProblemSolution solution) :
+			Launch(int algoIndex, int dataSetIndex, std::vector<double> paramsVals, 
+				ProblemMode mode, ProblemSolution solution) :
 				AlgoIndex(algoIndex),
 				DataSetIndex(dataSetIndex),
 				ParamsVals(paramsVals),
@@ -198,69 +199,32 @@ namespace VehicleRootingProblem {
 	protected:
 	private: System::Windows::Forms::TabPage^ tabPage1;
 	private: System::Windows::Forms::ListView^ listViewLoadedDataSets;
-
 	private: System::Windows::Forms::ColumnHeader^ colName;
 	private: System::Windows::Forms::ColumnHeader^ colDrons;
 	private: System::Windows::Forms::ColumnHeader^ colTargets;
 	private: System::Windows::Forms::ColumnHeader^ colMaxDist;
 	private: System::Windows::Forms::TabPage^ tabPage2;
-
-
-
-
-
-
-
 	private: System::Windows::Forms::GroupBox^ groupBoxLoadedDataSets;
-
-
-
-
-
-
-
 	private: System::Windows::Forms::Button^ buttonRun;
-
-
-
-
-
-
 	private: System::Windows::Forms::Button^ buttonFileOpen;
 	private: System::Windows::Forms::Label^ labelLoadedFile;
 
 	private: System::Windows::Forms::Button^ buttonUploadFile;
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog;
 	private: System::Windows::Forms::GroupBox^ groupBoxResults;
-
-
-
-
 	private: System::Windows::Forms::Label^ labelPathsList;
 	private: System::Windows::Forms::DataGridView^ dataGridViewPaths;
-
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
 	private: System::Windows::Forms::Button^ buttonSavePathsToFile;
 	private: System::Windows::Forms::PictureBox^ pictureBoxRes;
-
-
-
-
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog;
 	private: System::Windows::Forms::DataGridView^ dataGridViewSelectedRes;
-
-
 	private: System::ComponentModel::IContainer^ components;
-
-
-
-
 	private:
 		/// <summary>
 		/// Обязательная переменная конструктора.
 		/// </summary>
-
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -849,8 +813,10 @@ namespace VehicleRootingProblem {
 		int lineNum = 0;
 		for (auto& path : solution.Paths) {
 			double pathDistance = 0;
-			if (path.size() > 0)
-				pathDistance = solution.Input.Distance(0, path[0]) + solution.Input.Distance(0, path.back()); // from depot and to depot
+			if (path.size() > 0) {
+				// from depot and to depot
+				pathDistance = solution.Input.Distance(0, path[0]) + solution.Input.Distance(0, path.back());
+			}
 			std::string path_str = "";
 			char buffer[(1 << 5)];
 			for (size_t i = 0; i < path.size(); ++i) {
@@ -873,7 +839,6 @@ namespace VehicleRootingProblem {
 			this->dataGridViewPaths->Update();
 			++lineNum;
 		}
-
 		this->dataGridViewPaths->ClearSelection();
 	}
 
@@ -915,15 +880,12 @@ namespace VehicleRootingProblem {
 			this->dataGridViewSelectedRes->Columns[i]->AutoSizeMode = DataGridViewAutoSizeColumnMode::None;
 			this->dataGridViewSelectedRes->Columns[i]->Width = widthCol;
 		}
-
 		
 		this->tabControlLeft->SelectedTab = this->tabControlLeft->TabPages[1];
 		this->tabControlLeft->Refresh();
-
 		DrawPaths(Graphics, AppFormVars::CurrentSolution,
 			this->pictureBoxRes->Height, this->pictureBoxRes->Width, 0);
 	}
-
 
 	private: System::Void ButtonRun_Click(System::Object^ sender, System::EventArgs^ e) {
 		int dataSetInd = this->listViewLoadedDataSets->SelectedIndices[0];
@@ -995,7 +957,7 @@ namespace VehicleRootingProblem {
 	private: void tb_KeyPress(System::Object^ sender, KeyPressEventArgs^ e) {
 		auto s = (sender)->ToString();
 		std::string tmps = msclr::interop::marshal_as<std::string>(s);
-		int ind = tmps.find("Text");
+		int ind = static_cast<int>(tmps.find("Text"));
 		tmps = tmps.substr(ind, (int)tmps.size() - ind);
 		if (tmps.find(".") != -1 && e->KeyChar == '.') {
 			e->Handled = true;
@@ -1011,9 +973,6 @@ namespace VehicleRootingProblem {
 	private: System::Void ListViewLoadedDataSets_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 		UpdateRunButton();
 		UpdateListViewLoaded();
-	}
-
-	private: System::Void ComboBoxResAlgo_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 	}
 
 	private: System::Void ButtonSavePathsToFile_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1046,7 +1005,6 @@ namespace VehicleRootingProblem {
 		this->Width = 1175;
 		this->groupBoxResults->Visible = true;
 	}
-
 
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
 		if (AppFormVars::Launches.empty() || !AppFormVars::CurrentSolution.SolutionExists) {
@@ -1099,8 +1057,8 @@ namespace VehicleRootingProblem {
 	}
 
 	private: void UpdateTWAndCoors(int target_id) {
-		this->tbTWOpen->Text = PrettyTime(AppFormVars::CurrentSolution.Input.TimeWindows[target_id].first);
-		this->tbTWClose->Text = PrettyTime(AppFormVars::CurrentSolution.Input.TimeWindows[target_id].second);
+		this->tbTWOpen->Text = PrettyTime(static_cast<int>(AppFormVars::CurrentSolution.Input.TimeWindows[target_id].first));
+		this->tbTWClose->Text = PrettyTime(static_cast<int>(AppFormVars::CurrentSolution.Input.TimeWindows[target_id].second));
 		this->numericUpDownXCoord->Value = System::Int32(AppFormVars::CurrentSolution.Input.Points[target_id].first);
 		this->numericUpDownYCoord->Value = System::Int32(AppFormVars::CurrentSolution.Input.Points[target_id].second);
 	}
@@ -1146,10 +1104,13 @@ namespace VehicleRootingProblem {
 		}
 		std::string start_time = msclr::interop::marshal_as<std::string>(this->tbTWOpen->Text);
 		std::string end_time = msclr::interop::marshal_as<std::string>(this->tbTWClose->Text);
-		double new_start = static_cast<double>(600 * (start_time[0] - '0') + 60 * (start_time[1] - '0') + 10 * (start_time[3] - '0') + (start_time[4] - '0'));
-		double new_end = static_cast<double>(600 * (end_time[0] - '0') + 60 * (end_time[1] - '0') + 10 * (end_time[3] - '0') + (end_time[4] - '0'));
+		double new_start = static_cast<double>(600 * (start_time[0] - '0') + 60 * 
+			(start_time[1] - '0') + 10 * (start_time[3] - '0') + (start_time[4] - '0'));
+		double new_end = static_cast<double>(600 * (end_time[0] - '0') + 60 * 
+			(end_time[1] - '0') + 10 * (end_time[3] - '0') + (end_time[4] - '0'));
 		try {
-			EventsHandler::UpdateOnTimeWindowUpdate(AppFormVars::CurrentSolution, target_id, AppFormVars::CntMinutesPassed, new_start, new_end);
+			EventsHandler::UpdateOnTimeWindowUpdate(AppFormVars::CurrentSolution, 
+				target_id, AppFormVars::CntMinutesPassed, new_start, new_end);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
 				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
@@ -1163,13 +1124,16 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void butUpdCoors_Click(System::Object^ sender, System::EventArgs^ e) {
-		std::string target_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Text);
+		std::string target_id_str = 
+			msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Text);
 		int target_id = atoi(target_id_str.c_str());
 		if (!CheckSelectedVertexPresence(AppFormVars::CurrentSolution, true)) {
 			return;
 		}
-		std::string new_x_str = msclr::interop::marshal_as<std::string>(this->numericUpDownXCoord->Value.ToString());
-		std::string new_y_str = msclr::interop::marshal_as<std::string>(this->numericUpDownYCoord->Value.ToString());
+		std::string new_x_str = 
+			msclr::interop::marshal_as<std::string>(this->numericUpDownXCoord->Value.ToString());
+		std::string new_y_str = 
+			msclr::interop::marshal_as<std::string>(this->numericUpDownYCoord->Value.ToString());
 		double new_x = static_cast<double>(atoi(new_x_str.c_str()));
 		double new_y = static_cast<double>(atoi(new_y_str.c_str()));
 		try {

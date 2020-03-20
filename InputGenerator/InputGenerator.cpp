@@ -16,7 +16,7 @@
 using namespace std;
 
 void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTargets, int maxCoord, int minTime, int maxTime) {
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
 	mt19937 gen(seed);
 	int drons = gen() % (maxDrons - minDrons + 1) + minDrons;
 	int targets = gen() % (maxTargets - minTargets + 1) + minTargets;
@@ -27,7 +27,7 @@ void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTarg
 	}
 
 	for (int i = 0; i < (int)points.size() - 1; i++) {
-		auto pt = points[i + 1];
+		auto pt = points[i + 1ll];
 		cout << fixed << setprecision(3) << pt.first - points[0].first << " " << pt.second - points[0].second << endl;
 	}
 
@@ -49,7 +49,7 @@ void printPreciseInput(int drons, int targets, int maxCoord) {
 
 void printClusteredInput(int drons, int targets, int maxCoord, int clustersCnt) {
 	int minTime = 0, maxTime = 3 * maxCoord * targets / drons;
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
 	mt19937 gen(seed);
 	
 	cout << drons << endl << targets << endl << gen() % (max(1, maxCoord * targets / 4)) << endl;
@@ -80,7 +80,7 @@ void printClusteredInput(int drons, int targets, int maxCoord, int clustersCnt) 
 	}
 	
 	for (int i = 0; i < (int)points.size() - 1; i++) {
-		auto pt = points[i + 1];
+		auto pt = points[i + 1ll];
 		cout << fixed << setprecision(3) << pt.first - points[0].first << " " << pt.second - points[0].second << endl;
 	}
 
@@ -103,6 +103,7 @@ int main(int argc, char** argv) {
 		cout << "2) clusters dronsCnt targetsCnt clustersCnt [fileName]" << endl;
 		return 0;
 	} 
+	FILE* stream;
 	if ((string)argv[1] == "rand") {
 		if (argc == 4) {
 			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100);
@@ -110,7 +111,7 @@ int main(int argc, char** argv) {
 		else if (argc == 5) {
 			string fileName = argv[4];
 			fileName += ".txt";
-			freopen(fileName.c_str(), "w", stdout);
+			freopen_s(&stream, fileName.c_str(), "w", stdout);
 			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100);
 		}
 		else {
@@ -123,7 +124,7 @@ int main(int argc, char** argv) {
 		} else if (argc == 6) {
 			string fileName = argv[5];
 			fileName += ".txt";
-			freopen(fileName.c_str(), "w", stdout);
+			freopen_s(&stream, fileName.c_str(), "w", stdout);
 			printClusteredInput(atoi(argv[2]), atoi(argv[3]), 1000, atoi(argv[4]));
 		}
 		else {
@@ -133,6 +134,5 @@ int main(int argc, char** argv) {
 	else {
 		cout << "unknown function" << endl;
 	}
-	
 }
 

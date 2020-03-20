@@ -12,7 +12,7 @@ bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_i
 		if (it == path.end()) {
 			continue;
 		}
-		int i = it - path.begin();
+		int i = static_cast<int>(it - path.begin());
 		if (!i && cur_time > 0) {
 			throw ChangeVisitedVertexException();
 		}
@@ -31,7 +31,8 @@ bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_i
 	throw NoSuchTargetException();
 }
 
-bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, int target_id, double cur_time, double new_start, double new_end) {
+bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, 
+	int target_id, double cur_time, double new_start, double new_end) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
 		path_id++;
@@ -39,7 +40,7 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, int targ
 		if (it == path.end()) {
 			continue;
 		}
-		int i = it - path.begin();
+		int i = static_cast<int>(it - path.begin());
 		if (!i && cur_time > 0) {
 			throw ChangeVisitedVertexException();
 		}
@@ -51,7 +52,8 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, int targ
 
 		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
 
-		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
+		new_solution = ProblemSolution(new_solution.Input, 
+			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;
 			return true;
@@ -61,7 +63,8 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, int targ
 	throw NoSuchTargetException();
 }
 
-bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int target_id, double cur_time, double new_x, double new_y) {
+bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int target_id, 
+	double cur_time, double new_x, double new_y) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
 		path_id++;
@@ -69,7 +72,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		if (it == path.end()) {
 			continue;
 		}
-		int i = it - path.begin();
+		int i = static_cast<int>(it - path.begin());
 		if (!i && cur_time > 0) {
 			throw ChangeVisitedVertexException();
 		}
@@ -81,7 +84,8 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 
 		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
 
-		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
+		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
+			EProblemSolutionCtorType::SKIP_PRESENCE);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;
 			return true;
