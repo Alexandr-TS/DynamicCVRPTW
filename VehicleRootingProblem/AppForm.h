@@ -109,7 +109,7 @@ namespace VehicleRootingProblem {
 		return System::Double(x).ToString()->Replace(",", ".");
 	}
 
-	System::String^ PrettyTime(int minutes) {
+	std::string PrettyTimeStd(int minutes) {
 		std::string hours = std::to_string(minutes / 60);
 		while (hours.size() < 2) {
 			hours = "0" + hours;
@@ -118,8 +118,11 @@ namespace VehicleRootingProblem {
 		while (mins.size() < 2) {
 			mins = "0" + mins;
 		}
+		return hours + ":" + mins;
+	}
 
-		return System::String((hours + ":" + mins).c_str()).ToString();
+	System::String^ PrettyTime(int minutes) {
+		return System::String(PrettyTimeStd(minutes).c_str()).ToString();
 	}
 
 
@@ -848,17 +851,24 @@ namespace VehicleRootingProblem {
 			double pathDistance = 0;
 			if (path.size() > 0)
 				pathDistance = solution.Input.Distance(0, path[0]) + solution.Input.Distance(0, path.back()); // from depot and to depot
-			std::string pathStr = "";
+			std::string path_str = "";
 			char buffer[(1 << 5)];
 			for (size_t i = 0; i < path.size(); ++i) {
 				int x = path[i];
-				if (i + 1 < path.size())
+				if (i + 1 < path.size()) {
 					pathDistance += solution.Input.Distance(x, path[i + 1]);
+				}
 				_itoa_s(x, buffer, 10);
-				pathStr += ((std::string)buffer);
-				pathStr += " ";
+				path_str += ((std::string)buffer);
+				path_str += " (";
+				
+				std::string visit_time = PrettyTimeStd(static_cast<int>(solution.ArrivalTimes[lineNum][i]));
+				path_str += visit_time + ")";
+				if (i + 1 < path.size()) {
+					path_str += ", ";
+				}
 			}
-			this->dataGridViewPaths->Rows[lineNum]->Cells[0]->Value = System::String(pathStr.c_str()).ToString();
+			this->dataGridViewPaths->Rows[lineNum]->Cells[0]->Value = System::String(path_str.c_str()).ToString();
 			this->dataGridViewPaths->Rows[lineNum]->Cells[1]->Value = System::Double(pathDistance);
 			this->dataGridViewPaths->Update();
 			++lineNum;
@@ -1117,6 +1127,9 @@ namespace VehicleRootingProblem {
 		try {
 			EventsHandler::UpdateOnRemoveTarget(AppFormVars::CurrentSolution,
 				target_id, AppFormVars::CntMinutesPassed);
+			DrawPaths(Graphics, AppFormVars::CurrentSolution,
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		} 
 		catch (ChangeVisitedVertexException&) {
 			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
@@ -1137,6 +1150,9 @@ namespace VehicleRootingProblem {
 		double new_end = static_cast<double>(600 * (end_time[0] - '0') + 60 * (end_time[1] - '0') + 10 * (end_time[3] - '0') + (end_time[4] - '0'));
 		try {
 			EventsHandler::UpdateOnTimeWindowUpdate(AppFormVars::CurrentSolution, target_id, AppFormVars::CntMinutesPassed, new_start, new_end);
+			DrawPaths(Graphics, AppFormVars::CurrentSolution,
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		}
 		catch (NoValidSolutionException&) {
 			MessageBox::Show("Не удаётся построить решение после изменения");
@@ -1144,8 +1160,6 @@ namespace VehicleRootingProblem {
 		catch (ChangeVisitedVertexException&) {
 			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
 		}
-		DrawPaths(Graphics, AppFormVars::CurrentSolution,
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
 	}
 
 	private: System::Void butUpdCoors_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1161,6 +1175,9 @@ namespace VehicleRootingProblem {
 		try {
 			EventsHandler::UpdateOnCoordinatesUpdate(AppFormVars::CurrentSolution, 
 				target_id, AppFormVars::CntMinutesPassed, new_x, new_y);
+			DrawPaths(Graphics, AppFormVars::CurrentSolution,
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		}
 		catch (NoValidSolutionException&) {
 			MessageBox::Show("Не удаётся построить решение после изменения");
@@ -1168,9 +1185,6 @@ namespace VehicleRootingProblem {
 		catch (ChangeVisitedVertexException&) {
 			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
 		}
-		DrawPaths(Graphics, AppFormVars::CurrentSolution,
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
 	}
-
 };
 }
