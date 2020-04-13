@@ -234,7 +234,7 @@ namespace VehicleRootingProblem {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			System::Windows::Forms::ListViewItem^ listViewItem2 = (gcnew System::Windows::Forms::ListViewItem(L""));
+			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
 			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->buttonRunProcess = (gcnew System::Windows::Forms::Button());
@@ -393,7 +393,7 @@ namespace VehicleRootingProblem {
 			this->listViewLoadedDataSets->FullRowSelect = true;
 			this->listViewLoadedDataSets->GridLines = true;
 			this->listViewLoadedDataSets->HideSelection = false;
-			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem2 });
+			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem1 });
 			this->listViewLoadedDataSets->Location = System::Drawing::Point(6, 19);
 			this->listViewLoadedDataSets->MultiSelect = false;
 			this->listViewLoadedDataSets->Name = L"listViewLoadedDataSets";
@@ -528,8 +528,8 @@ namespace VehicleRootingProblem {
 			// numericUpDownYCoord
 			// 
 			this->numericUpDownYCoord->Location = System::Drawing::Point(214, 146);
-			this->numericUpDownYCoord->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
-			this->numericUpDownYCoord->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, System::Int32::MinValue });
+			this->numericUpDownYCoord->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000, 0, 0, 0 });
+			this->numericUpDownYCoord->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000, 0, 0, System::Int32::MinValue });
 			this->numericUpDownYCoord->Name = L"numericUpDownYCoord";
 			this->numericUpDownYCoord->Size = System::Drawing::Size(56, 20);
 			this->numericUpDownYCoord->TabIndex = 50;
@@ -546,8 +546,8 @@ namespace VehicleRootingProblem {
 			// numericUpDownXCoord
 			// 
 			this->numericUpDownXCoord->Location = System::Drawing::Point(123, 146);
-			this->numericUpDownXCoord->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
-			this->numericUpDownXCoord->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, System::Int32::MinValue });
+			this->numericUpDownXCoord->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000, 0, 0, 0 });
+			this->numericUpDownXCoord->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000, 0, 0, System::Int32::MinValue });
 			this->numericUpDownXCoord->Name = L"numericUpDownXCoord";
 			this->numericUpDownXCoord->Size = System::Drawing::Size(56, 20);
 			this->numericUpDownXCoord->TabIndex = 48;

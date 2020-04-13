@@ -33,10 +33,17 @@ class NoSuchTargetException : public std::exception {};
 class InputData {
 public:
 	InputData();
-	InputData(int dronsCnt, int targetsCnt, double maxDist, 
-		std::vector<std::pair<double, double>> timeWindows);
+	InputData(const InputData&) = default;
+	InputData(InputData&&) = default;
+
+	InputData& operator = (const InputData&) = default;
+	InputData& operator = (InputData&&) = default;
 	InputData(int dronsCnt, int targetsCnt, double maxDist, 
 		std::vector<std::pair<double, double>> points, 
+		std::vector<std::pair<double, double>> timeWindows);
+	InputData(int dronsCnt, int targetsCnt, double maxDist,
+		std::vector<std::pair<double, double>> points,
+		std::vector<std::vector<double>> distances,
 		std::vector<std::pair<double, double>> timeWindows);
 	InputData(std::string inputFileName);
 	~InputData();
@@ -49,6 +56,7 @@ public:
 	double MaxDist;
 	// Including depot (it's always {0, 0})
 	std::vector<std::pair<double, double>> Points;
+	std::vector<std::vector<double>> Distances;
 	// Including depot (it's always {-INF, INF})
 	std::vector<std::pair<double, double>> TimeWindows;
 	std::string FileName;

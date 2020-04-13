@@ -5,6 +5,7 @@ InputData::InputData() {
 	MaxDist = 0;
 }
 
+/*
 InputData::InputData(int dronsCnt, int targetsCnt, double maxDist, 
 		std::vector<std::pair<double, double>> timeWindows)
 	: DronsCnt(dronsCnt)
@@ -13,6 +14,7 @@ InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
 	, TimeWindows(timeWindows)
 {
 }
+*/
 
 InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
 	std::vector<std::pair<double, double> > points, std::vector<std::pair<double, double>> timeWindows)
@@ -20,6 +22,26 @@ InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
 	, TargetsCnt(targetsCnt)
 	, MaxDist(maxDist)
 	, Points(points)
+	, TimeWindows(timeWindows)
+{
+	Distances.resize(TargetsCnt + 1);
+	for (int i = 0; i <= TargetsCnt; ++i) {
+		Distances[i].resize(TargetsCnt + 1);
+		for (int j = 0; j <= TargetsCnt; ++j) {
+			Distances[i][j] = hypot(points[i].first - points[j].first, points[i].second - points[j].second);
+		}
+	}
+}
+
+InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
+	std::vector<std::pair<double, double> > points,
+	std::vector<std::vector<double>> distances,
+	std::vector<std::pair<double, double>> timeWindows)
+	: DronsCnt(dronsCnt)
+	, TargetsCnt(targetsCnt)
+	, MaxDist(maxDist)
+	, Points(points)
+	, Distances(distances)
 	, TimeWindows(timeWindows)
 {
 }
@@ -35,6 +57,15 @@ InputData::InputData(std::string inputFileName) {
 		for (int i = 0; i < TargetsCnt; i++) {
 			fin >> Points[i + 1].first >> Points[i + 1].second;
 		}
+
+		Distances.resize(TargetsCnt + 1);
+		for (int i = 0; i <= TargetsCnt; ++i) {
+			Distances[i].resize(TargetsCnt + 1);
+			for (int j = 0; j <= TargetsCnt; ++j) {
+				fin >> Distances[i][j];
+			}
+		}
+
 		TimeWindows.resize(TargetsCnt + 1);
 		TimeWindows[0] = { -INF, INF };
 		for (int i = 0; i < TargetsCnt; i++) {
@@ -52,7 +83,8 @@ InputData::~InputData() {
 }
 
 inline double InputData::Distance(const int i, const int j) {
-	return hypot(Points[i].first - Points[j].first, Points[i].second - Points[j].second);
+	return Distances[i][j];
+	//return hypot(Points[i].first - Points[j].first, Points[i].second - Points[j].second);
 }
 
 ProblemSolution::ProblemSolution() {

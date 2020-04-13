@@ -31,13 +31,13 @@ void genInput(int cnt_vehicles, int size_km, int cnt_targets) {
 
 	
 	// km/h
-	const int basic_speed = 40;
+	const int basic_speed = 60;
 	const int add_minutes = 3;
 	exponential_distribution<> e_d_gen(1.5);
 	vector<vector<double>> distances(points.size(), vector<double>(points.size(), 0.0));
 	for (size_t i = 0; i < distances.size(); ++i) {
 		for (size_t j = 0; j < distances.size(); ++j) {
-			double dist_m = hypot(points[i].first - points[j].first, points[i].second - points[i].second);
+			double dist_m = hypot(points[i].first - points[j].first, points[i].second - points[j].second);
 			double dist_minutes = dist_m / 1000. * 60.0 / (basic_speed / (1.0 + e_d_gen(gen)));
 			if (i != j) {
 				dist_minutes += add_minutes;
