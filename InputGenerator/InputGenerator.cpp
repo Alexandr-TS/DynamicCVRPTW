@@ -1,8 +1,3 @@
-// InputGenerator.cpp: определяет точку входа для консольного приложения.
-//
-
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -14,6 +9,76 @@
 #include <chrono>
 
 using namespace std;
+
+
+void genInput(int cnt_vehicles, int size_km, int cnt_targets) {
+	unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
+	mt19937 gen(seed);
+
+	cout << cnt_vehicles << endl << cnt_targets << endl << gen() % (size_km * cnt_targets) << endl;
+
+	vector<pair<double, double>> points = { { gen() % (1000 * size_km), gen() % (1000 * size_km)} };
+	for (int i = 0; i < cnt_targets; ++i) {
+		points.push_back({ gen() % (1000 * size_km), gen() % (1000 * size_km)});
+	}
+
+	for (int i = 0; i < (int)points.size() - 1; i++) {
+		auto pt = points[i + 1ll];
+		cout << fixed << setprecision(2) << pt.first - points[0].first << " " << pt.second - points[0].second << endl;
+	}
+
+	cout << endl;
+
+	
+	// km/h
+	const int basic_speed = 40;
+	const int add_minutes = 3;
+	exponential_distribution<> e_d_gen(1.5);
+	vector<vector<double>> distances(points.size(), vector<double>(points.size(), 0.0));
+	for (size_t i = 0; i < distances.size(); ++i) {
+		for (size_t j = 0; j < distances.size(); ++j) {
+			double dist_m = hypot(points[i].first - points[j].first, points[i].second - points[i].second);
+			double dist_minutes = dist_m / 1000. * 60.0 / (basic_speed / (1.0 + e_d_gen(gen)));
+			if (i != j) {
+				dist_minutes += add_minutes;
+			}
+			distances[i][j] = static_cast<int>(dist_minutes * 100) / 100.;
+		}
+	}
+	for (size_t k = 0; k < distances.size(); ++k) {
+		for (size_t i = 0; i < distances.size(); ++i) {
+			for (size_t j = 0; j < distances.size(); ++j) {
+				distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
+			}
+		}
+	}
+	for (size_t i = 0; i < distances.size(); ++i) {
+		for (auto x : distances[i]) {
+			cout << fixed << setprecision(2) << x << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+
+	int min_hours = 9;
+	int max_hours = 18;
+
+	for (int i = 0; i < (int)points.size() - 1; i++) {
+		int start_time = gen() % (max_hours - min_hours + 1) + min_hours;
+		int end_time = gen() % (max_hours - min_hours + 1) + min_hours;
+		if (start_time > end_time) {
+			swap(start_time, end_time);
+		}
+		while (end_time == start_time) {
+			end_time = gen() % (max_hours - min_hours + 1) + min_hours;
+			if (start_time > end_time) {
+				swap(start_time, end_time);
+			}
+		}
+		cout << start_time * 60 << " " << end_time * 60 << endl;
+	}
+
+}
 
 void printGeneratedInput(int minDrons, int maxDrons, int minTargets, int maxTargets, int maxCoord, int minTime, int maxTime) {
 	unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
@@ -47,88 +112,39 @@ void printPreciseInput(int drons, int targets, int maxCoord) {
 	printGeneratedInput(drons, drons, targets, targets, maxCoord, 0, 3 * maxCoord * targets / drons);
 }
 
-void printClusteredInput(int drons, int targets, int maxCoord, int clustersCnt) {
-	int minTime = 0, maxTime = 3 * maxCoord * targets / drons;
-	unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
-	mt19937 gen(seed);
-	
-	cout << drons << endl << targets << endl << gen() % (max(1, maxCoord * targets / 4)) << endl;
-	vector<pair<double, double> > points = { { gen() % maxCoord, gen() % maxCoord } };
 
-	int clusters = clustersCnt;
-
-	for (int i = 0; i < clusters; ++i) {
-		points.push_back({ gen() % maxCoord, gen() % maxCoord });
-		while (true) {
-			double minDist = 1e9;
-			for (int j = 0; j + 1 < (int)points.size(); ++j) {
-				minDist = min(minDist, hypot(points.back().first - points[j].first, points.back().second - points[j].second));
-			}
-			if (minDist < maxCoord / (2 + sqrt(2)))
-				points[(int)points.size() - 1] = make_pair(gen() % maxCoord, gen() % maxCoord);
-			else
-				break;
-		}
-	}
-
-	int r = max(1, (int)(maxCoord / (clusters + sqrt(2))));
-
-	for (int i = clusters; i < targets; ++i) {
-		int clusterInd = rand() % clusters + 1;
-
-		points.push_back({ gen() % r + points[clusterInd].first, gen() % r + points[clusterInd].second });
-	}
-	
-	for (int i = 0; i < (int)points.size() - 1; i++) {
-		auto pt = points[i + 1ll];
-		cout << fixed << setprecision(3) << pt.first - points[0].first << " " << pt.second - points[0].second << endl;
-	}
-
-	cout << endl;
-
-	for (int i = 0; i < (int)points.size() - 1; i++) {
-		int start_time = gen() % (maxTime - minTime + 1) + minTime;
-		int end_time = gen() % (maxTime - minTime + 1) + minTime;
-		if (start_time > end_time) {
-			swap(start_time, end_time);
-		}
-		cout << start_time << " " << end_time << endl;
-	}
-}
 
 int main(int argc, char** argv) {
 	if ((string)argv[1] == "help") {
 		cout << "Possible commands:" << endl;
-		cout << "1) rand dronsCnt targetsCnt [fileName]" << endl;
-		cout << "2) clusters dronsCnt targetsCnt clustersCnt [fileName]" << endl;
+		cout << "1) old dronsCnt targetsCnt [fileName]" << endl;
+		cout << "2) gen vehiclesCnt citySizeKm targetsCnt [fileName]" << endl;
 		return 0;
 	} 
 	FILE* stream;
-	if ((string)argv[1] == "rand") {
+	if ((string)argv[1] == "old") {
 		if (argc == 4) {
 			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100);
 		}
 		else if (argc == 5) {
 			string fileName = argv[4];
 			fileName += ".txt";
-			freopen_s(&stream, fileName.c_str(), "w", stdout);
+			freopen(fileName.c_str(), "w", stdout);
 			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100);
 		}
 		else {
 			cout << "not correct parameters" << endl;
 		}
 	}
-	else if ((string)argv[1] == "clusters") {
+	else if ((string)argv[1] == "gen") {
 		if (argc == 5) {
-			printClusteredInput(atoi(argv[2]), atoi(argv[3]), 1000, atoi(argv[4]));
-		} else if (argc == 6) {
-			string fileName = argv[5];
-			fileName += ".txt";
-			freopen_s(&stream, fileName.c_str(), "w", stdout);
-			printClusteredInput(atoi(argv[2]), atoi(argv[3]), 1000, atoi(argv[4]));
+			genInput(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 		}
-		else {
-			cout << "not correct parameters" << endl;
+		else if (argc == 6) {
+			string file_name = argv[5];
+			file_name += ".txt";
+			freopen(file_name.c_str(), "w", stdout);
+			genInput(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 		}
 	}
 	else {
