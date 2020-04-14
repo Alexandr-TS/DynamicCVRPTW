@@ -82,6 +82,33 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		auto new_solution = solution;
 		new_solution.Input.Points[path[i]] = { new_x, new_y };
 
+		{
+			unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
+			mt19937 gen(seed);
+			int basic_speed = 60;
+			int add_minutes = 3;
+			exponential_distribution<> e_d_gen(1.5);
+			for (size_t j = 0; j < new_solution.Input.Distances.size(); ++j) {
+				double dist_m = hypot(new_solution.Input.Points[i].first - new_solution.Input.Points[j].first,
+					new_solution.Input.Points[i].second - new_solution.Input.Points[j].second);
+				double dist_minutes = dist_m / 1000. * 60.0 / (basic_speed / (1.0 + e_d_gen(gen))) + (i != j ? add_minutes : 0);
+				new_solution.Input.Distances[i][j] = static_cast<int>(dist_minutes * 100) / 100.;
+				dist_minutes = dist_m / 1000. * 60.0 / (basic_speed / (1.0 + e_d_gen(gen))) + (i != j ? add_minutes : 0);
+				new_solution.Input.Distances[j][i] = static_cast<int>(dist_minutes * 100) / 100.;
+			}
+
+			for (size_t k = 0; k < new_solution.Input.Distances.size(); ++k) {
+				for (size_t i = 0; i < new_solution.Input.Distances.size(); ++i) {
+					for (size_t j = 0; j < new_solution.Input.Distances.size(); ++j) {
+						new_solution.Input.Distances[i][j] = min(
+							new_solution.Input.Distances[i][j], 
+							new_solution.Input.Distances[i][k] + new_solution.Input.Distances[k][j]
+						);
+					}
+				}
+			}
+		}
+
 		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
 
 		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
