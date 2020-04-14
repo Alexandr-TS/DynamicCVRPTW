@@ -884,7 +884,7 @@ namespace VehicleRootingProblem {
 		this->tabControlLeft->SelectedTab = this->tabControlLeft->TabPages[1];
 		this->tabControlLeft->Refresh();
 		DrawPaths(Graphics, AppFormVars::CurrentSolution,
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, 0);
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, 0, false);
 	}
 
 	private: System::Void ButtonRun_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -993,12 +993,20 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void buttonRunProcess_Click(System::Object^ sender, System::EventArgs^ e) {
-		AppFormVars::CntMinutesPassed = 0;
+		AppFormVars::CntMinutesPassed = INF;
 		AppFormVars::MinutesPerTick = 1;
-		timer1->Stop();
-		timer1->Start();
 		int launchInd = (int)AppFormVars::Launches.size() - 1;
 		AppFormVars::CurrentSolution = AppFormVars::Launches.back().Solution;
+		for (size_t i = 0; i < AppFormVars::CurrentSolution.ArrivalTimes.size(); ++i) {
+			for (size_t j = 0; j < AppFormVars::CurrentSolution.ArrivalTimes[i].size(); ++j) {
+				AppFormVars::CntMinutesPassed = min(AppFormVars::CntMinutesPassed,
+					static_cast<int>(AppFormVars::CurrentSolution.ArrivalTimes[i][j] - 10 - 
+						AppFormVars::CurrentSolution.Input.Distance(0, AppFormVars::CurrentSolution.Paths[i][j]))
+				);
+			}
+		}
+		timer1->Stop();
+		timer1->Start();
 		UpdateTWAndCoors(1);
 		UpdateVisualization(launchInd, AppFormVars::CurrentSolution);
 		UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
@@ -1017,7 +1025,7 @@ namespace VehicleRootingProblem {
 
 		this->tbTime->Text = PrettyTime(AppFormVars::CntMinutesPassed);
 		DrawPaths(Graphics, AppFormVars::CurrentSolution,
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, true);
 	}
 
 	private: System::Void butPause_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1086,14 +1094,14 @@ namespace VehicleRootingProblem {
 			EventsHandler::UpdateOnRemoveTarget(AppFormVars::CurrentSolution,
 				target_id, AppFormVars::CntMinutesPassed);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
-				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		} 
 		catch (ChangeVisitedVertexException&) {
 			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
 		}
 		DrawPaths(Graphics, AppFormVars::CurrentSolution,
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
 	}
 
 	private: System::Void butUpdTW_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1112,7 +1120,7 @@ namespace VehicleRootingProblem {
 			EventsHandler::UpdateOnTimeWindowUpdate(AppFormVars::CurrentSolution, 
 				target_id, AppFormVars::CntMinutesPassed, new_start, new_end);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
-				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		}
 		catch (NoValidSolutionException&) {
@@ -1140,7 +1148,7 @@ namespace VehicleRootingProblem {
 			EventsHandler::UpdateOnCoordinatesUpdate(AppFormVars::CurrentSolution, 
 				target_id, AppFormVars::CntMinutesPassed, new_x, new_y);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
-				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed);
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		}
 		catch (NoValidSolutionException&) {
