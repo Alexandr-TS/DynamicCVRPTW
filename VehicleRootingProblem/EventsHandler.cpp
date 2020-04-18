@@ -82,6 +82,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		auto new_solution = solution;
 		new_solution.Input.Points[path[i]] = { new_x, new_y };
 
+		/* use for test mode to change distances after changing coordinates
 		{
 			unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
 			mt19937 gen(seed);
@@ -108,6 +109,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 				}
 			}
 		}
+		*/
 
 		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
 
@@ -120,4 +122,24 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		throw NoValidSolutionException();
 	}
 	throw NoSuchTargetException();
+}
+
+bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double cur_time,
+	const vector<DistanceToChange>& upd_dists) {
+
+	auto new_solution = solution;
+
+	for (const auto& el : upd_dists) {
+		new_solution.Input.Distances[el.first_vertex][el.second_vertex] = el.new_distance;
+	}
+
+	MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
+
+	new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
+		EProblemSolutionCtorType::SKIP_PRESENCE);
+	if (new_solution.SolutionExists) {
+		solution = new_solution;
+		return true;
+	}
+	throw NoValidSolutionException();
 }
