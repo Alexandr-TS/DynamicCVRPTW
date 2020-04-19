@@ -97,8 +97,8 @@ namespace VehicleRootingProblem {
 		InputData LoadedInputData;
 		ProblemSolution CurrentSolution;
 		int PrintedLaunchPathsIndex;
-		int CntMinutesPassed = 0;
-		int MinutesPerTick = 1;
+		int CntSecondsPassed = 0;
+		int SecondsPerTick = 1;
 		std::vector<DistanceToChange> DistancesToChange;
 
 	}
@@ -246,7 +246,7 @@ namespace VehicleRootingProblem {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			System::Windows::Forms::ListViewItem^ listViewItem2 = (gcnew System::Windows::Forms::ListViewItem(L""));
+			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
 			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
 			this->buttonRunProcess = (gcnew System::Windows::Forms::Button());
@@ -267,6 +267,7 @@ namespace VehicleRootingProblem {
 			this->groupBoxResults = (gcnew System::Windows::Forms::GroupBox());
 			this->tbTime = (gcnew System::Windows::Forms::MaskedTextBox());
 			this->groupBoxEvents = (gcnew System::Windows::Forms::GroupBox());
+			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->labelMatrLoadedFile = (gcnew System::Windows::Forms::Label());
 			this->butUpdCoors = (gcnew System::Windows::Forms::Button());
 			this->butUpdateMatrix = (gcnew System::Windows::Forms::Button());
@@ -297,7 +298,6 @@ namespace VehicleRootingProblem {
 			this->saveFileDialog = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->openFileDialogMatr = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->tabControlLeft->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->groupBoxLoadedDataSets->SuspendLayout();
@@ -410,7 +410,7 @@ namespace VehicleRootingProblem {
 			this->listViewLoadedDataSets->FullRowSelect = true;
 			this->listViewLoadedDataSets->GridLines = true;
 			this->listViewLoadedDataSets->HideSelection = false;
-			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem2 });
+			this->listViewLoadedDataSets->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(1) { listViewItem1 });
 			this->listViewLoadedDataSets->Location = System::Drawing::Point(6, 19);
 			this->listViewLoadedDataSets->MultiSelect = false;
 			this->listViewLoadedDataSets->Name = L"listViewLoadedDataSets";
@@ -535,6 +535,14 @@ namespace VehicleRootingProblem {
 			this->groupBoxEvents->TabIndex = 36;
 			this->groupBoxEvents->TabStop = false;
 			this->groupBoxEvents->Text = L"События";
+			// 
+			// label8
+			// 
+			this->label8->Location = System::Drawing::Point(23, 104);
+			this->label8->Name = L"label8";
+			this->label8->Size = System::Drawing::Size(105, 30);
+			this->label8->TabIndex = 52;
+			this->label8->Text = L"Обновить матрицу расстояний:";
 			// 
 			// labelMatrLoadedFile
 			// 
@@ -716,7 +724,7 @@ namespace VehicleRootingProblem {
 			this->butX2->Name = L"butX2";
 			this->butX2->Size = System::Drawing::Size(46, 26);
 			this->butX2->TabIndex = 35;
-			this->butX2->Text = L"x5";
+			this->butX2->Text = L"x60";
 			this->butX2->UseVisualStyleBackColor = true;
 			this->butX2->Click += gcnew System::EventHandler(this, &AppForm::butX2_Click);
 			// 
@@ -726,7 +734,7 @@ namespace VehicleRootingProblem {
 			this->butX3->Name = L"butX3";
 			this->butX3->Size = System::Drawing::Size(46, 26);
 			this->butX3->TabIndex = 34;
-			this->butX3->Text = L"x50";
+			this->butX3->Text = L"x3600";
 			this->butX3->UseVisualStyleBackColor = true;
 			this->butX3->Click += gcnew System::EventHandler(this, &AppForm::butX3_Click);
 			// 
@@ -813,14 +821,6 @@ namespace VehicleRootingProblem {
 			// openFileDialogMatr
 			// 
 			this->openFileDialogMatr->FileName = L"matrix";
-			// 
-			// label8
-			// 
-			this->label8->Location = System::Drawing::Point(23, 104);
-			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(105, 30);
-			this->label8->TabIndex = 52;
-			this->label8->Text = L"Обновить матрицу расстояний:";
 			// 
 			// AppForm
 			// 
@@ -1056,14 +1056,14 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void buttonRunProcess_Click(System::Object^ sender, System::EventArgs^ e) {
-		AppFormVars::CntMinutesPassed = INF;
-		AppFormVars::MinutesPerTick = 1;
+		AppFormVars::CntSecondsPassed = INF;
+		AppFormVars::SecondsPerTick = 1;
 		int launchInd = (int)AppFormVars::Launches.size() - 1;
 		AppFormVars::CurrentSolution = AppFormVars::Launches.back().Solution;
 		for (size_t i = 0; i < AppFormVars::CurrentSolution.ArrivalTimes.size(); ++i) {
 			for (size_t j = 0; j < AppFormVars::CurrentSolution.ArrivalTimes[i].size(); ++j) {
-				AppFormVars::CntMinutesPassed = min(AppFormVars::CntMinutesPassed,
-					static_cast<int>(AppFormVars::CurrentSolution.ArrivalTimes[i][j] - 10 - 
+				AppFormVars::CntSecondsPassed = min(AppFormVars::CntSecondsPassed,
+					60 * static_cast<int>(AppFormVars::CurrentSolution.ArrivalTimes[i][j] - 5 - 
 						AppFormVars::CurrentSolution.Input.Distance(0, AppFormVars::CurrentSolution.Paths[i][j]))
 				);
 			}
@@ -1081,30 +1081,30 @@ namespace VehicleRootingProblem {
 		if (AppFormVars::Launches.empty() || !AppFormVars::CurrentSolution.SolutionExists) {
 			return;
 		}
-		AppFormVars::CntMinutesPassed += AppFormVars::MinutesPerTick;
-		if (!AppFormVars::MinutesPerTick) {
+		AppFormVars::CntSecondsPassed += AppFormVars::SecondsPerTick;
+		if (!AppFormVars::SecondsPerTick) {
 			return;
 		}
 
-		this->tbTime->Text = PrettyTime(AppFormVars::CntMinutesPassed);
+		this->tbTime->Text = PrettyTime(AppFormVars::CntSecondsPassed / 60);
 		DrawPaths(Graphics, AppFormVars::CurrentSolution,
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, true);
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, true);
 	}
 
 	private: System::Void butPause_Click(System::Object^ sender, System::EventArgs^ e) {
-		AppFormVars::MinutesPerTick = 0;
+		AppFormVars::SecondsPerTick = 0;
 	}
 
 	private: System::Void butX1_Click(System::Object^ sender, System::EventArgs^ e) {
-		AppFormVars::MinutesPerTick = 1;
+		AppFormVars::SecondsPerTick = 1;
 	}
 
 	private: System::Void butX2_Click(System::Object^ sender, System::EventArgs^ e) {
-		AppFormVars::MinutesPerTick = 5;
+		AppFormVars::SecondsPerTick = 60;
 	}
 
 	private: System::Void butX3_Click(System::Object^ sender, System::EventArgs^ e) {
-		AppFormVars::MinutesPerTick = 50;
+		AppFormVars::SecondsPerTick = 60 * 60;
 	}
 
 	private: bool CheckSelectedVertexPresence(ProblemSolution& solution, bool with_msgbox) {
@@ -1155,16 +1155,16 @@ namespace VehicleRootingProblem {
 		}
 		try {
 			EventsHandler::UpdateOnRemoveTarget(AppFormVars::CurrentSolution,
-				target_id, AppFormVars::CntMinutesPassed);
+				target_id, AppFormVars::CntSecondsPassed / 60);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
-				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		} 
 		catch (ChangeVisitedVertexException&) {
 			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
 		}
 		DrawPaths(Graphics, AppFormVars::CurrentSolution,
-			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
+			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 	}
 
 	private: System::Void butUpdTW_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -1181,9 +1181,9 @@ namespace VehicleRootingProblem {
 			(end_time[1] - '0') + 10 * (end_time[3] - '0') + (end_time[4] - '0'));
 		try {
 			EventsHandler::UpdateOnTimeWindowUpdate(AppFormVars::CurrentSolution, 
-				target_id, AppFormVars::CntMinutesPassed, new_start, new_end);
+				target_id, AppFormVars::CntSecondsPassed / 60, new_start, new_end);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
-				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		}
 		catch (NoValidSolutionException&) {
@@ -1209,9 +1209,9 @@ namespace VehicleRootingProblem {
 		double new_y = static_cast<double>(atoi(new_y_str.c_str()));
 		try {
 			EventsHandler::UpdateOnCoordinatesUpdate(AppFormVars::CurrentSolution, 
-				target_id, AppFormVars::CntMinutesPassed, new_x, new_y);
+				target_id, AppFormVars::CntSecondsPassed / 60, new_x, new_y);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
-				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		}
 		catch (NoValidSolutionException&) {
@@ -1256,9 +1256,9 @@ namespace VehicleRootingProblem {
 		this->labelMatrLoadedFile->Text = "Файл не выбран";
 		try {
 			EventsHandler::UpdateOnDistMatrixUpdate(AppFormVars::CurrentSolution, 
-				AppFormVars::CntMinutesPassed, AppFormVars::DistancesToChange);
+				AppFormVars::CntSecondsPassed / 60, AppFormVars::DistancesToChange);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
-				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntMinutesPassed, false);
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
 		}
 		catch (NoValidSolutionException&) {
