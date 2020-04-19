@@ -188,6 +188,7 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::Button^ butUpdateMatrix;
 	private: System::Windows::Forms::Button^ butMatrFileOpen;
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialogMatr;
+	private: System::Windows::Forms::Label^ label8;
 
 
 	public:
@@ -296,6 +297,7 @@ namespace VehicleRootingProblem {
 			this->saveFileDialog = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->openFileDialogMatr = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->tabControlLeft->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->groupBoxLoadedDataSets->SuspendLayout();
@@ -500,7 +502,7 @@ namespace VehicleRootingProblem {
 			// 
 			// tbTime
 			// 
-			this->tbTime->Location = System::Drawing::Point(119, 385);
+			this->tbTime->Location = System::Drawing::Point(110, 375);
 			this->tbTime->Mask = L"00:00";
 			this->tbTime->Name = L"tbTime";
 			this->tbTime->Size = System::Drawing::Size(38, 20);
@@ -509,6 +511,7 @@ namespace VehicleRootingProblem {
 			// 
 			// groupBoxEvents
 			// 
+			this->groupBoxEvents->Controls->Add(this->label8);
 			this->groupBoxEvents->Controls->Add(this->labelMatrLoadedFile);
 			this->groupBoxEvents->Controls->Add(this->butUpdCoors);
 			this->groupBoxEvents->Controls->Add(this->butUpdateMatrix);
@@ -526,9 +529,9 @@ namespace VehicleRootingProblem {
 			this->groupBoxEvents->Controls->Add(this->label3);
 			this->groupBoxEvents->Controls->Add(this->butDeleteTarget);
 			this->groupBoxEvents->Controls->Add(this->label2);
-			this->groupBoxEvents->Location = System::Drawing::Point(9, 421);
+			this->groupBoxEvents->Location = System::Drawing::Point(17, 409);
 			this->groupBoxEvents->Name = L"groupBoxEvents";
-			this->groupBoxEvents->Size = System::Drawing::Size(515, 179);
+			this->groupBoxEvents->Size = System::Drawing::Size(515, 184);
 			this->groupBoxEvents->TabIndex = 36;
 			this->groupBoxEvents->TabStop = false;
 			this->groupBoxEvents->Text = L"События";
@@ -536,7 +539,7 @@ namespace VehicleRootingProblem {
 			// labelMatrLoadedFile
 			// 
 			this->labelMatrLoadedFile->AutoSize = true;
-			this->labelMatrLoadedFile->Location = System::Drawing::Point(146, 110);
+			this->labelMatrLoadedFile->Location = System::Drawing::Point(253, 109);
 			this->labelMatrLoadedFile->MaximumSize = System::Drawing::Size(95, 13);
 			this->labelMatrLoadedFile->Name = L"labelMatrLoadedFile";
 			this->labelMatrLoadedFile->Size = System::Drawing::Size(92, 13);
@@ -545,7 +548,7 @@ namespace VehicleRootingProblem {
 			// 
 			// butUpdCoors
 			// 
-			this->butUpdCoors->Location = System::Drawing::Point(283, 142);
+			this->butUpdCoors->Location = System::Drawing::Point(283, 143);
 			this->butUpdCoors->Name = L"butUpdCoors";
 			this->butUpdCoors->Size = System::Drawing::Size(146, 24);
 			this->butUpdCoors->TabIndex = 51;
@@ -555,17 +558,17 @@ namespace VehicleRootingProblem {
 			// 
 			// butUpdateMatrix
 			// 
-			this->butUpdateMatrix->Location = System::Drawing::Point(244, 105);
+			this->butUpdateMatrix->Location = System::Drawing::Point(351, 104);
 			this->butUpdateMatrix->Name = L"butUpdateMatrix";
-			this->butUpdateMatrix->Size = System::Drawing::Size(161, 24);
+			this->butUpdateMatrix->Size = System::Drawing::Size(107, 24);
 			this->butUpdateMatrix->TabIndex = 13;
-			this->butUpdateMatrix->Text = L"Загрузить";
+			this->butUpdateMatrix->Text = L"Обновить";
 			this->butUpdateMatrix->UseVisualStyleBackColor = true;
 			this->butUpdateMatrix->Click += gcnew System::EventHandler(this, &AppForm::butUpdateMatrix_Click);
 			// 
 			// butMatrFileOpen
 			// 
-			this->butMatrFileOpen->Location = System::Drawing::Point(26, 106);
+			this->butMatrFileOpen->Location = System::Drawing::Point(133, 104);
 			this->butMatrFileOpen->Margin = System::Windows::Forms::Padding(2);
 			this->butMatrFileOpen->Name = L"butMatrFileOpen";
 			this->butMatrFileOpen->Size = System::Drawing::Size(115, 24);
@@ -576,7 +579,7 @@ namespace VehicleRootingProblem {
 			// 
 			// numericUpDownYCoord
 			// 
-			this->numericUpDownYCoord->Location = System::Drawing::Point(214, 146);
+			this->numericUpDownYCoord->Location = System::Drawing::Point(214, 147);
 			this->numericUpDownYCoord->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000, 0, 0, 0 });
 			this->numericUpDownYCoord->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000, 0, 0, System::Int32::MinValue });
 			this->numericUpDownYCoord->Name = L"numericUpDownYCoord";
@@ -586,7 +589,7 @@ namespace VehicleRootingProblem {
 			// label7
 			// 
 			this->label7->AutoSize = true;
-			this->label7->Location = System::Drawing::Point(190, 148);
+			this->label7->Location = System::Drawing::Point(190, 149);
 			this->label7->Name = L"label7";
 			this->label7->Size = System::Drawing::Size(21, 13);
 			this->label7->TabIndex = 49;
@@ -594,7 +597,7 @@ namespace VehicleRootingProblem {
 			// 
 			// numericUpDownXCoord
 			// 
-			this->numericUpDownXCoord->Location = System::Drawing::Point(123, 146);
+			this->numericUpDownXCoord->Location = System::Drawing::Point(123, 147);
 			this->numericUpDownXCoord->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000, 0, 0, 0 });
 			this->numericUpDownXCoord->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000, 0, 0, System::Int32::MinValue });
 			this->numericUpDownXCoord->Name = L"numericUpDownXCoord";
@@ -604,7 +607,7 @@ namespace VehicleRootingProblem {
 			// label6
 			// 
 			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(99, 148);
+			this->label6->Location = System::Drawing::Point(99, 149);
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(21, 13);
 			this->label6->TabIndex = 47;
@@ -613,7 +616,7 @@ namespace VehicleRootingProblem {
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(23, 148);
+			this->label5->Location = System::Drawing::Point(23, 149);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(72, 13);
 			this->label5->TabIndex = 46;
@@ -709,7 +712,7 @@ namespace VehicleRootingProblem {
 			// 
 			// butX2
 			// 
-			this->butX2->Location = System::Drawing::Point(290, 381);
+			this->butX2->Location = System::Drawing::Point(281, 371);
 			this->butX2->Name = L"butX2";
 			this->butX2->Size = System::Drawing::Size(46, 26);
 			this->butX2->TabIndex = 35;
@@ -719,7 +722,7 @@ namespace VehicleRootingProblem {
 			// 
 			// butX3
 			// 
-			this->butX3->Location = System::Drawing::Point(340, 381);
+			this->butX3->Location = System::Drawing::Point(331, 371);
 			this->butX3->Name = L"butX3";
 			this->butX3->Size = System::Drawing::Size(46, 26);
 			this->butX3->TabIndex = 34;
@@ -729,7 +732,7 @@ namespace VehicleRootingProblem {
 			// 
 			// butX1
 			// 
-			this->butX1->Location = System::Drawing::Point(240, 381);
+			this->butX1->Location = System::Drawing::Point(231, 371);
 			this->butX1->Name = L"butX1";
 			this->butX1->Size = System::Drawing::Size(46, 26);
 			this->butX1->TabIndex = 33;
@@ -739,7 +742,7 @@ namespace VehicleRootingProblem {
 			// 
 			// butPause
 			// 
-			this->butPause->Location = System::Drawing::Point(180, 381);
+			this->butPause->Location = System::Drawing::Point(171, 371);
 			this->butPause->Name = L"butPause";
 			this->butPause->Size = System::Drawing::Size(56, 26);
 			this->butPause->TabIndex = 32;
@@ -750,7 +753,7 @@ namespace VehicleRootingProblem {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(23, 388);
+			this->label1->Location = System::Drawing::Point(14, 378);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(90, 13);
 			this->label1->TabIndex = 31;
@@ -811,6 +814,14 @@ namespace VehicleRootingProblem {
 			// 
 			this->openFileDialogMatr->FileName = L"matrix";
 			// 
+			// label8
+			// 
+			this->label8->Location = System::Drawing::Point(23, 104);
+			this->label8->Name = L"label8";
+			this->label8->Size = System::Drawing::Size(105, 30);
+			this->label8->TabIndex = 52;
+			this->label8->Text = L"Обновить матрицу расстояний:";
+			// 
 			// AppForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -819,7 +830,6 @@ namespace VehicleRootingProblem {
 			this->Controls->Add(this->groupBoxResults);
 			this->Controls->Add(this->tabControlLeft);
 			this->Name = L"AppForm";
-			this->Text = L"AppForm";
 			this->tabControlLeft->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
 			this->groupBoxLoadedDataSets->ResumeLayout(false);
