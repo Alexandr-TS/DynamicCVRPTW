@@ -47,4 +47,4 @@ Dynamic Capacitated Vehicle Routing Problem with Time Windows
 
 *v_n u_n новое_расстояние_n*
 
-Примеры можно найти по этому пути: https://github.com/Alexandr-TS/CVRPTW/tree/master/InputGenerator/new_tests
+Примеры можно найти по этому пути: https://github.com/Alexandr-TS/DynamicCVRPTW/tree/master/InputGenerator/new_tests
