@@ -9,9 +9,9 @@ int main(array<String^>^ args) {
 	Application::SetCompatibleTextRenderingDefault(false);
 
 	AllocConsole();
-	FILE* stream;
-	freopen_s(&stream, "CONOUT$", "w", stdout);
-	RunTests();
+	//FILE* stream;
+	//freopen_s(&stream, "CONOUT$", "w", stdout);
+	//RunTests();
 
 	VehicleRootingProblem::AppForm form;
 	Application::Run(% form);

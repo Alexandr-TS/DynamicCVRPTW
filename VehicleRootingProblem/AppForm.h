@@ -332,7 +332,7 @@ namespace VehicleRootingProblem {
 			this->tabPage1->Padding = System::Windows::Forms::Padding(3);
 			this->tabPage1->Size = System::Drawing::Size(559, 570);
 			this->tabPage1->TabIndex = 0;
-			this->tabPage1->Text = L"Тестирование";
+			this->tabPage1->Text = L"Построение путей";
 			this->tabPage1->UseVisualStyleBackColor = true;
 			// 
 			// buttonRunProcess
