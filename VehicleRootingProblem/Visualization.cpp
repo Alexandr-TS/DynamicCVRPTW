@@ -50,6 +50,10 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 
 	size_t path_idx = 0;
 	for (auto path : solution.Paths) {
+		if (path.empty()) {
+			++path_idx;
+			continue;
+		}
 		path.push_back(0);
 		path.push_back(0);
 		rotate(path.begin(), path.begin() + path.size() - 1, path.end());

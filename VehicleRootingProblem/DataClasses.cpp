@@ -99,8 +99,13 @@ ProblemSolution::ProblemSolution() {
 // paths: {{1, 2, 3}, {6, 5, 4, 7}}. without 0. 0 is depot
 ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, EProblemSolutionCtorType type)
 	: Input(input)
-	, Paths(paths)
 {
+	Paths = {};
+	for (auto path : paths) {
+		if (!path.empty()) {
+			Paths.push_back(path);
+		}
+	}
 	MaxPathLength = 0;
 	SumOfPathLengths = 0;
 	ArrivalTimes = {};
@@ -110,11 +115,11 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, EProblemSolu
 
 	std::vector<int> used(input.TargetsCnt, 0);
 
-	for (int pathInd = 0; pathInd < (int)paths.size(); ++pathInd) {
+	for (int pathInd = 0; pathInd < (int)Paths.size(); ++pathInd) {
 		ArrivalTimes.push_back({});
 		double cur_time = 0;
 
-		auto path = paths[pathInd];
+		auto path = Paths[pathInd];
 		if (path.size() == 0) {
 			continue;
 		}
@@ -156,7 +161,7 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, EProblemSolu
 		std::cout << "ProblemSolution constructor. Solution is not valid because one of the " << 
 			"paths is longer than MaxDist" << std::endl;
 	}
-	if (static_cast<int>(paths.size()) > input.DronsCnt) {
+	if (static_cast<int>(Paths.size()) > input.DronsCnt) {
 		SolutionExists = false;
 		std::cout << "ProblemSolution constructor. Solution is not valid because there are " << 
 			"more paths than vehicles" << std::endl;

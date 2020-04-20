@@ -399,7 +399,7 @@ bool MultiOptimization(MatrixInt& paths, InputData& input, double cur_time) {
 	bool flag = true;
 	double start_time = clock();
 	while (flag) {
-		if (clock() - start_time > 2.0 * CLOCKS_PER_SEC) {
+		if (clock() - start_time > 2.5 * CLOCKS_PER_SEC) {
 			break;
 		}
 		flag = false;
