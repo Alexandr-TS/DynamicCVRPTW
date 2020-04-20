@@ -117,11 +117,11 @@ void printPreciseInput(int drons, int targets, int maxCoord) {
 int main(int argc, char** argv) {
 	if ((string)argv[1] == "help") {
 		cout << "Possible commands:" << endl;
-		cout << "1) old dronsCnt targetsCnt [fileName]" << endl;
-		cout << "2) gen vehiclesCnt citySizeKm targetsCnt [fileName]" << endl;
+		cout << "1) gen vehiclesCnt citySizeKm targetsCnt [fileName]" << endl;
 		return 0;
 	} 
 	FILE* stream;
+	/*
 	if ((string)argv[1] == "old") {
 		if (argc == 4) {
 			printPreciseInput(atoi(argv[2]), atoi(argv[3]), 100);
@@ -136,7 +136,9 @@ int main(int argc, char** argv) {
 			cout << "not correct parameters" << endl;
 		}
 	}
-	else if ((string)argv[1] == "gen") {
+	else 
+		*/
+	if ((string)argv[1] == "gen") {
 		if (argc == 5) {
 			genInput(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 		}
