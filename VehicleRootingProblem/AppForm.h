@@ -144,6 +144,7 @@ namespace VehicleRootingProblem {
 		{
 			InitializeComponent();
 			this->Width = 600;
+			this->Height = 475;
 			groupBoxResults->Visible = false;
 
 			listViewLoadedDataSets->Items->Clear();
@@ -189,6 +190,7 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::Button^ butMatrFileOpen;
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialogMatr;
 	private: System::Windows::Forms::Label^ label8;
+	private: System::Windows::Forms::CheckBox^ checkBoxDontChangeVehicles;
 
 
 	public:
@@ -249,6 +251,7 @@ namespace VehicleRootingProblem {
 			System::Windows::Forms::ListViewItem^ listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(L""));
 			this->tabControlLeft = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+			this->checkBoxDontChangeVehicles = (gcnew System::Windows::Forms::CheckBox());
 			this->buttonRunProcess = (gcnew System::Windows::Forms::Button());
 			this->buttonRun = (gcnew System::Windows::Forms::Button());
 			this->groupBoxLoadedDataSets = (gcnew System::Windows::Forms::GroupBox());
@@ -319,25 +322,36 @@ namespace VehicleRootingProblem {
 			this->tabControlLeft->Location = System::Drawing::Point(12, 12);
 			this->tabControlLeft->Name = L"tabControlLeft";
 			this->tabControlLeft->SelectedIndex = 0;
-			this->tabControlLeft->Size = System::Drawing::Size(567, 596);
+			this->tabControlLeft->Size = System::Drawing::Size(567, 416);
 			this->tabControlLeft->TabIndex = 0;
 			// 
 			// tabPage1
 			// 
+			this->tabPage1->Controls->Add(this->checkBoxDontChangeVehicles);
 			this->tabPage1->Controls->Add(this->buttonRunProcess);
 			this->tabPage1->Controls->Add(this->buttonRun);
 			this->tabPage1->Controls->Add(this->groupBoxLoadedDataSets);
 			this->tabPage1->Location = System::Drawing::Point(4, 22);
 			this->tabPage1->Name = L"tabPage1";
 			this->tabPage1->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage1->Size = System::Drawing::Size(559, 570);
+			this->tabPage1->Size = System::Drawing::Size(559, 390);
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Построение путей";
 			this->tabPage1->UseVisualStyleBackColor = true;
 			// 
+			// checkBoxDontChangeVehicles
+			// 
+			this->checkBoxDontChangeVehicles->AutoSize = true;
+			this->checkBoxDontChangeVehicles->Location = System::Drawing::Point(229, 319);
+			this->checkBoxDontChangeVehicles->Name = L"checkBoxDontChangeVehicles";
+			this->checkBoxDontChangeVehicles->Size = System::Drawing::Size(259, 17);
+			this->checkBoxDontChangeVehicles->TabIndex = 24;
+			this->checkBoxDontChangeVehicles->Text = L"Не изменять распределение целей между ТС";
+			this->checkBoxDontChangeVehicles->UseVisualStyleBackColor = true;
+			// 
 			// buttonRunProcess
 			// 
-			this->buttonRunProcess->Location = System::Drawing::Point(207, 318);
+			this->buttonRunProcess->Location = System::Drawing::Point(229, 341);
 			this->buttonRunProcess->Margin = System::Windows::Forms::Padding(2);
 			this->buttonRunProcess->Name = L"buttonRunProcess";
 			this->buttonRunProcess->Size = System::Drawing::Size(201, 39);
@@ -447,7 +461,7 @@ namespace VehicleRootingProblem {
 			this->tabPage2->Location = System::Drawing::Point(4, 22);
 			this->tabPage2->Name = L"tabPage2";
 			this->tabPage2->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage2->Size = System::Drawing::Size(559, 570);
+			this->tabPage2->Size = System::Drawing::Size(559, 390);
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"Визуализация";
 			this->tabPage2->UseVisualStyleBackColor = true;
@@ -832,6 +846,7 @@ namespace VehicleRootingProblem {
 			this->Name = L"AppForm";
 			this->tabControlLeft->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
+			this->tabPage1->PerformLayout();
 			this->groupBoxLoadedDataSets->ResumeLayout(false);
 			this->groupBoxLoadedDataSets->PerformLayout();
 			this->tabPage2->ResumeLayout(false);
