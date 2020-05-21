@@ -67,11 +67,7 @@ namespace VehicleRootingProblem {
 			{}
 		};
 
-		enum class ETargetPathsChange {
-			ENABLE,
-			DISABLE
-		} TargetPathsChange;
-
+		ETargetPathsChange TargetPathsChange;
 		std::vector<InputData> DataSets;
 		std::vector<Algo> Algos = {
 			Algo("Жадный алгоритм", EAlgorithms::Greedy, {})
@@ -160,7 +156,7 @@ namespace VehicleRootingProblem {
 			buttonRunProcess->Enabled = false;
 			
 			AppFormVars::PrintedLaunchPathsIndex = -1;
-			AppFormVars::TargetPathsChange = AppFormVars::ETargetPathsChange::ENABLE;
+			AppFormVars::TargetPathsChange = ETargetPathsChange::ENABLE;
 
 			Graphics = this->pictureBoxRes->CreateGraphics();
 		}
@@ -1136,11 +1132,11 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void buttonRunProcess_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (this->checkBoxDontChangeVehicles) {
-			AppFormVars::TargetPathsChange = AppFormVars::ETargetPathsChange::DISABLE;
+		if (this->checkBoxDontChangeVehicles->Checked) {
+			AppFormVars::TargetPathsChange = ETargetPathsChange::DISABLE;
 		}
 		else {
-			AppFormVars::TargetPathsChange = AppFormVars::ETargetPathsChange::ENABLE;
+			AppFormVars::TargetPathsChange = ETargetPathsChange::ENABLE;
 		}
 		this->Height = 681;
 		this->tabControlLeft->Height = 618;
@@ -1271,7 +1267,7 @@ namespace VehicleRootingProblem {
 			(end_time[1] - '0') + 10 * (end_time[3] - '0') + (end_time[4] - '0'));
 		try {
 			EventsHandler::UpdateOnTimeWindowUpdate(AppFormVars::CurrentSolution, 
-				target_id, AppFormVars::CntSecondsPassed / 60, new_start, new_end);
+				target_id, AppFormVars::CntSecondsPassed / 60, new_start, new_end, AppFormVars::TargetPathsChange);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
 				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
@@ -1299,7 +1295,7 @@ namespace VehicleRootingProblem {
 		double new_y = static_cast<double>(atoi(new_y_str.c_str()));
 		try {
 			EventsHandler::UpdateOnCoordinatesUpdate(AppFormVars::CurrentSolution, 
-				target_id, AppFormVars::CntSecondsPassed / 60, new_x, new_y);
+				target_id, AppFormVars::CntSecondsPassed / 60, new_x, new_y, AppFormVars::TargetPathsChange);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
 				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
@@ -1346,7 +1342,7 @@ namespace VehicleRootingProblem {
 		this->labelMatrLoadedFile->Text = "Файл не выбран";
 		try {
 			EventsHandler::UpdateOnDistMatrixUpdate(AppFormVars::CurrentSolution, 
-				AppFormVars::CntSecondsPassed / 60, AppFormVars::DistancesToChange);
+				AppFormVars::CntSecondsPassed / 60, AppFormVars::DistancesToChange, AppFormVars::TargetPathsChange);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
 				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);

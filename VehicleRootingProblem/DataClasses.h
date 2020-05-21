@@ -24,7 +24,16 @@ const double EPS = 1e-8;
 typedef std::vector<std::vector<double> > MatrixDouble;
 typedef std::vector<std::vector<int> > MatrixInt;
 
-enum class EProblemSolutionCtorType { CHECK_PRESENCE, SKIP_PRESENCE };
+enum class EProblemSolutionCtorType { 
+	CHECK_PRESENCE, 
+	SKIP_PRESENCE 
+};
+
+enum class ETargetPathsChange {
+	ENABLE,
+	DISABLE
+};
+
 
 class ChangeVisitedVertexException : public std::exception {};
 class NoValidSolutionException : public std::exception {};

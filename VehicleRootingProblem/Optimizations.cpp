@@ -394,7 +394,7 @@ bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time) {
 	return improved;
 }
 
-bool MultiOptimization(MatrixInt& paths, InputData& input, double cur_time) {
+bool MultiOptimization(MatrixInt& paths, InputData& input, double cur_time, ETargetPathsChange target_paths_change) {
 	bool improved = false;
 	bool flag = true;
 	double start_time = clock();
@@ -407,8 +407,10 @@ bool MultiOptimization(MatrixInt& paths, InputData& input, double cur_time) {
 			flag |= OptSingleStringExchange(path, input, cur_time);
 			flag |= OptSingleStringRelocation(path, input, cur_time);
 		}
-		flag |= OptStringCross(paths, input, cur_time);
-		flag |= OptStringExchange(paths, input, cur_time, 5);
+		if (target_paths_change == ETargetPathsChange::ENABLE) {
+			flag |= OptStringCross(paths, input, cur_time);
+			flag |= OptStringExchange(paths, input, cur_time, 5);
+		}
 		improved |= flag;
 	}
 	return improved;

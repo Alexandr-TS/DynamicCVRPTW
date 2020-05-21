@@ -32,7 +32,7 @@ bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_i
 }
 
 bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, 
-	int target_id, double cur_time, double new_start, double new_end) {
+	int target_id, double cur_time, double new_start, double new_end, ETargetPathsChange target_paths_change) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
 		path_id++;
@@ -50,7 +50,7 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution,
 		auto new_solution = solution;
 		new_solution.Input.TimeWindows[path[i]] = { new_start, new_end };
 
-		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
+		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time, target_paths_change);
 
 		new_solution = ProblemSolution(new_solution.Input, 
 			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
@@ -64,7 +64,7 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution,
 }
 
 bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int target_id, 
-	double cur_time, double new_x, double new_y) {
+	double cur_time, double new_x, double new_y, ETargetPathsChange target_paths_change) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
 		path_id++;
@@ -111,7 +111,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		}
 		*/
 
-		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
+		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time, target_paths_change);
 
 		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
 			EProblemSolutionCtorType::SKIP_PRESENCE);
@@ -125,7 +125,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 }
 
 bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double cur_time,
-	const vector<DistanceToChange>& upd_dists) {
+	const vector<DistanceToChange>& upd_dists, ETargetPathsChange target_paths_change) {
 
 	auto new_solution = solution;
 
@@ -133,7 +133,7 @@ bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double c
 		new_solution.Input.Distances[el.first_vertex][el.second_vertex] = el.new_distance;
 	}
 
-	MultiOptimization(new_solution.Paths, new_solution.Input, cur_time);
+	MultiOptimization(new_solution.Paths, new_solution.Input, cur_time, target_paths_change);
 
 	new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
 		EProblemSolutionCtorType::SKIP_PRESENCE);
