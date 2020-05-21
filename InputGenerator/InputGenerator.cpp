@@ -16,6 +16,7 @@ void genInput(int cnt_vehicles, int size_km, int cnt_targets) {
 	mt19937 gen(seed);
 
 	cout << cnt_vehicles << endl << cnt_targets << endl << gen() % (size_km * cnt_targets) << endl;
+	cout << gen() % 10 + 1 << endl;
 
 	vector<pair<double, double>> points = { { gen() % (1000 * size_km), gen() % (1000 * size_km)} };
 	for (int i = 0; i < cnt_targets; ++i) {
@@ -145,7 +146,8 @@ int main(int argc, char** argv) {
 		else if (argc == 6) {
 			string file_name = argv[5];
 			file_name += ".txt";
-			freopen(file_name.c_str(), "w", stdout);
+			FILE* stream;
+			freopen_s(&stream, file_name.c_str(), "w", stdout);
 			genInput(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 		}
 	}

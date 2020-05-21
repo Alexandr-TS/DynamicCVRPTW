@@ -23,6 +23,8 @@ Dynamic Capacitated Vehicle Routing Problem with Time Windows
 
 *ограничение_на_дальность_полёта*
 
+*время на разгрузку товара/посещение цели*
+
 *координата_цели_1_x координата_цели_1_y*
 
 ...
@@ -47,4 +49,4 @@ Dynamic Capacitated Vehicle Routing Problem with Time Windows
 
 *v_n u_n новое_расстояние_n*
 
-Примеры можно найти по этому пути: https://github.com/Alexandr-TS/DynamicCVRPTW/tree/master/InputGenerator/new_tests
+Примеры можно найти по этому пути: https://github.com/Alexandr-TS/DynamicCVRPTW/tree/master/InputGenerator/tests
