@@ -273,6 +273,9 @@ namespace VehicleRootingProblem {
 			this->groupBoxResults = (gcnew System::Windows::Forms::GroupBox());
 			this->tbTime = (gcnew System::Windows::Forms::MaskedTextBox());
 			this->groupBoxEvents = (gcnew System::Windows::Forms::GroupBox());
+			this->numericUpDownVehicleId = (gcnew System::Windows::Forms::NumericUpDown());
+			this->butDeleteVehicle = (gcnew System::Windows::Forms::Button());
+			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->labelMatrLoadedFile = (gcnew System::Windows::Forms::Label());
 			this->butUpdCoors = (gcnew System::Windows::Forms::Button());
@@ -304,9 +307,6 @@ namespace VehicleRootingProblem {
 			this->saveFileDialog = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->openFileDialogMatr = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->numericUpDownVehicleId = (gcnew System::Windows::Forms::NumericUpDown());
-			this->butDeleteVehicle = (gcnew System::Windows::Forms::Button());
-			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->tabControlLeft->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->groupBoxLoadedDataSets->SuspendLayout();
@@ -315,11 +315,11 @@ namespace VehicleRootingProblem {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBoxRes))->BeginInit();
 			this->groupBoxResults->SuspendLayout();
 			this->groupBoxEvents->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownVehicleId))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownYCoord))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownXCoord))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownTargetId))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewPaths))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownVehicleId))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// tabControlLeft
@@ -329,7 +329,7 @@ namespace VehicleRootingProblem {
 			this->tabControlLeft->Location = System::Drawing::Point(12, 12);
 			this->tabControlLeft->Name = L"tabControlLeft";
 			this->tabControlLeft->SelectedIndex = 0;
-			this->tabControlLeft->Size = System::Drawing::Size(567, 416);
+			this->tabControlLeft->Size = System::Drawing::Size(567, 413);
 			this->tabControlLeft->TabIndex = 0;
 			// 
 			// tabPage1
@@ -341,7 +341,7 @@ namespace VehicleRootingProblem {
 			this->tabPage1->Location = System::Drawing::Point(4, 22);
 			this->tabPage1->Name = L"tabPage1";
 			this->tabPage1->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage1->Size = System::Drawing::Size(559, 390);
+			this->tabPage1->Size = System::Drawing::Size(559, 387);
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Построение путей";
 			this->tabPage1->UseVisualStyleBackColor = true;
@@ -468,7 +468,7 @@ namespace VehicleRootingProblem {
 			this->tabPage2->Location = System::Drawing::Point(4, 22);
 			this->tabPage2->Name = L"tabPage2";
 			this->tabPage2->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage2->Size = System::Drawing::Size(559, 390);
+			this->tabPage2->Size = System::Drawing::Size(559, 592);
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"Визуализация";
 			this->tabPage2->UseVisualStyleBackColor = true;
@@ -559,6 +559,34 @@ namespace VehicleRootingProblem {
 			this->groupBoxEvents->TabIndex = 36;
 			this->groupBoxEvents->TabStop = false;
 			this->groupBoxEvents->Text = L"События";
+			// 
+			// numericUpDownVehicleId
+			// 
+			this->numericUpDownVehicleId->Location = System::Drawing::Point(103, 21);
+			this->numericUpDownVehicleId->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 999, 0, 0, 0 });
+			this->numericUpDownVehicleId->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->numericUpDownVehicleId->Name = L"numericUpDownVehicleId";
+			this->numericUpDownVehicleId->Size = System::Drawing::Size(56, 20);
+			this->numericUpDownVehicleId->TabIndex = 55;
+			this->numericUpDownVehicleId->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			// 
+			// butDeleteVehicle
+			// 
+			this->butDeleteVehicle->Location = System::Drawing::Point(170, 19);
+			this->butDeleteVehicle->Name = L"butDeleteVehicle";
+			this->butDeleteVehicle->Size = System::Drawing::Size(113, 24);
+			this->butDeleteVehicle->TabIndex = 54;
+			this->butDeleteVehicle->Text = L"Выход ТС из строя";
+			this->butDeleteVehicle->UseVisualStyleBackColor = true;
+			// 
+			// label9
+			// 
+			this->label9->AutoSize = true;
+			this->label9->Location = System::Drawing::Point(17, 23);
+			this->label9->Name = L"label9";
+			this->label9->Size = System::Drawing::Size(61, 13);
+			this->label9->TabIndex = 53;
+			this->label9->Text = L"Номер ТС:";
 			// 
 			// label8
 			// 
@@ -846,34 +874,6 @@ namespace VehicleRootingProblem {
 			// 
 			this->openFileDialogMatr->FileName = L"matrix";
 			// 
-			// numericUpDownVehicleId
-			// 
-			this->numericUpDownVehicleId->Location = System::Drawing::Point(103, 21);
-			this->numericUpDownVehicleId->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 999, 0, 0, 0 });
-			this->numericUpDownVehicleId->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			this->numericUpDownVehicleId->Name = L"numericUpDownVehicleId";
-			this->numericUpDownVehicleId->Size = System::Drawing::Size(56, 20);
-			this->numericUpDownVehicleId->TabIndex = 55;
-			this->numericUpDownVehicleId->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			// 
-			// butDeleteVehicle
-			// 
-			this->butDeleteVehicle->Location = System::Drawing::Point(170, 19);
-			this->butDeleteVehicle->Name = L"butDeleteVehicle";
-			this->butDeleteVehicle->Size = System::Drawing::Size(113, 24);
-			this->butDeleteVehicle->TabIndex = 54;
-			this->butDeleteVehicle->Text = L"Выход ТС из строя";
-			this->butDeleteVehicle->UseVisualStyleBackColor = true;
-			// 
-			// label9
-			// 
-			this->label9->AutoSize = true;
-			this->label9->Location = System::Drawing::Point(17, 23);
-			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(61, 13);
-			this->label9->TabIndex = 53;
-			this->label9->Text = L"Номер ТС:";
-			// 
 			// AppForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -894,11 +894,11 @@ namespace VehicleRootingProblem {
 			this->groupBoxResults->PerformLayout();
 			this->groupBoxEvents->ResumeLayout(false);
 			this->groupBoxEvents->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownVehicleId))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownYCoord))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownXCoord))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownTargetId))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridViewPaths))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDownVehicleId))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -969,9 +969,11 @@ namespace VehicleRootingProblem {
 			"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)col));
 		}
+		/*
 		for (auto param : AppFormVars::Algos[AppFormVars::Launches[launchInd].AlgoIndex].Params) {
 			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)param.Name));
 		}
+		*/
 
 		this->dataGridViewSelectedRes->Rows->Add();
 		this->dataGridViewSelectedRes->Rows[0]->Cells[0]->Value = 
@@ -986,10 +988,13 @@ namespace VehicleRootingProblem {
 			ToText(AppFormVars::Launches[launchInd].Solution.SumOfPathLengths);
 		this->dataGridViewSelectedRes->Rows[0]->Cells[5]->Value = 
 			ToText(AppFormVars::Launches[launchInd].Solution.MaxPathLength);
+		
+		/*
 		int curCol = 6;
 		for (auto& param : AppFormVars::Launches[launchInd].ParamsVals) {
 			this->dataGridViewSelectedRes->Rows[0]->Cells[curCol++]->Value = ToText(param);
 		}
+		*/
 		
 		for (int i = 0; i < this->dataGridViewSelectedRes->Columns->Count; i++) {
 			this->dataGridViewSelectedRes->Columns[i]->AutoSizeMode = DataGridViewAutoSizeColumnMode::DisplayedCells;
@@ -1110,6 +1115,8 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void buttonRunProcess_Click(System::Object^ sender, System::EventArgs^ e) {
+		this->Height = 681;
+		this->tabControlLeft->Height = 618;
 		AppFormVars::CntSecondsPassed = INF;
 		AppFormVars::SecondsPerTick = 1;
 		int launchInd = (int)AppFormVars::Launches.size() - 1;
@@ -1141,6 +1148,8 @@ namespace VehicleRootingProblem {
 		}
 
 		this->tbTime->Text = PrettyTime(AppFormVars::CntSecondsPassed / 60);
+		this->Height = 681;
+		this->tabControlLeft->Height = 618;
 		DrawPaths(Graphics, AppFormVars::CurrentSolution,
 			this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, true);
 	}
