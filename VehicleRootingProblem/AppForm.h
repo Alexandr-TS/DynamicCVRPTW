@@ -194,6 +194,9 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::NumericUpDown^ numericUpDownVehicleId;
 	private: System::Windows::Forms::Button^ butDeleteVehicle;
 	private: System::Windows::Forms::Label^ label9;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Number;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
 
 
 	public:
@@ -231,8 +234,8 @@ namespace VehicleRootingProblem {
 	private: System::Windows::Forms::GroupBox^ groupBoxResults;
 	private: System::Windows::Forms::Label^ labelPathsList;
 	private: System::Windows::Forms::DataGridView^ dataGridViewPaths;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
+
+
 	private: System::Windows::Forms::Button^ buttonSavePathsToFile;
 	private: System::Windows::Forms::PictureBox^ pictureBoxRes;
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog;
@@ -302,6 +305,7 @@ namespace VehicleRootingProblem {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->labelPathsList = (gcnew System::Windows::Forms::Label());
 			this->dataGridViewPaths = (gcnew System::Windows::Forms::DataGridView());
+			this->Number = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->saveFileDialog = (gcnew System::Windows::Forms::SaveFileDialog());
@@ -468,7 +472,7 @@ namespace VehicleRootingProblem {
 			this->tabPage2->Location = System::Drawing::Point(4, 22);
 			this->tabPage2->Name = L"tabPage2";
 			this->tabPage2->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage2->Size = System::Drawing::Size(559, 592);
+			this->tabPage2->Size = System::Drawing::Size(559, 387);
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"Визуализация";
 			this->tabPage2->UseVisualStyleBackColor = true;
@@ -480,8 +484,9 @@ namespace VehicleRootingProblem {
 			this->dataGridViewSelectedRes->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->dataGridViewSelectedRes->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridViewSelectedRes->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::DisableResizing;
 			this->dataGridViewSelectedRes->Location = System::Drawing::Point(6, 3);
+			this->dataGridViewSelectedRes->MaximumSize = System::Drawing::Size(547, 82);
 			this->dataGridViewSelectedRes->Name = L"dataGridViewSelectedRes";
 			this->dataGridViewSelectedRes->ReadOnly = true;
 			this->dataGridViewSelectedRes->RowHeadersWidthSizeMode = System::Windows::Forms::DataGridViewRowHeadersWidthSizeMode::AutoSizeToAllHeaders;
@@ -839,9 +844,9 @@ namespace VehicleRootingProblem {
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->dataGridViewPaths->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridViewPaths->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
-				this->Column1,
-					this->Column2
+			this->dataGridViewPaths->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {
+				this->Number,
+					this->Column1, this->Column2
 			});
 			this->dataGridViewPaths->Location = System::Drawing::Point(6, 34);
 			this->dataGridViewPaths->Name = L"dataGridViewPaths";
@@ -849,20 +854,30 @@ namespace VehicleRootingProblem {
 			this->dataGridViewPaths->Size = System::Drawing::Size(549, 287);
 			this->dataGridViewPaths->TabIndex = 27;
 			// 
+			// Number
+			// 
+			this->Number->AutoSizeMode = System::Windows::Forms::DataGridViewAutoSizeColumnMode::AllCells;
+			this->Number->HeaderText = L"Номер";
+			this->Number->Name = L"Number";
+			this->Number->ReadOnly = true;
+			this->Number->Width = 66;
+			// 
 			// Column1
 			// 
+			this->Column1->AutoSizeMode = System::Windows::Forms::DataGridViewAutoSizeColumnMode::AllCells;
 			this->Column1->HeaderText = L"Пути";
 			this->Column1->Name = L"Column1";
 			this->Column1->ReadOnly = true;
 			this->Column1->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
-			this->Column1->Width = 350;
+			this->Column1->Width = 37;
 			// 
 			// Column2
 			// 
+			this->Column2->AutoSizeMode = System::Windows::Forms::DataGridViewAutoSizeColumnMode::AllCells;
 			this->Column2->HeaderText = L"Длины";
 			this->Column2->Name = L"Column2";
 			this->Column2->ReadOnly = true;
-			this->Column2->Width = 155;
+			this->Column2->Width = 67;
 			// 
 			// timer1
 			// 
@@ -951,8 +966,9 @@ namespace VehicleRootingProblem {
 					path_str += ", ";
 				}
 			}
-			this->dataGridViewPaths->Rows[lineNum]->Cells[0]->Value = System::String(path_str.c_str()).ToString();
-			this->dataGridViewPaths->Rows[lineNum]->Cells[1]->Value = System::Double(pathDistance);
+			this->dataGridViewPaths->Rows[lineNum]->Cells[0]->Value = System::Int32(lineNum + 1);
+			this->dataGridViewPaths->Rows[lineNum]->Cells[1]->Value = System::String(path_str.c_str()).ToString();
+			this->dataGridViewPaths->Rows[lineNum]->Cells[2]->Value = System::Double(pathDistance);
 			this->dataGridViewPaths->Update();
 			++lineNum;
 		}
