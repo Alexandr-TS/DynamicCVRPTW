@@ -67,6 +67,11 @@ namespace VehicleRootingProblem {
 			{}
 		};
 
+		enum class ETargetPathsChange {
+			ENABLE,
+			DISABLE
+		} TargetPathsChange;
+
 		std::vector<InputData> DataSets;
 		std::vector<Algo> Algos = {
 			Algo("ֶאהםûי אכדמנטעל", EAlgorithms::Greedy, {})
@@ -100,7 +105,6 @@ namespace VehicleRootingProblem {
 		int CntSecondsPassed = 0;
 		int SecondsPerTick = 1;
 		std::vector<DistanceToChange> DistancesToChange;
-
 	}
 
 	System::String^ ToText(std::string s) {
@@ -156,6 +160,7 @@ namespace VehicleRootingProblem {
 			buttonRunProcess->Enabled = false;
 			
 			AppFormVars::PrintedLaunchPathsIndex = -1;
+			AppFormVars::TargetPathsChange = AppFormVars::ETargetPathsChange::ENABLE;
 
 			Graphics = this->pictureBoxRes->CreateGraphics();
 		}
@@ -1131,6 +1136,12 @@ namespace VehicleRootingProblem {
 	}
 
 	private: System::Void buttonRunProcess_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (this->checkBoxDontChangeVehicles) {
+			AppFormVars::TargetPathsChange = AppFormVars::ETargetPathsChange::DISABLE;
+		}
+		else {
+			AppFormVars::TargetPathsChange = AppFormVars::ETargetPathsChange::ENABLE;
+		}
 		this->Height = 681;
 		this->tabControlLeft->Height = 618;
 		AppFormVars::CntSecondsPassed = INF;

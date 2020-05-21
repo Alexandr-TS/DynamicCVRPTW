@@ -3,18 +3,8 @@
 InputData::InputData() {
 	DronsCnt = TargetsCnt = 0;
 	MaxDist = 0;
+	UnloadingTime = 0;
 }
-
-/*
-InputData::InputData(int dronsCnt, int targetsCnt, double maxDist, 
-		std::vector<std::pair<double, double>> timeWindows)
-	: DronsCnt(dronsCnt)
-	, TargetsCnt(targetsCnt)
-	, MaxDist(maxDist)
-	, TimeWindows(timeWindows)
-{
-}
-*/
 
 InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
 	std::vector<std::pair<double, double> > points, std::vector<std::pair<double, double>> timeWindows)
@@ -23,6 +13,7 @@ InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
 	, MaxDist(maxDist)
 	, Points(points)
 	, TimeWindows(timeWindows)
+	, UnloadingTime(0)
 {
 	Distances.resize(TargetsCnt + 1);
 	for (int i = 0; i <= TargetsCnt; ++i) {
@@ -33,25 +24,13 @@ InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
 	}
 }
 
-InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
-	std::vector<std::pair<double, double> > points,
-	std::vector<std::vector<double>> distances,
-	std::vector<std::pair<double, double>> timeWindows)
-	: DronsCnt(dronsCnt)
-	, TargetsCnt(targetsCnt)
-	, MaxDist(maxDist)
-	, Points(points)
-	, Distances(distances)
-	, TimeWindows(timeWindows)
-{
-}
-
 InputData::InputData(std::string inputFileName) {
 	FileName = inputFileName;
 	std::ifstream fin(inputFileName.c_str(), std::ios::in);
 	try {
 		fin >> DronsCnt >> TargetsCnt;
 		fin >> MaxDist;
+		fin >> UnloadingTime;
 		Points.resize(TargetsCnt + 1);
 		Points[0] = { 0, 0 };
 		for (int i = 0; i < TargetsCnt; i++) {
@@ -63,6 +42,8 @@ InputData::InputData(std::string inputFileName) {
 			Distances[i].resize(TargetsCnt + 1);
 			for (int j = 0; j <= TargetsCnt; ++j) {
 				fin >> Distances[i][j];
+				// TODO : check
+				Distances[i][j] += UnloadingTime;
 			}
 		}
 

@@ -41,10 +41,6 @@ public:
 	InputData(int dronsCnt, int targetsCnt, double maxDist, 
 		std::vector<std::pair<double, double>> points, 
 		std::vector<std::pair<double, double>> timeWindows);
-	InputData(int dronsCnt, int targetsCnt, double maxDist,
-		std::vector<std::pair<double, double>> points,
-		std::vector<std::vector<double>> distances,
-		std::vector<std::pair<double, double>> timeWindows);
 	InputData(std::string inputFileName);
 	~InputData();
 public:
@@ -54,6 +50,7 @@ public:
 	int DronsCnt;
 	int TargetsCnt;
 	double MaxDist;
+	int UnloadingTime;
 	// Including depot (it's always {0, 0})
 	std::vector<std::pair<double, double>> Points;
 	std::vector<std::vector<double>> Distances;
