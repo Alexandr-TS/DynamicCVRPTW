@@ -42,8 +42,10 @@ InputData::InputData(std::string inputFileName) {
 			Distances[i].resize(TargetsCnt + 1);
 			for (int j = 0; j <= TargetsCnt; ++j) {
 				fin >> Distances[i][j];
-				// TODO : check
-				Distances[i][j] += UnloadingTime;
+				// Adding unloading time to outgoing edge: (v, u) = length + [unloading in v]
+				if (i != j && i) {
+					Distances[i][j] += UnloadingTime;
+				}
 			}
 		}
 

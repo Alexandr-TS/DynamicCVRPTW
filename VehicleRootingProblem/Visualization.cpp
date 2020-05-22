@@ -7,6 +7,12 @@ using namespace System::Collections;
 using namespace System::Windows::Forms;
 using namespace System::Data;
 using namespace System::Drawing;
+using namespace std;
+
+void TranslatePoint(pair<double, double>& pt, double minX, int sz2, int sz1, double minY, double newMaxY, double newMinY) {
+	pt = std::make_pair((pt.first - minX) * sz2 / sz1 + 15, 7 + (pt.second - minY) * sz2 / sz1);
+	pt.second = newMaxY - (pt.second - newMinY);
+}
 
 void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, int height, int width, 
 	int cur_time, bool update_only_progress) {
@@ -66,6 +72,7 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 			}
 		}
 
+		/*
 		double tmp_time = solution.ArrivalTimes[path_idx][0] - solution.Input.Distance(0, path[1]);
 		double prev_time = tmp_time;
 		if (cur_time > tmp_time) {
@@ -89,6 +96,24 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 						(int)second_point.first, (int)second_point.second);
 					break;
 				}
+			}
+		}
+		*/
+			
+		pen = (gcnew Pen(Color::FromArgb(180, 10, 10, 255), 2));
+		auto arrival_times = solution.ArrivalTimes[path_idx];
+		arrival_times.push_back(arrival_times.back() + solution.Input.Distance(path[path.size() - 2], 0));
+		for (size_t i = 1; i < path.size(); ++i) {
+			if (arrival_times[i - 1] <= cur_time) {
+				graphics->DrawLine(pen, (int)points[path[i - 1]].first, (int)points[path[i - 1]].second,
+					(int)points[path[i]].first, (int)points[path[i]].second);
+			}
+			else {
+				auto cur_pt = GetVehicleCoords(solution, path_idx, cur_time);
+				TranslatePoint(cur_pt, minX, sz2, sz1, minY, newMaxY, newMinY);
+				graphics->DrawLine(pen, (int)points[path[i - 1]].first, (int)points[path[i - 1]].second,
+					static_cast<int>(cur_pt.first), static_cast<int>(cur_pt.second));
+				break;
 			}
 		}
 

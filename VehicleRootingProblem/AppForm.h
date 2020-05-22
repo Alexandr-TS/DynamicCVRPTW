@@ -584,6 +584,7 @@ namespace VehicleRootingProblem {
 			this->butDeleteVehicle->TabIndex = 54;
 			this->butDeleteVehicle->Text = L"Выход ТС из строя";
 			this->butDeleteVehicle->UseVisualStyleBackColor = true;
+			this->butDeleteVehicle->Click += gcnew System::EventHandler(this, &AppForm::butDeleteVehicle_Click);
 			// 
 			// label9
 			// 
@@ -1122,7 +1123,7 @@ namespace VehicleRootingProblem {
 		std::ofstream fout(fileName.c_str(), std::ios::out);
 		std::string outputString;
 		for (int i = 0; i < this->dataGridViewPaths->Rows->Count; ++i) {
-			std::string curPath = msclr::interop::marshal_as<std::string>(this->dataGridViewPaths->Rows[i]->Cells[0]->Value->ToString());
+			std::string curPath = msclr::interop::marshal_as<std::string>(this->dataGridViewPaths->Rows[i]->Cells[1]->Value->ToString());
 			outputString += curPath;
 			outputString += "\n";
 		}
@@ -1343,6 +1344,36 @@ namespace VehicleRootingProblem {
 		try {
 			EventsHandler::UpdateOnDistMatrixUpdate(AppFormVars::CurrentSolution, 
 				AppFormVars::CntSecondsPassed / 60, AppFormVars::DistancesToChange, AppFormVars::TargetPathsChange);
+			DrawPaths(Graphics, AppFormVars::CurrentSolution,
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
+			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
+		}
+		catch (NoValidSolutionException&) {
+			MessageBox::Show("Не удаётся построить решение после изменения");
+		}
+		catch (ChangeVisitedVertexException&) {
+			MessageBox::Show("Нельзя изменить параметры для посещённой цели");
+		}
+	}
+
+	private: System::Void butDeleteVehicle_Click(System::Object^ sender, System::EventArgs^ e) {
+		std::string vehicle_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownVehicleId->Text);
+		bool found_number = false;
+		for (int i = 0; i < this->dataGridViewPaths->Rows->Count; ++i) {
+			std::string cur_number = msclr::interop::marshal_as<std::string>(this->dataGridViewPaths->Rows[i]->Cells[0]->Value->ToString());
+			if (vehicle_id_str == cur_number) {
+				found_number = true;
+				break;
+			}
+		}
+		if (!found_number) {
+			MessageBox::Show("Не существует ТС с заданным номером");
+			return;
+		}
+		int row_id = atoi(vehicle_id_str.c_str()) - 1;
+		try {
+			EventsHandler::UpdateOnVehicleBreakdown(AppFormVars::CurrentSolution, row_id, 
+				AppFormVars::CntSecondsPassed / 60, AppFormVars::TargetPathsChange);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
 				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);

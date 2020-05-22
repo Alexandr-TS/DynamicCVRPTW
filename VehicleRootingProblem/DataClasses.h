@@ -86,4 +86,5 @@ public:
 	double MaxPathLength;
 	double SumOfPathLengths;
 	bool SolutionExists;
+	std::map<int, std::pair<double, double>> BrokenVehiclesCoords;
 };

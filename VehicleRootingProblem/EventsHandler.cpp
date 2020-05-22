@@ -143,3 +143,54 @@ bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double c
 	}
 	throw NoValidSolutionException();
 }
+
+
+bool EventsHandler::UpdateOnVehicleBreakdown(ProblemSolution& solution, int vehicle_id, 
+	double cur_time, ETargetPathsChange target_paths_change) {
+
+	auto& path = solution.Paths[vehicle_id];
+	vector<int> not_visited_vertices;
+	size_t i = 0;
+	for (; i < path.size(); ++i) {
+		if (solution.ArrivalTimes[vehicle_id][i] > cur_time) {
+			break;
+		}
+	}
+	for (; i < path.size(); ++i) {
+		not_visited_vertices.push_back(path[i]);
+	}
+
+	if (target_paths_change == ETargetPathsChange::ENABLE) {
+		// dummy node
+		not_visited_vertices.insert(not_visited_vertices.begin(), solution.Input.TargetsCnt + 1);
+
+		auto new_solution = solution;
+		new_solution.Input.TargetsCnt++;
+		new_solution.Input.Points.push_back(new_solution.Input.Points[0]);
+		new_solution.Input.TimeWindows.push_back({ cur_time, cur_time + EPS });
+		new_solution.Paths.push_back(not_visited_vertices);
+		for (size_t i = 0; i + 1 < not_visited_vertices.size(); ++i) {
+			new_solution.Paths[vehicle_id].pop_back();
+		}
+
+		new_solution.Input.Distances.push_back(new_solution.Input.Distances[0]);
+		for (size_t i = 0; i < new_solution.Input.Distances.size(); ++i) {
+			new_solution.Input.Distances[i].push_back(new_solution.Input.Distances[i][0]);
+		}
+
+		//new_solution.BrokenVehiclesCoords[vehicle_id] = broken_coords;
+
+		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time, target_paths_change);
+
+		new_solution = ProblemSolution(new_solution.Input,
+			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
+		if (new_solution.SolutionExists) {
+			solution = new_solution;
+			return true;
+		}
+		throw NoValidSolutionException();
+	}
+	else {
+		throw runtime_error("not implemented yet");
+	}
+}

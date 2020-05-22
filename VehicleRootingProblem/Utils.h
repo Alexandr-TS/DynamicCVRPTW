@@ -25,3 +25,5 @@ public:
 public:
 	static ProblemSolution Run(InputData input) {}
 };
+
+std::pair<double, double> GetVehicleCoords(ProblemSolution& problem_solution, int path_id, double cur_time);

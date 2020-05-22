@@ -18,5 +18,7 @@ public:
 		ProblemSolution& solution, int target_id, double cur_time, double new_x, double new_y, ETargetPathsChange target_paths_change);
 	static bool UpdateOnDistMatrixUpdate(
 		ProblemSolution& solution, double cur_time, const std::vector<DistanceToChange>& upd_dists, ETargetPathsChange target_paths_change);
+	static bool UpdateOnVehicleBreakdown(
+		ProblemSolution& solution, int vehicle_id, double cur_time, ETargetPathsChange target_paths_change);
 };
 
