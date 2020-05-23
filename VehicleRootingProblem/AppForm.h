@@ -97,6 +97,7 @@ namespace VehicleRootingProblem {
 		std::vector<Launch> Launches;
 		InputData LoadedInputData;
 		ProblemSolution CurrentSolution;
+		int CountOfRealTargets;
 		int PrintedLaunchPathsIndex;
 		int CntSecondsPassed = 0;
 		int SecondsPerTick = 1;
@@ -958,15 +959,20 @@ namespace VehicleRootingProblem {
 				if (i + 1 < path.size()) {
 					pathDistance += solution.Input.Distance(x, path[i + 1]);
 				}
+
+				if (x > AppFormVars::CountOfRealTargets) {
+					continue;
+				}
 				_itoa_s(x, buffer, 10);
 				path_str += ((std::string)buffer);
 				path_str += " (";
 				
 				std::string visit_time = PrettyTimeStd(static_cast<int>(solution.ArrivalTimes[lineNum][i]));
-				path_str += visit_time + ")";
-				if (i + 1 < path.size()) {
-					path_str += ", ";
-				}
+				path_str += visit_time + "), ";
+			}
+			if (path_str.size() >= 2 && path_str.back() == ' ' && path_str[static_cast<int>(path_str.size()) - 2] == ',') {
+				path_str.pop_back();
+				path_str.pop_back();
 			}
 			this->dataGridViewPaths->Rows[lineNum]->Cells[0]->Value = System::Int32(lineNum + 1);
 			this->dataGridViewPaths->Rows[lineNum]->Cells[1]->Value = System::String(path_str.c_str()).ToString();
@@ -1048,6 +1054,7 @@ namespace VehicleRootingProblem {
 		}
 
 		AppFormVars::CurrentSolution = SolverMain::Run(AppFormVars::DataSets[dataSetInd], mode, AppFormVars::Algos[algoInd].Ealgo, args);
+		AppFormVars::CountOfRealTargets = AppFormVars::CurrentSolution.Input.TargetsCnt;
 
 		if (!AppFormVars::CurrentSolution.SolutionExists) {
 			MessageBox::Show("Не удалось найти решение");
@@ -1145,6 +1152,8 @@ namespace VehicleRootingProblem {
 		AppFormVars::SecondsPerTick = 1;
 		int launchInd = (int)AppFormVars::Launches.size() - 1;
 		AppFormVars::CurrentSolution = AppFormVars::Launches.back().Solution;
+		AppFormVars::CountOfRealTargets = AppFormVars::CurrentSolution.Input.TargetsCnt;
+
 		for (size_t i = 0; i < AppFormVars::CurrentSolution.ArrivalTimes.size(); ++i) {
 			for (size_t j = 0; j < AppFormVars::CurrentSolution.ArrivalTimes[i].size(); ++j) {
 				AppFormVars::CntSecondsPassed = min(AppFormVars::CntSecondsPassed,
