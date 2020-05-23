@@ -294,11 +294,11 @@ bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size
 
 	bool improved = false;
 	for (size_t path_id_1 = 0; path_id_1 < paths.size(); ++path_id_1) {
-		if (paths[path_id_1].empty() || broken_paths.count(path_id_1)) continue;
+		if (paths[path_id_1].empty() || broken_paths.count(static_cast<int>(path_id_1))) continue;
 		auto first_pos_1 = max((size_t)1, FirstPossibleToMoveElement(paths[path_id_1], input, cur_time));
 		double path_1_len = CalcNewLenForGlobalOpt(input, paths[path_id_1]);
 		for (size_t path_id_2 = path_id_1 + 1; path_id_2 < paths.size(); ++path_id_2) {
-			if (paths[path_id_2].empty() || broken_paths.count(path_id_2)) continue;
+			if (paths[path_id_2].empty() || broken_paths.count(static_cast<int>(path_id_2))) continue;
 			auto first_pos_2 = max((size_t)1, FirstPossibleToMoveElement(paths[path_id_2], input, cur_time));
 			double path_2_len = CalcNewLenForGlobalOpt(input, paths[path_id_2]);
 
@@ -365,12 +365,12 @@ bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time, map<int
 
 	bool improved = false;
 	for (size_t path_id_1 = 0; path_id_1 < paths.size(); ++path_id_1) {
-		if (paths[path_id_1].empty() || broken_paths.count(path_id_1)) continue;
+		if (paths[path_id_1].empty() || broken_paths.count(static_cast<int>(path_id_1))) continue;
 		auto first_pos_1 = max((size_t)1, 
 			FirstPossibleToMoveElement(paths[path_id_1], input, cur_time));
 		double path_1_len = CalcNewLenForGlobalOpt(input, paths[path_id_1]);
 		for (size_t path_id_2 = path_id_1 + 1; path_id_2 < paths.size(); ++path_id_2) {
-			if (paths[path_id_2].empty() || broken_paths.count(path_id_2)) continue;
+			if (paths[path_id_2].empty() || broken_paths.count(static_cast<int>(path_id_2))) continue;
 			auto first_pos_2 = max((size_t)1, 
 				FirstPossibleToMoveElement(paths[path_id_2], input, cur_time));
 			double path_2_len = CalcNewLenForGlobalOpt(input, paths[path_id_2]);
@@ -422,7 +422,7 @@ bool MultiOptimization(ProblemSolution& problem_solution, double cur_time, ETarg
 		}
 		flag = false;
 		for (size_t i = 0; i < paths.size(); ++i) {
-			if (problem_solution.BrokenVehicleTimeById.count(i)) {
+			if (problem_solution.BrokenVehicleTimeById.count(static_cast<int>(i))) {
 				continue;
 			}
 			flag |= OptSingleStringExchange(paths[i], input, cur_time);

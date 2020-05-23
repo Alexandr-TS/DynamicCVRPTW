@@ -3,17 +3,19 @@
 #include "SolverGreedy.h"
 #include "Optimizations.h"
 
+using namespace std;
+
 struct Chromosome {
-	std::vector<int> Seq;
+	vector<int> Seq;
 	double Fitness;
 
 	Chromosome() {}
-	Chromosome(std::vector<int>& seq, double fitness)
+	Chromosome(vector<int>& seq, double fitness)
 		: Seq(seq)
 		, Fitness(fitness)
 	{}
 
-	static double CalcFitness(std::vector<int>& seq, InputData& input) {
+	static double CalcFitness(vector<int>& seq, InputData& input) {
 		if (seq.size() != input.TargetsCnt) {
 			return 0;
 		}
@@ -21,28 +23,28 @@ struct Chromosome {
 		int n = static_cast<int>(seq.size());
 
 		double* prefLen = new double[n];
-		std::fill(prefLen, prefLen + n, 0);
+		fill(prefLen, prefLen + n, 0);
 
 		for (int i = 1; i < n; i++) {
 			prefLen[i] = prefLen[i - 1] + input.Distance(seq[i - 1], seq[i]);
 		}
 
 		double* dp = new double[n];
-		std::fill(dp, dp + n, INF);
+		fill(dp, dp + n, INF);
 
 		dp[0] = 0;
 		for (int v = 0; v + 1 < n; ++v) {
 			if (dp[v] == INF) continue;
 			double len = 0;
-			double cur_time = std::max(input.Distance(0, seq[v + 1]), input.TimeWindows[seq[v + 1]].first);
+			double cur_time = max(input.Distance(0, seq[v + 1]), input.TimeWindows[seq[v + 1]].first);
 			for (int u = v + 1; u < n && len <= input.MaxDist + EPS; ++u) {
 				// relaxing using edge (v, u)
 				len = prefLen[u] - prefLen[v + 1] + input.Distance(0, seq[v + 1]) + input.Distance(seq[u], 0);
 				if (u > v + 1) {
-					cur_time = std::max(input.TimeWindows[seq[u]].first, cur_time + prefLen[u] - prefLen[u - 1]);
+					cur_time = max(input.TimeWindows[seq[u]].first, cur_time + prefLen[u] - prefLen[u - 1]);
 				}
 				if (input.TimeWindows[seq[u]].second >= cur_time && len <= input.MaxDist + EPS) {
-					dp[u] = std::min(dp[u], dp[v] + len);
+					dp[u] = min(dp[u], dp[v] + len);
 				}
 				else {
 					break;
@@ -57,7 +59,7 @@ struct Chromosome {
 		return answer;
 	}
 
-	Chromosome(std::vector<int>& seq, InputData& input) : Seq(seq) {
+	Chromosome(vector<int>& seq, InputData& input) : Seq(seq) {
 		Fitness = CalcFitness(seq, input);
 	}
 
@@ -90,24 +92,24 @@ struct Chromosome {
 	}
 
 	bool IsValid() {
-		return *std::max_element(Seq.begin(), Seq.end()) == Seq.size() && Fitness > 0;
+		return *max_element(Seq.begin(), Seq.end()) == Seq.size() && Fitness > 0;
 	}
 };
 
-std::mt19937 tmpGen = std::mt19937(1);
+mt19937 tmpGen = mt19937(1);
 
 Chromosome GenRandomChromosome(int n, InputData& input) {
-	std::vector<int> seq(n);
+	vector<int> seq(n);
 	for (int i = 1; i <= n; i++) {
 		seq[i - 1] = i;
 	}
-	std::shuffle(seq.begin(), seq.end(), tmpGen);
+	shuffle(seq.begin(), seq.end(), tmpGen);
 	return Chromosome(seq, input);
 }
 
 struct Population {
-	std::vector<Chromosome> Chromosomes;
-	std::map<int, int> FitByDelta;
+	vector<Chromosome> Chromosomes;
+	map<int, int> FitByDelta;
 	double Delta;
 
 	Population(double delta) : Delta(delta) {
@@ -129,7 +131,7 @@ struct Population {
 		Chromosomes.push_back(x);
 		for (int i = (int)Chromosomes.size() - 1; i >= 1; i--) {
 			if (Chromosomes[i].Fitness < Chromosomes[i - 1].Fitness) {
-				std::swap(Chromosomes[i], Chromosomes[i - 1]);
+				swap(Chromosomes[i], Chromosomes[i - 1]);
 			}
 		}
 		return true;
@@ -179,13 +181,13 @@ const int N = 201;
 bool used[N];
 double prefLen[N];
 double dp[N];
-int prev[N];
+int prev_dp[N];
 
 Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input) {
 	auto par1 = &parent1;
 	auto par2 = &parent2;
 	if (Math::GenInt(0, 1)) {
-		std::swap(par1, par2);
+		swap(par1, par2);
 	}
 	int n = static_cast<int>(par1->Seq.size());
 	int tl = Math::GenInt(0, n - 1);
@@ -199,11 +201,11 @@ Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input)
 	}
 
 	if (tr < tl) {
-		std::swap(tr, tl);
+		swap(tr, tl);
 	}
 	
-	std::fill(used, used + n + 1, false);
-	std::vector<int> child(n, 0);
+	fill(used, used + n + 1, false);
+	vector<int> child(n, 0);
 
 	for (int i = tl; i <= tr; ++i) {
 		child[i] = par1->Seq[i];
@@ -229,20 +231,20 @@ Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input)
 	return Chromosome(child, input);
 }
 
-MatrixInt SplitPaths(std::vector<int> path, InputData& input) {
+MatrixInt SplitPaths(vector<int> path, InputData& input) {
 	if (path.empty()) {
 		return {};
 	}
 	path.insert(path.begin(), { 0 });
 	int n = static_cast<int>(path.size());
 
-	std::fill(prefLen, prefLen + n, 0);
+	fill(prefLen, prefLen + n, 0);
 	for (int i = 1; i < n; i++) {
 		prefLen[i] = prefLen[i - 1] + input.Distance(path[i - 1], path[i]);
 	}
 
-	std::fill(dp, dp + n, INF);
-	std::fill(prev, prev + n, -1);
+	fill(dp, dp + n, INF);
+	fill(prev_dp, prev_dp + n, -1);
 	dp[0] = 0;
 	
 	for (int v = 0; v + 1 < n; ++v) {
@@ -250,17 +252,17 @@ MatrixInt SplitPaths(std::vector<int> path, InputData& input) {
 			continue;
 		}
 		double len = 0;
-		double cur_time = std::max(input.Distance(0, path[v + 1]), input.TimeWindows[path[v + 1]].first);
+		double cur_time = max(input.Distance(0, path[v + 1]), input.TimeWindows[path[v + 1]].first);
 		for (int u = v + 1; u < n && len <= input.MaxDist + EPS; ++u) {
 			// relaxing using edge (v, u)
 			len = prefLen[u] - prefLen[v + 1] + input.Distance(0, path[v + 1]) + input.Distance(path[u], 0);
 			if (u > v + 1) {
-				cur_time = std::max(input.TimeWindows[path[u]].first, cur_time + prefLen[u] - prefLen[u - 1]);
+				cur_time = max(input.TimeWindows[path[u]].first, cur_time + prefLen[u] - prefLen[u - 1]);
 			}
 			if (input.TimeWindows[path[u]].second >= cur_time && len <= input.MaxDist + EPS) {
 				if (dp[u] > dp[v] + len) {
 					dp[u] = dp[v] + len;
-					prev[u] = v;
+					prev_dp[u] = v;
 				}
 			}
 			else {
@@ -269,14 +271,14 @@ MatrixInt SplitPaths(std::vector<int> path, InputData& input) {
 		}
 	}
 
-	std::vector<std::vector<int>> paths;
+	vector<vector<int>> paths;
 	// min() to fix warning
-	for (size_t i = n - 1; i != 0; i = prev[std::min((size_t)N - 1, i)]) {
+	for (size_t i = n - 1; i != 0; i = prev_dp[min((size_t)N - 1, i)]) {
 		paths.push_back({});
-		for (int j = (int)i; j > std::max(-1, prev[i]); --j) {
+		for (int j = (int)i; j > max(-1, prev_dp[i]); --j) {
 			paths.back().push_back(path[j]);
 		}
-		std::reverse(paths.back().begin(), paths.back().end());
+		reverse(paths.back().begin(), paths.back().end());
 	}
 
 	return paths;
@@ -321,11 +323,11 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 	}
 
 	// Fill args for ACO
-	std::vector<std::vector<double>> argss = {
+	vector<vector<double>> argss = {
 		//{ 3, 4, 0.4, 2, 3, 2, 5, 0.5, 0 },
 	};
 	// Ant Colony Algo
-	for (std::vector<double> args: argss) {
+	for (vector<double> args: argss) {
 		if (population.Size() == static_cast<size_t>(populationSize)) {
 			break;
 		}
@@ -354,10 +356,10 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 
 		leftTries--;
 		if (leftTries <= 0) {
-			std::cout << "GA. Error: No tries left in init population. Number of done chromosomes: " << 
-				population.Size() << std::endl;
+			cout << "GA. Error: No tries left in init population. Number of done chromosomes: " << 
+				population.Size() << endl;
 			if (input.TargetsCnt < 10) {
-				std::cout << "GA. It's fine for small inputs" << std::endl;
+				cout << "GA. It's fine for small inputs" << endl;
 			}
 			break;
 		}
@@ -367,7 +369,7 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 		assert(x.Fitness < INF - EPS);
 	}
 
-	std::cout << "GA. Population initialized" << std::endl;
+	cout << "GA. Population initialized" << endl;
 	return population;
 }
 
@@ -392,7 +394,7 @@ int GenIndexForReplace(int n) {
 
 // Args are: {n, alpha, betta, delta, p, timeLimit}
 // Suggested args: {30, 3000, 1000, 0.5, 0.05, 0}
-ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
+ProblemSolution SolverGenetic::Run(InputData input, vector<double>args) {
 	for (int i = 1; i <= input.TargetsCnt; ++i) {
 		if (input.Distance(0, i) * 2 > input.MaxDist - EPS || 
 			input.TimeWindows[i].second < input.Distance(0, i)) {
@@ -433,7 +435,7 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 			parent2ind = GenGoodIndex(n);
 		}
 		if (parent2ind < parent1ind) {
-			std::swap(parent1ind, parent2ind);
+			swap(parent1ind, parent2ind);
 		}
 
 		auto child = Crossover(population.Chromosomes[parent1ind], population.Chromosomes[parent2ind], input);
@@ -452,14 +454,14 @@ ProblemSolution SolverGenetic::Run(InputData input, std::vector<double>args) {
 		nonImproveIters++;
 
 		if (productiveIters % 100 == 0) {
-			std::cout << "GA. Number of productive iterations: " << productiveIters << 
-				". Number of iterations without improving best solution: " << nonImproveIters << std::endl;
+			cout << "GA. Number of productive iterations: " << productiveIters << 
+				". Number of iterations without improving best solution: " << nonImproveIters << endl;
 		}
 
 		if (population.IsAddible(mutatedChild)) {
 			if (mutatedChild.Fitness < population.Chromosomes[0].Fitness) {
 				nonImproveIters = 0;
-				std::cout << "GA. New best solution found: " << mutatedChild.Fitness << std::endl;
+				cout << "GA. New best solution found: " << mutatedChild.Fitness << endl;
 			}
 			productiveIters++;
 

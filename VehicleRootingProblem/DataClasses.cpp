@@ -1,13 +1,17 @@
 #include "DataClasses.h"
 
-InputData::InputData() {
-	DronsCnt = TargetsCnt = 0;
-	MaxDist = 0;
-	UnloadingTime = 0;
+using namespace std;
+
+InputData::InputData() 
+	: DronsCnt(0)
+	, TargetsCnt(0)
+	, MaxDist(0)
+	, UnloadingTime(0)
+{
 }
 
 InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
-	std::vector<std::pair<double, double> > points, std::vector<std::pair<double, double>> timeWindows)
+	vector<pair<double, double> > points, vector<pair<double, double>> timeWindows)
 	: DronsCnt(dronsCnt)
 	, TargetsCnt(targetsCnt)
 	, MaxDist(maxDist)
@@ -24,9 +28,9 @@ InputData::InputData(int dronsCnt, int targetsCnt, double maxDist,
 	}
 }
 
-InputData::InputData(std::string inputFileName) {
+InputData::InputData(string inputFileName) {
 	FileName = inputFileName;
-	std::ifstream fin(inputFileName.c_str(), std::ios::in);
+	ifstream fin(inputFileName.c_str(), ios::in);
 	try {
 		fin >> DronsCnt >> TargetsCnt;
 		fin >> MaxDist;
@@ -62,12 +66,8 @@ InputData::InputData(std::string inputFileName) {
 	fin.close();
 }
 
-InputData::~InputData() {
-}
-
 inline double InputData::Distance(const int i, const int j) {
 	return Distances[i][j];
-	//return hypot(Points[i].first - Points[j].first, Points[i].second - Points[j].second);
 }
 
 ProblemSolution::ProblemSolution() {
@@ -82,7 +82,7 @@ ProblemSolution::ProblemSolution() {
 // paths: {{1, 2, 3}, {6, 5, 4, 7}}. without 0. 0 is depot
 
 ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, 
-	EProblemSolutionCtorType type, std::map<int, double> broken_vehicle_time_by_id)
+	EProblemSolutionCtorType type, map<int, double> broken_vehicle_time_by_id)
 	: Input(input)
 	, BrokenVehicleTimeById(broken_vehicle_time_by_id)
 {
@@ -99,7 +99,7 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths,
 	// Check that solution is valid
 	SolutionExists = true;
 
-	std::vector<int> used(input.TargetsCnt, 0);
+	vector<int> used(input.TargetsCnt, 0);
 
 	for (int pathInd = 0; pathInd < (int)Paths.size(); ++pathInd) {
 		ArrivalTimes.push_back({});
@@ -116,19 +116,19 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths,
 			auto index = path[i];
 			assert(index > 0 && index <= input.TargetsCnt);
 			double this_dist = input.Distance(lastIndex, index);
-			cur_time = std::max(cur_time + this_dist, input.TimeWindows[index].first);
+			cur_time = max(cur_time + this_dist, input.TimeWindows[index].first);
 			ArrivalTimes.back().push_back(cur_time);
 			if (cur_time > input.TimeWindows[index].second + EPS) {
 				SolutionExists = false;
-				std::cout << "ProblemSolution constructor. Solution is not valid because " <<
-					"of time windows" << std::endl;
+				cout << "ProblemSolution constructor. Solution is not valid because " <<
+					"of time windows" << endl;
 			}
 			currentLength += this_dist;
 			lastIndex = index;
 			used[index - 1]++;
 		}
 
-		MaxPathLength = std::max(MaxPathLength, currentLength);
+		MaxPathLength = max(MaxPathLength, currentLength);
 		SumOfPathLengths += currentLength;
 	}
 
@@ -136,54 +136,54 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths,
 		for (size_t i = 0; i < used.size(); i++) {
 			if (used[i] != 1) {
 				SolutionExists = false;
-				std::cout << "ProblemSolution constructor. Solution is not valid because not " <<
-					"all the vertices were visited" << std::endl;
+				cout << "ProblemSolution constructor. Solution is not valid because not " <<
+					"all the vertices were visited" << endl;
 			}
 		}
 	}
 
 	if (MaxPathLength - EPS > input.MaxDist) { 
 		SolutionExists = false;
-		std::cout << "ProblemSolution constructor. Solution is not valid because one of the " << 
-			"paths is longer than MaxDist" << std::endl;
+		cout << "ProblemSolution constructor. Solution is not valid because one of the " << 
+			"paths is longer than MaxDist" << endl;
 	}
 	if (static_cast<int>(Paths.size()) > input.DronsCnt) {
 		SolutionExists = false;
-		std::cout << "ProblemSolution constructor. Solution is not valid because there are " << 
-			"more paths than vehicles" << std::endl;
+		cout << "ProblemSolution constructor. Solution is not valid because there are " << 
+			"more paths than vehicles" << endl;
 	}
 }
 
 
-void ProblemSolution::PrintIntoFile(std::string outputFileName) {
-	std::ofstream fout(outputFileName.c_str(), std::ios::out);
+void ProblemSolution::PrintIntoFile(string outputFileName) {
+	ofstream fout(outputFileName.c_str(), ios::out);
 
 	if (!SolutionExists) {
-		fout << "Solution not found" << std::endl;
+		fout << "Solution not found" << endl;
 		fout.close();
 		return;
 	}
 
 	fout << "Number of drons: " << Input.DronsCnt << ", Number of targets: " << 
-		Input.TargetsCnt << std::endl;
-	fout << "Max distance of drone: " << Input.MaxDist << std::endl;	
-	fout << std::endl;
-	fout << "Max Path Length: " << MaxPathLength << std::endl;
-	fout << "Sum of lengths: " << SumOfPathLengths << std::endl;
-	fout << "Paths: " << std::endl;
+		Input.TargetsCnt << endl;
+	fout << "Max distance of drone: " << Input.MaxDist << endl;	
+	fout << endl;
+	fout << "Max Path Length: " << MaxPathLength << endl;
+	fout << "Sum of lengths: " << SumOfPathLengths << endl;
+	fout << "Paths: " << endl;
 	for (const auto& path: Paths) {
 		for (const auto& nums : path) {
 			fout << nums << " ";
 		}
-		fout << std::endl;
+		fout << endl;
 	}
-	fout << std::endl;
-	fout << "Arrival times: " << std::endl;
+	fout << endl;
+	fout << "Arrival times: " << endl;
 	for (const auto& path: ArrivalTimes) {
 		for (const auto& nums : path) {
 			fout << nums << " ";
 		}
-		fout << std::endl;
+		fout << endl;
 	}
 	fout.close();
 }

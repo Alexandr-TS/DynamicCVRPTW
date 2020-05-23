@@ -2,15 +2,15 @@
 
 using namespace std;
 
-static std::mt19937 randGen;
+static mt19937 randGen;
 
 int Math::GenInt(int l, int r) {
-	std::uniform_int_distribution<int> uid(l, r);
+	uniform_int_distribution<int> uid(l, r);
 	return uid(randGen);
 }
 
 double Math::GenDouble(double l, double r) {
-	std::uniform_real_distribution<double> urd(l, r);
+	uniform_real_distribution<double> urd(l, r);
 	return urd(randGen);
 }
 
@@ -65,4 +65,5 @@ pair<double, double> GetVehicleCoords(ProblemSolution& problem_solution, int pat
 		}
 	}
 	assert(false);
+	return { 0, 0 };
 }

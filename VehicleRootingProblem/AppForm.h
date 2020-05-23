@@ -993,11 +993,6 @@ namespace VehicleRootingProblem {
 			"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
 			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)col));
 		}
-		/*
-		for (auto param : AppFormVars::Algos[AppFormVars::Launches[launchInd].AlgoIndex].Params) {
-			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)param.Name));
-		}
-		*/
 
 		this->dataGridViewSelectedRes->Rows->Add();
 		this->dataGridViewSelectedRes->Rows[0]->Cells[0]->Value = 
@@ -1012,13 +1007,6 @@ namespace VehicleRootingProblem {
 			ToText(AppFormVars::Launches[launchInd].Solution.SumOfPathLengths);
 		this->dataGridViewSelectedRes->Rows[0]->Cells[5]->Value = 
 			ToText(AppFormVars::Launches[launchInd].Solution.MaxPathLength);
-		
-		/*
-		int curCol = 6;
-		for (auto& param : AppFormVars::Launches[launchInd].ParamsVals) {
-			this->dataGridViewSelectedRes->Rows[0]->Cells[curCol++]->Value = ToText(param);
-		}
-		*/
 		
 		for (int i = 0; i < this->dataGridViewSelectedRes->Columns->Count; i++) {
 			this->dataGridViewSelectedRes->Columns[i]->AutoSizeMode = DataGridViewAutoSizeColumnMode::DisplayedCells;
@@ -1369,7 +1357,8 @@ namespace VehicleRootingProblem {
 		std::string vehicle_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownVehicleId->Text);
 		bool found_number = false;
 		for (int i = 0; i < this->dataGridViewPaths->Rows->Count; ++i) {
-			std::string cur_number = msclr::interop::marshal_as<std::string>(this->dataGridViewPaths->Rows[i]->Cells[0]->Value->ToString());
+			std::string cur_number = msclr::interop::marshal_as<std::string>(
+				this->dataGridViewPaths->Rows[i]->Cells[0]->Value->ToString());
 			if (vehicle_id_str == cur_number) {
 				found_number = true;
 				break;

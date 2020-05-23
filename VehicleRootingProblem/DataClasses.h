@@ -18,11 +18,11 @@
 #include <tuple>
 #include <vector>
 
-const double INF = 2000'000'000.0;
-const double EPS = 1e-8;
+typedef std::vector<std::vector<double>> MatrixDouble;
+typedef std::vector<std::vector<int>> MatrixInt;
 
-typedef std::vector<std::vector<double> > MatrixDouble;
-typedef std::vector<std::vector<int> > MatrixInt;
+const double EPS = 1e-8;
+const double INF = static_cast<double>(2e9);
 
 enum class EProblemSolutionCtorType { 
 	CHECK_PRESENCE, 
@@ -34,7 +34,6 @@ enum class ETargetPathsChange {
 	DISABLE
 };
 
-
 class ChangeVisitedVertexException : public std::exception {};
 class NoValidSolutionException : public std::exception {};
 class NoSuchTargetException : public std::exception {};
@@ -42,16 +41,11 @@ class NoSuchTargetException : public std::exception {};
 class InputData {
 public:
 	InputData();
-	InputData(const InputData&) = default;
-	InputData(InputData&&) = default;
 
-	InputData& operator = (const InputData&) = default;
-	InputData& operator = (InputData&&) = default;
 	InputData(int dronsCnt, int targetsCnt, double maxDist, 
 		std::vector<std::pair<double, double>> points, 
 		std::vector<std::pair<double, double>> timeWindows);
 	InputData(std::string inputFileName);
-	~InputData();
 public:
 	double Distance(int i, int j);
 

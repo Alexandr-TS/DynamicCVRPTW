@@ -7,7 +7,7 @@ using namespace std;
 // Suggested args: { 3, 4, 0.4, 2, 3, 2, 5, 0.5, 0 },
 // Iterations coef - is a coefficent which will be multiplied by number of targets
 // candList coef sets fraction of viewed neares vertices
-ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) {
+ProblemSolution SolverAntColony::Run(InputData input, vector<double> args) {
 	double startClock = clock();
 
 	double timeLimit = args[8];
@@ -25,7 +25,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 		iterations = INF;
 	}
 	// Number of elitist ants
-	int sigma = std::min((int)args[6], input.TargetsCnt);
+	int sigma = min((int)args[6], input.TargetsCnt);
 	// Coefficient for candidate list. ListSize = n * candListCoef
 	double candListCoef = args[7];
 
@@ -112,7 +112,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 	for (int iteration = 0; iteration < iterations; ++iteration) {
 		if (input.TargetsCnt < iterations && 
 			(iteration == iterations / 3 || iteration == iterations / 3 * 2)) {
-			std::cout << "ACO. Shuffle pheromones" << endl;
+			cout << "ACO. Shuffle pheromones" << endl;
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
 					tau[i][j] = Math::GenDouble(0.1, 1);
@@ -121,7 +121,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 		}
 
 		if (timeLimit > EPS && clock() - startClock > CLOCKS_PER_SEC * timeLimit) {
-			std::cout << "ACO. Time limit finished. break" << endl;
+			cout << "ACO. Time limit finished. break" << endl;
 			break;
 		}
 
@@ -142,7 +142,7 @@ ProblemSolution SolverAntColony::Run(InputData input, std::vector<double> args) 
 			visited[0] = true;
 			double curPathLen = dist[0][antIndex];
 			paths[antIndex] = { {0, antIndex} };
-			double cur_time = std::max(dist[0][antIndex], input.TimeWindows[antIndex].first);
+			double cur_time = max(dist[0][antIndex], input.TimeWindows[antIndex].first);
 			int cntVisitedTargets = 1;
 			int lastVisited = 0;
 			while (cntVisitedTargets < n - 1) {
