@@ -139,8 +139,15 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 				graphics->DrawString(text, drawFont, drawBrush, x, y, drawFormat);
 			}
 		}
-		pen = (gcnew Pen(Color::FromArgb(0, 0, 0), 3));
 
+		pen = (gcnew Pen(Color::FromArgb(255, 0, 0), 3));
+		for (auto [vehicle_id, break_time] : solution.BrokenVehicleTimeById) {
+			auto cur_pt = GetVehicleCoords(solution, vehicle_id, break_time);
+			TranslatePoint(cur_pt, minX, sz2, sz1, minY, newMaxY, newMinY);
+			graphics->DrawEllipse(pen, Rectangle(static_cast<int>(cur_pt.first) - 2, static_cast<int>(cur_pt.second) - 2, 4, 4));
+		}
+
+		pen = (gcnew Pen(Color::FromArgb(0, 0, 0), 3));
 		graphics->DrawEllipse(pen, Rectangle((int)points[0].first - 2, (int)points[0].second - 2, 4, 4));
 	}
 }

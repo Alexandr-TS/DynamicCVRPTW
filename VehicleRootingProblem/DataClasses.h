@@ -86,5 +86,6 @@ public:
 	double MaxPathLength;
 	double SumOfPathLengths;
 	bool SolutionExists;
-	std::map<int, std::pair<double, double>> BrokenVehiclesCoords;
+	// Numeration from 0 - not like in the UI
+	std::map<int, double> BrokenVehicleTimeById;
 };

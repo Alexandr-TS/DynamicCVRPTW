@@ -50,7 +50,7 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution,
 		auto new_solution = solution;
 		new_solution.Input.TimeWindows[path[i]] = { new_start, new_end };
 
-		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time, target_paths_change);
+		MultiOptimization(new_solution, cur_time, target_paths_change);
 
 		new_solution = ProblemSolution(new_solution.Input, 
 			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
@@ -111,7 +111,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		}
 		*/
 
-		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time, target_paths_change);
+		MultiOptimization(new_solution, cur_time, target_paths_change);
 
 		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
 			EProblemSolutionCtorType::SKIP_PRESENCE);
@@ -133,7 +133,7 @@ bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double c
 		new_solution.Input.Distances[el.first_vertex][el.second_vertex] = el.new_distance;
 	}
 
-	MultiOptimization(new_solution.Paths, new_solution.Input, cur_time, target_paths_change);
+	MultiOptimization(new_solution, cur_time, target_paths_change);
 
 	new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
 		EProblemSolutionCtorType::SKIP_PRESENCE);
@@ -169,7 +169,9 @@ bool EventsHandler::UpdateOnVehicleBreakdown(ProblemSolution& solution, int vehi
 		new_solution.Input.Points.push_back(new_solution.Input.Points[0]);
 		new_solution.Input.TimeWindows.push_back({ cur_time, cur_time + EPS });
 		new_solution.Paths.push_back(not_visited_vertices);
-		for (size_t i = 0; i + 1 < not_visited_vertices.size(); ++i) {
+
+		// Leave first unvisited vertex in the broken path
+		for (size_t i = 0; i + 2 < not_visited_vertices.size(); ++i) {
 			new_solution.Paths[vehicle_id].pop_back();
 		}
 
@@ -178,9 +180,9 @@ bool EventsHandler::UpdateOnVehicleBreakdown(ProblemSolution& solution, int vehi
 			new_solution.Input.Distances[i].push_back(new_solution.Input.Distances[i][0]);
 		}
 
-		//new_solution.BrokenVehiclesCoords[vehicle_id] = broken_coords;
+		new_solution.BrokenVehicleTimeById[vehicle_id] = cur_time;
 
-		MultiOptimization(new_solution.Paths, new_solution.Input, cur_time, target_paths_change);
+		MultiOptimization(new_solution, cur_time, target_paths_change);
 
 		new_solution = ProblemSolution(new_solution.Input,
 			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);

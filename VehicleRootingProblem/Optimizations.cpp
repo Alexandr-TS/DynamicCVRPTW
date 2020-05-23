@@ -219,6 +219,7 @@ bool LocalSwapOptimization(vector<int>& path, InputData& input) {
 }
 
 bool OptSingleStringExchange(vector<int>& path, InputData& input, double cur_time) {
+	if (path.empty()) return false;
 	auto zeros_info = PreparePathWithZeros(path);
 	auto first_possible_to_move = FirstPossibleToMoveElement(path, input, cur_time);
 	bool improved = false;
@@ -243,6 +244,7 @@ bool OptSingleStringExchange(vector<int>& path, InputData& input, double cur_tim
 }
 
 bool OptSingleStringRelocation(vector<int>& path, InputData& input, double cur_time) {
+	if (path.empty()) return false;
 	auto zeros_info = PreparePathWithZeros(path);
 
 	auto first_possible_to_move = FirstPossibleToMoveElement(path, input, cur_time);
@@ -282,17 +284,21 @@ bool OptSingleStringRelocation(vector<int>& path, InputData& input, double cur_t
 	return improved;
 }
 
-bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size_t max_segment_length) {
+bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size_t max_segment_length, map<int, double> broken_paths) {
 	pair<bool, bool> zeros_info;
 	for (auto& path : paths) {
-		zeros_info = PreparePathWithZeros(path);
+		if (!path.empty()) {
+			zeros_info = PreparePathWithZeros(path);
+		}
 	}
 
 	bool improved = false;
 	for (size_t path_id_1 = 0; path_id_1 < paths.size(); ++path_id_1) {
+		if (paths[path_id_1].empty() || broken_paths.count(path_id_1)) continue;
 		auto first_pos_1 = max((size_t)1, FirstPossibleToMoveElement(paths[path_id_1], input, cur_time));
 		double path_1_len = CalcNewLenForGlobalOpt(input, paths[path_id_1]);
 		for (size_t path_id_2 = path_id_1 + 1; path_id_2 < paths.size(); ++path_id_2) {
+			if (paths[path_id_2].empty() || broken_paths.count(path_id_2)) continue;
 			auto first_pos_2 = max((size_t)1, FirstPossibleToMoveElement(paths[path_id_2], input, cur_time));
 			double path_2_len = CalcNewLenForGlobalOpt(input, paths[path_id_2]);
 
@@ -342,23 +348,29 @@ bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size
 	}
 
 	for (auto& path : paths) {
-		UndoPreparePathWithZeroz(path, zeros_info);
+		if (!path.empty()) {
+			UndoPreparePathWithZeroz(path, zeros_info);
+		}
 	}
 	return improved;
 }
 
-bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time) {
+bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time, map<int, double> broken_paths) {
 	pair<bool, bool> zeros_info;
 	for (auto& path : paths) {
-		zeros_info = PreparePathWithZeros(path);
+		if (!path.empty()) {
+			zeros_info = PreparePathWithZeros(path);
+		}
 	}
 
 	bool improved = false;
 	for (size_t path_id_1 = 0; path_id_1 < paths.size(); ++path_id_1) {
+		if (paths[path_id_1].empty() || broken_paths.count(path_id_1)) continue;
 		auto first_pos_1 = max((size_t)1, 
 			FirstPossibleToMoveElement(paths[path_id_1], input, cur_time));
 		double path_1_len = CalcNewLenForGlobalOpt(input, paths[path_id_1]);
 		for (size_t path_id_2 = path_id_1 + 1; path_id_2 < paths.size(); ++path_id_2) {
+			if (paths[path_id_2].empty() || broken_paths.count(path_id_2)) continue;
 			auto first_pos_2 = max((size_t)1, 
 				FirstPossibleToMoveElement(paths[path_id_2], input, cur_time));
 			double path_2_len = CalcNewLenForGlobalOpt(input, paths[path_id_2]);
@@ -389,12 +401,18 @@ bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time) {
 	}
 
 	for (auto& path : paths) {
-		UndoPreparePathWithZeroz(path, zeros_info);
+		if (!path.empty()) {
+			UndoPreparePathWithZeroz(path, zeros_info);
+		}
 	}
 	return improved;
 }
 
-bool MultiOptimization(MatrixInt& paths, InputData& input, double cur_time, ETargetPathsChange target_paths_change) {
+
+bool MultiOptimization(ProblemSolution& problem_solution, double cur_time, ETargetPathsChange target_paths_change) {
+	auto& paths = problem_solution.Paths;
+	auto& input = problem_solution.Input;
+
 	bool improved = false;
 	bool flag = true;
 	double start_time = clock();
@@ -403,15 +421,19 @@ bool MultiOptimization(MatrixInt& paths, InputData& input, double cur_time, ETar
 			break;
 		}
 		flag = false;
-		for (auto& path : paths) {
-			flag |= OptSingleStringExchange(path, input, cur_time);
-			flag |= OptSingleStringRelocation(path, input, cur_time);
+		for (size_t i = 0; i < paths.size(); ++i) {
+			if (problem_solution.BrokenVehicleTimeById.count(i)) {
+				continue;
+			}
+			flag |= OptSingleStringExchange(paths[i], input, cur_time);
+			flag |= OptSingleStringRelocation(paths[i], input, cur_time);
 		}
 		if (target_paths_change == ETargetPathsChange::ENABLE) {
-			flag |= OptStringCross(paths, input, cur_time);
-			flag |= OptStringExchange(paths, input, cur_time, 5);
+			flag |= OptStringCross(paths, input, cur_time, problem_solution.BrokenVehicleTimeById);
+			flag |= OptStringExchange(paths, input, cur_time, 5, problem_solution.BrokenVehicleTimeById);
 		}
 		improved |= flag;
 	}
 	return improved;
+
 }
