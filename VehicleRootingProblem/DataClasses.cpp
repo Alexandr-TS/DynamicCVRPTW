@@ -80,8 +80,11 @@ ProblemSolution::ProblemSolution() {
 }
 
 // paths: {{1, 2, 3}, {6, 5, 4, 7}}. without 0. 0 is depot
-ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, EProblemSolutionCtorType type)
+
+ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths, 
+	EProblemSolutionCtorType type, std::map<int, double> broken_vehicle_time_by_id)
 	: Input(input)
+	, BrokenVehicleTimeById(broken_vehicle_time_by_id)
 {
 	Paths = {};
 	for (auto path : paths) {

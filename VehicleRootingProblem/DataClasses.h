@@ -72,7 +72,8 @@ class ProblemSolution {
 public:
 	ProblemSolution();
 	ProblemSolution(InputData& input, MatrixInt paths, 
-		EProblemSolutionCtorType type = EProblemSolutionCtorType::CHECK_PRESENCE);
+		EProblemSolutionCtorType type = EProblemSolutionCtorType::CHECK_PRESENCE, 
+		std::map<int, double> broken_vehicle_time_by_id = {});
 
 public:
 	void PrintIntoFile(std::string outputFileName);

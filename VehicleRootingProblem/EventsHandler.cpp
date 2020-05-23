@@ -53,7 +53,7 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution,
 		MultiOptimization(new_solution, cur_time, target_paths_change);
 
 		new_solution = ProblemSolution(new_solution.Input, 
-			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
+			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;
 			return true;
@@ -114,7 +114,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		MultiOptimization(new_solution, cur_time, target_paths_change);
 
 		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
-			EProblemSolutionCtorType::SKIP_PRESENCE);
+			EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;
 			return true;
@@ -136,7 +136,7 @@ bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double c
 	MultiOptimization(new_solution, cur_time, target_paths_change);
 
 	new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
-		EProblemSolutionCtorType::SKIP_PRESENCE);
+		EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
 	if (new_solution.SolutionExists) {
 		solution = new_solution;
 		return true;
@@ -185,7 +185,7 @@ bool EventsHandler::UpdateOnVehicleBreakdown(ProblemSolution& solution, int vehi
 		MultiOptimization(new_solution, cur_time, target_paths_change);
 
 		new_solution = ProblemSolution(new_solution.Input,
-			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE);
+			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
 		if (new_solution.SolutionExists) {
 			solution = new_solution;
 			return true;

@@ -66,9 +66,20 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 		auto pen = (gcnew Pen(Color::FromArgb(120, 10, 10, 255), 1));
 
 		if (!update_only_progress) {
-			for (int i = 0; i + 1 < (int)path.size(); ++i) {
+			int last_i = (int)path.size() - 2;
+			if (solution.BrokenVehicleTimeById.count(path_idx)) {
+				last_i -= 2;
+			}
+			for (int i = 0; i <= last_i; ++i) {
 				graphics->DrawLine(pen, (int)points[path[i]].first, (int)points[path[i]].second,
 					(int)points[path[i + 1]].first, (int)points[path[i + 1]].second);
+			}
+			if (solution.BrokenVehicleTimeById.count(path_idx)) {
+				auto cur_pt = GetVehicleCoords(solution, path_idx, solution.BrokenVehicleTimeById[path_idx]);
+				TranslatePoint(cur_pt, minX, sz2, sz1, minY, newMaxY, newMinY);
+				int last_visited_id = static_cast<int>(path.size()) - 3;
+				graphics->DrawLine(pen, (int)points[path[last_visited_id]].first, (int)points[path[last_visited_id]].second,
+					static_cast<int>(cur_pt.first), static_cast<int>(cur_pt.second));
 			}
 		}
 
@@ -103,13 +114,17 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 		pen = (gcnew Pen(Color::FromArgb(180, 10, 10, 255), 2));
 		auto arrival_times = solution.ArrivalTimes[path_idx];
 		arrival_times.push_back(arrival_times.back() + solution.Input.Distance(path[path.size() - 2], 0));
+		double real_time = cur_time;
+		if (solution.BrokenVehicleTimeById.count(path_idx)) {
+			real_time = solution.BrokenVehicleTimeById[path_idx];
+		}
 		for (size_t i = 1; i < path.size(); ++i) {
-			if (arrival_times[i - 1] <= cur_time) {
+			if (arrival_times[i - 1] <= real_time) {
 				graphics->DrawLine(pen, (int)points[path[i - 1]].first, (int)points[path[i - 1]].second,
 					(int)points[path[i]].first, (int)points[path[i]].second);
 			}
 			else {
-				auto cur_pt = GetVehicleCoords(solution, path_idx, cur_time);
+				auto cur_pt = GetVehicleCoords(solution, path_idx, real_time);
 				TranslatePoint(cur_pt, minX, sz2, sz1, minY, newMaxY, newMinY);
 				graphics->DrawLine(pen, (int)points[path[i - 1]].first, (int)points[path[i - 1]].second,
 					static_cast<int>(cur_pt.first), static_cast<int>(cur_pt.second));
@@ -126,6 +141,10 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 		for (auto& path : solution.Paths) {
 			for (size_t i = 0; i < path.size(); ++i) {
 				auto pt = points[path[i]];
+				// dummy copies of depot
+				if (abs(pt.first - points[0].first) < EPS && abs(pt.second - points[0].second) < EPS) {
+					continue;
+				}
 				graphics->DrawEllipse(pen, Rectangle((int)pt.first - 2, (int)pt.second - 2, 4, 4));
 
 				std::string text_str = std::to_string(path[i]);

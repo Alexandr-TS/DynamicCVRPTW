@@ -1371,6 +1371,10 @@ namespace VehicleRootingProblem {
 			return;
 		}
 		int row_id = atoi(vehicle_id_str.c_str()) - 1;
+		if (AppFormVars::CurrentSolution.BrokenVehicleTimeById.count(row_id)) {
+			MessageBox::Show("Данное ТС вышло из строя ранее");
+			return;
+		}
 		try {
 			EventsHandler::UpdateOnVehicleBreakdown(AppFormVars::CurrentSolution, row_id, 
 				AppFormVars::CntSecondsPassed / 60, AppFormVars::TargetPathsChange);
