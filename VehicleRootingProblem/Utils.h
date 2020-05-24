@@ -4,7 +4,6 @@
 
 #include <random>
 
-
 class Math {
 private:
 public:

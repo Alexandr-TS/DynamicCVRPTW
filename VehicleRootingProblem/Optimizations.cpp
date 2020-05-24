@@ -103,8 +103,8 @@ bool GlobalSwapOptimization(MatrixInt& paths, InputData& input) {
 		double len_1 = CalcNewLenForGlobalOpt(input, paths[path_1]);
 		for (size_t path_2 = path_1 + 1; path_2 < paths.size(); ++path_2) {
 			double len_2 = CalcNewLenForGlobalOpt(input, paths[path_2]);
-			for (size_t i1 = 1; i1 + 1 < paths[path_1].size(); i1++) {
-				for (size_t i2 = 1; i2 + 1 < paths[path_2].size(); i2++) {
+			for (size_t i1 = 1; i1 + 1 < paths[path_1].size(); ++i1) {
+				for (size_t i2 = 1; i2 + 1 < paths[path_2].size(); ++i2) {
 					if (!IsValidPrecheckForGlobalOpt(input, paths[path_1], paths[path_2], i1, i2)) {
 						continue;
 					}
@@ -144,14 +144,14 @@ bool GlobalInsertOptimization(MatrixInt& paths, InputData& input) {
 		auto cur_path = paths[path_1];
 		cur_path.insert(cur_path.begin(), { -1 });
 		iter_improved = false;
-		for (size_t i1 = 1; !iter_improved && i1 + 1 < cur_path.size(); i1++) {
+		for (size_t i1 = 1; !iter_improved && i1 + 1 < cur_path.size(); ++i1) {
 			swap(cur_path[i1 - 1], cur_path[i1]);
 			for (size_t path_2 = 0; !iter_improved && path_2 < paths.size(); ++path_2) {
 				if (path_2 == path_1) {
 					continue;
 				}
 				double len_2 = CalcNewLenForGlobalOpt(input, paths[path_2], 0, 0);
-				for (size_t i2 = 1; !iter_improved && i2 + 1 < paths[path_2].size(); i2++) {
+				for (size_t i2 = 1; !iter_improved && i2 + 1 < paths[path_2].size(); ++i2) {
 					cur_path[i1] = paths[path_2][i2];
 					double new_len_1 = CalcNewLenForGlobalOpt(input, cur_path);
 					// this makes two same adjacent vertices => dist = 0

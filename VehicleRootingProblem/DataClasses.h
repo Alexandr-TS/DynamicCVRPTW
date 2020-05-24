@@ -38,18 +38,16 @@ class ChangeVisitedVertexException : public std::exception {};
 class NoValidSolutionException : public std::exception {};
 class NoSuchTargetException : public std::exception {};
 
-class InputData {
-public:
+struct InputData {
 	InputData();
 
 	InputData(int dronsCnt, int targetsCnt, double maxDist, 
 		std::vector<std::pair<double, double>> points, 
 		std::vector<std::pair<double, double>> timeWindows);
 	InputData(std::string inputFileName);
-public:
+
 	double Distance(int i, int j);
 
-public:
 	int DronsCnt;
 	int TargetsCnt;
 	double MaxDist;
@@ -62,17 +60,14 @@ public:
 	std::string FileName;
 };
 
-class ProblemSolution {
-public:
+struct ProblemSolution {
 	ProblemSolution();
 	ProblemSolution(InputData& input, MatrixInt paths, 
 		EProblemSolutionCtorType type = EProblemSolutionCtorType::CHECK_PRESENCE, 
 		std::map<int, double> broken_vehicle_time_by_id = {});
 
-public:
 	void PrintIntoFile(std::string outputFileName);
 
-public:
 	InputData Input;
 	// Sequences of indices in input targets (not all locations) for each dron
 	MatrixInt Paths;

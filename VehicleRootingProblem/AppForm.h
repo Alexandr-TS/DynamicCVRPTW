@@ -14,7 +14,6 @@
 #include <algorithm>
 
 namespace VehicleRootingProblem {
-
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -57,11 +56,11 @@ namespace VehicleRootingProblem {
 			ProblemSolution Solution;
 			
 			Launch() {}
-			Launch(int algoIndex, int dataSetIndex, std::vector<double> paramsVals, 
+			Launch(int algo_index, int data_set_index, std::vector<double> params_vals, 
 				ProblemMode mode, ProblemSolution solution) :
-				AlgoIndex(algoIndex),
-				DataSetIndex(dataSetIndex),
-				ParamsVals(paramsVals),
+				AlgoIndex(algo_index),
+				DataSetIndex(data_set_index),
+				ParamsVals(params_vals),
 				Mode(mode),
 				Solution(solution)
 			{}
@@ -70,8 +69,7 @@ namespace VehicleRootingProblem {
 		ETargetPathsChange TargetPathsChange;
 		std::vector<InputData> DataSets;
 		std::vector<Algo> Algos = {
-			Algo("Жадный алгоритм", EAlgorithms::Greedy, {})
-			, Algo("Муравьиный алгоритм", EAlgorithms::AntColony, {
+			Algo("Муравьиный алгоритм", EAlgorithms::AntColony, {
 				Param("Alpha", 3, "Показатель степени стойкости феромонов в формуле вероятности выбора ребра"),
 				Param("Betta", 4, "Показатель степени функции видимости в формуле вероятности выбора ребра"),
 				Param("Rho", 0.4, "Коэффициент стойкости феромнов"),
@@ -92,8 +90,6 @@ namespace VehicleRootingProblem {
 			})
 			, Algo("Полный перебор", EAlgorithms::BruteForce, {})
 		};
-
-
 		std::vector<Launch> Launches;
 		InputData LoadedInputData;
 		ProblemSolution CurrentSolution;
@@ -926,44 +922,42 @@ namespace VehicleRootingProblem {
 		for (int i = 0; i < this->listViewLoadedDataSets->Items->Count; ++i) {
 			this->listViewLoadedDataSets->Items[i]->BackColor = Color::White;
 		}
-		if (listViewLoadedDataSets->SelectedIndices->Count == 1)
+		if (listViewLoadedDataSets->SelectedIndices->Count == 1) {
 			this->listViewLoadedDataSets->SelectedItems[0]->BackColor = Color::LightBlue;
+		}
 	}
 
 	void UpdateRunButton() {
-		if (listViewLoadedDataSets->SelectedIndices->Count == 1) {
-			this->buttonRun->Enabled = true;
-		}
-		else {
-			this->buttonRun->Enabled = false;
-		}
+		this->buttonRun->Enabled = (listViewLoadedDataSets->SelectedIndices->Count == 1);
 	}
 
 	void UpdateDataGridViewPaths(ProblemSolution& solution) {
-		while (this->dataGridViewPaths->Rows->Count < (int)solution.Paths.size())
+		while (this->dataGridViewPaths->Rows->Count < static_cast<int>(solution.Paths.size())) {
 			this->dataGridViewPaths->Rows->Add();
-		while (this->dataGridViewPaths->Rows->Count > (int)solution.Paths.size())
+		}
+		while (this->dataGridViewPaths->Rows->Count > static_cast<int>(solution.Paths.size())) {
 			this->dataGridViewPaths->Rows->RemoveAt(this->dataGridViewPaths->Rows->Count - 1);
+		}
 
-		int lineNum = 0;
+		int line_num = 0;
 		for (auto& path : solution.Paths) {
-			if (solution.BrokenVehicleTimeById.count(lineNum)) {
-				this->dataGridViewPaths->Rows[lineNum]->DefaultCellStyle->BackColor = Color::Red;
+			if (solution.BrokenVehicleTimeById.count(line_num)) {
+				this->dataGridViewPaths->Rows[line_num]->DefaultCellStyle->BackColor = Color::Red;
 			}
 			else {
-				this->dataGridViewPaths->Rows[lineNum]->DefaultCellStyle->BackColor = Color::White;
+				this->dataGridViewPaths->Rows[line_num]->DefaultCellStyle->BackColor = Color::White;
 			}
-			double pathDistance = 0;
+			double path_distance = 0;
 			if (path.size() > 0) {
 				// from depot and to depot
-				pathDistance = solution.Input.Distance(0, path[0]) + solution.Input.Distance(0, path.back());
+				path_distance = solution.Input.Distance(0, path[0]) + solution.Input.Distance(0, path.back());
 			}
 			std::string path_str = "";
 			char buffer[(1 << 5)];
 			for (size_t i = 0; i < path.size(); ++i) {
 				int x = path[i];
 				if (i + 1 < path.size()) {
-					pathDistance += solution.Input.Distance(x, path[i + 1]);
+					path_distance += solution.Input.Distance(x, path[i + 1]);
 				}
 
 				if (x > AppFormVars::CountOfRealTargets) {
@@ -973,18 +967,18 @@ namespace VehicleRootingProblem {
 				path_str += ((std::string)buffer);
 				path_str += " (";
 				
-				std::string visit_time = PrettyTimeStd(static_cast<int>(solution.ArrivalTimes[lineNum][i]));
+				std::string visit_time = PrettyTimeStd(static_cast<int>(solution.ArrivalTimes[line_num][i]));
 				path_str += visit_time + "), ";
 			}
 			if (path_str.size() >= 2 && path_str.back() == ' ' && path_str[static_cast<int>(path_str.size()) - 2] == ',') {
 				path_str.pop_back();
 				path_str.pop_back();
 			}
-			this->dataGridViewPaths->Rows[lineNum]->Cells[0]->Value = System::Int32(lineNum + 1);
-			this->dataGridViewPaths->Rows[lineNum]->Cells[1]->Value = System::String(path_str.c_str()).ToString();
-			this->dataGridViewPaths->Rows[lineNum]->Cells[2]->Value = System::Double(pathDistance);
+			this->dataGridViewPaths->Rows[line_num]->Cells[0]->Value = System::Int32(line_num + 1);
+			this->dataGridViewPaths->Rows[line_num]->Cells[1]->Value = System::String(path_str.c_str()).ToString();
+			this->dataGridViewPaths->Rows[line_num]->Cells[2]->Value = System::Double(path_distance);
 			this->dataGridViewPaths->Update();
-			++lineNum;
+			++line_num;
 		}
 		this->dataGridViewPaths->ClearSelection();
 	}
@@ -994,10 +988,10 @@ namespace VehicleRootingProblem {
 		this->dataGridViewSelectedRes->Rows->Clear();
 		this->dataGridViewSelectedRes->Columns->Clear();
 
-		int colInd = 0;
+		int col_ind = 0;
 		for (auto col : { "Номер датасета", "Количество TC",
 			"Количество целей", "Ограничение дальности", "Сумма длин", "Макс длина" }) {
-			this->dataGridViewSelectedRes->Columns->Add(ToText(colInd++), ToText((std::string)col));
+			this->dataGridViewSelectedRes->Columns->Add(ToText(col_ind++), ToText(static_cast<std::string>(col)));
 		}
 
 		this->dataGridViewSelectedRes->Rows->Add();
@@ -1031,23 +1025,21 @@ namespace VehicleRootingProblem {
 		int dataSetInd = this->listViewLoadedDataSets->SelectedIndices[0];
 		ProblemMode mode = ProblemMode::MINSUM;
 
-		int algoInd = 0;
+		int algoInd = 1;
 		if (AppFormVars::DataSets[dataSetInd].TargetsCnt <= 9) {
-			algoInd = 3;
+			algoInd = 2;
 		}
 		else if (AppFormVars::DataSets[dataSetInd].TargetsCnt > 90) {
-			algoInd = 1;
-		}
-		else {
-			algoInd = 2;
+			algoInd = 0;
 		}
 
 		std::vector<double> args;
-		for (int i = 0; i < (int)AppFormVars::Algos[algoInd].Params.size(); ++i) {
+		for (int i = 0; i < static_cast<int>(AppFormVars::Algos[algoInd].Params.size()); ++i) {
 			args.push_back(AppFormVars::Algos[algoInd].Params[i].Recommend);
 		}
 
-		AppFormVars::CurrentSolution = SolverMain::Run(AppFormVars::DataSets[dataSetInd], mode, AppFormVars::Algos[algoInd].Ealgo, args);
+		AppFormVars::CurrentSolution = 
+			SolverMain::Run(AppFormVars::DataSets[dataSetInd], mode, AppFormVars::Algos[algoInd].Ealgo, args);
 		AppFormVars::CountOfRealTargets = AppFormVars::CurrentSolution.Input.TargetsCnt;
 
 		if (!AppFormVars::CurrentSolution.SolutionExists) {
@@ -1056,7 +1048,7 @@ namespace VehicleRootingProblem {
 		else {
 			AppFormVars::Launches.push_back(AppFormVars::Launch(algoInd, dataSetInd, args, mode, AppFormVars::CurrentSolution));
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
-			AppFormVars::PrintedLaunchPathsIndex = (int)AppFormVars::Launches.size() - 1;
+			AppFormVars::PrintedLaunchPathsIndex = static_cast<int>(AppFormVars::Launches.size()) - 1;
 			this->buttonSavePathsToFile->Enabled = true;
 			this->buttonRunProcess->Enabled = true;
 		}
@@ -1099,12 +1091,11 @@ namespace VehicleRootingProblem {
 		auto s = (sender)->ToString();
 		std::string tmps = msclr::interop::marshal_as<std::string>(s);
 		int ind = static_cast<int>(tmps.find("Text"));
-		tmps = tmps.substr(ind, (int)tmps.size() - ind);
+		tmps = tmps.substr(ind, static_cast<int>(tmps.size()) - ind);
 		if (tmps.find(".") != -1 && e->KeyChar == '.') {
 			e->Handled = true;
 		}
-		else 
-			if (!(Char::IsDigit(e->KeyChar)) && (e->KeyChar != '.')) {
+		else if (!(Char::IsDigit(e->KeyChar)) && (e->KeyChar != '.')) {
 			if (e->KeyChar != (char)Keys::Back) {
 				e->Handled = true;
 			}
@@ -1124,7 +1115,8 @@ namespace VehicleRootingProblem {
 		std::ofstream fout(fileName.c_str(), std::ios::out);
 		std::string outputString;
 		for (int i = 0; i < this->dataGridViewPaths->Rows->Count; ++i) {
-			std::string curPath = msclr::interop::marshal_as<std::string>(this->dataGridViewPaths->Rows[i]->Cells[1]->Value->ToString());
+			std::string curPath = msclr::interop::marshal_as<std::string>(
+				this->dataGridViewPaths->Rows[i]->Cells[1]->Value->ToString());
 			outputString += curPath;
 			outputString += "\n";
 		}
@@ -1144,7 +1136,7 @@ namespace VehicleRootingProblem {
 		this->tabControlLeft->Height = 618;
 		AppFormVars::CntSecondsPassed = INF;
 		AppFormVars::SecondsPerTick = 1;
-		int launchInd = (int)AppFormVars::Launches.size() - 1;
+		int launchInd = static_cast<int>(AppFormVars::Launches.size()) - 1;
 		AppFormVars::CurrentSolution = AppFormVars::Launches.back().Solution;
 		AppFormVars::CountOfRealTargets = AppFormVars::CurrentSolution.Input.TargetsCnt;
 
@@ -1198,7 +1190,8 @@ namespace VehicleRootingProblem {
 	}
 
 	private: bool CheckSelectedVertexPresence(ProblemSolution& solution, bool with_msgbox) {
-		std::string target_id_str = msclr::interop::marshal_as<std::string>(this->numericUpDownTargetId->Value.ToString());
+		std::string target_id_str = msclr::interop::marshal_as<std::string>(
+			this->numericUpDownTargetId->Value.ToString());
 		int target_id = atoi(target_id_str.c_str());
 		bool found_target = false;
 		for (auto& path : solution.Paths) {

@@ -25,7 +25,7 @@ struct Chromosome {
 		double* prefLen = new double[n];
 		fill(prefLen, prefLen + n, 0);
 
-		for (int i = 1; i < n; i++) {
+		for (int i = 1; i < n; ++i) {
 			prefLen[i] = prefLen[i - 1] + input.Distance(seq[i - 1], seq[i]);
 		}
 
@@ -34,7 +34,9 @@ struct Chromosome {
 
 		dp[0] = 0;
 		for (int v = 0; v + 1 < n; ++v) {
-			if (dp[v] == INF) continue;
+			if (dp[v] == INF) {
+				continue;
+			}
 			double len = 0;
 			double cur_time = max(input.Distance(0, seq[v + 1]), input.TimeWindows[seq[v + 1]].first);
 			for (int u = v + 1; u < n && len <= input.MaxDist + EPS; ++u) {
@@ -100,7 +102,7 @@ mt19937 tmpGen = mt19937(1);
 
 Chromosome GenRandomChromosome(int n, InputData& input) {
 	vector<int> seq(n);
-	for (int i = 1; i <= n; i++) {
+	for (int i = 1; i <= n; ++i) {
 		seq[i - 1] = i;
 	}
 	shuffle(seq.begin(), seq.end(), tmpGen);
@@ -112,9 +114,9 @@ struct Population {
 	map<int, int> FitByDelta;
 	double Delta;
 
-	Population(double delta) : Delta(delta) {
-		Chromosomes = {};
-		FitByDelta = {};
+	Population(double delta) 
+		: Delta(delta) 
+	{
 	}
 
 	bool Add(Chromosome x) {
@@ -126,7 +128,7 @@ struct Population {
 			return false;
 		}
 		if (Delta) {
-			FitByDelta[(int)(x.Fitness / Delta)]++;
+			++FitByDelta[(int)(x.Fitness / Delta)];
 		}
 		Chromosomes.push_back(x);
 		for (int i = (int)Chromosomes.size() - 1; i >= 1; i--) {
@@ -213,7 +215,7 @@ Chromosome Crossover(Chromosome& parent1, Chromosome& parent2, InputData& input)
 	}
 
 	int curChildInd = (tr + 1) % n;
-	for (int i1 = (tr + 1); i1 < tr + n + 1; i1++) {
+	for (int i1 = (tr + 1); i1 < tr + n + 1; ++i1) {
 		int i = i1;
 		while (i >= n) {
 			i -= n;
@@ -259,11 +261,10 @@ MatrixInt SplitPaths(vector<int> path, InputData& input) {
 			if (u > v + 1) {
 				cur_time = max(input.TimeWindows[path[u]].first, cur_time + prefLen[u] - prefLen[u - 1]);
 			}
-			if (input.TimeWindows[path[u]].second >= cur_time && len <= input.MaxDist + EPS) {
-				if (dp[u] > dp[v] + len) {
-					dp[u] = dp[v] + len;
-					prev_dp[u] = v;
-				}
+			if (input.TimeWindows[path[u]].second >= cur_time && len <= input.MaxDist + EPS 
+				&& dp[u] > dp[v] + len) {
+				dp[u] = dp[v] + len;
+				prev_dp[u] = v;
 			}
 			else {
 				break;
@@ -309,7 +310,7 @@ Chromosome Mutation(Chromosome& c, double p, InputData& input, int cnt_improves 
 	return Chromosome(paths, input);
 }
 
-Population InitPopulation(InputData& input, int populationSize, double delta) {
+Population InitPopulation(InputData& input, int population_size, double delta) {
 	Population population(delta);
 	
 	// Greedy + greedy with local optimizations
@@ -328,7 +329,7 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 	};
 	// Ant Colony Algo
 	for (vector<double> args: argss) {
-		if (population.Size() == static_cast<size_t>(populationSize)) {
+		if (population.Size() == static_cast<size_t>(population_size)) {
 			break;
 		}
 		auto sol = SolverAntColony::Run(input, args);
@@ -341,8 +342,8 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 		}
 	}
 
-	int leftTries = populationSize * populationSize + 100;
-	while (population.Size() < static_cast<size_t>(populationSize)) {
+	int leftTries = population_size * population_size + 100;
+	while (population.Size() < static_cast<size_t>(population_size)) {
 		auto chromosomeCur = GenRandomChromosome(input.TargetsCnt, input);
 
 		if (chromosomeCur.IsValid()) {
@@ -376,7 +377,7 @@ Population InitPopulation(InputData& input, int populationSize, double delta) {
 int GenGoodIndex(int n) {
 	int tmp = Math::GenInt(0, n * (n + 1) * (2 * n + 1) / 6 - 1);
 	int cur = n;
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; ++i) {
 		if (tmp < cur * cur) {
 			return i;
 		}
@@ -392,7 +393,7 @@ int GenIndexForReplace(int n) {
 	return n - 1 - tmp;
 }
 
-// Args are: {n, alpha, betta, delta, p, timeLimit}
+// Args are: {n, alpha, betta, delta, p, time_limit}
 // Suggested args: {30, 3000, 1000, 0.5, 0.05, 0}
 ProblemSolution SolverGenetic::Run(InputData input, vector<double>args) {
 	for (int i = 1; i <= input.TargetsCnt; ++i) {
@@ -402,30 +403,30 @@ ProblemSolution SolverGenetic::Run(InputData input, vector<double>args) {
 		}
 	}
 
-	int populationSize = (int)args[0]; // n
+	int population_size = static_cast<int>(args[0]); // n
 
-	// if timeLimit is not 0, these 2 variables are useless
-	int maxProductiveIters = (int)args[1]; // alpha
-	int maxNonImproveIters = (int)args[2]; // betta
+	// if time_limit is not 0, these 2 variables are useless
+	int max_productive_iters = static_cast<int>(args[1]); // alpha
+	int maxnon_improve_iters = static_cast<int>(args[2]); // betta
 
 	// 2 near chromosomes' fitnesses must differ at list on delta
 	double delta = args[3];
 
-	double mutationProb = args[4]; // p
-	// if timeLimit is 0, then cycle is limited with maxProductiveIters and maxNonImproveIters
-	int timeLimit = (int)args[5];
+	double mutation_prob = args[4]; // p
+	// if time_limit is 0, then cycle is limited with max_productive_iters and maxnon_improve_iters
+	int time_limit = static_cast<int>(args[5]);
 
-	double startT = clock();
+	double start_t = clock();
 
-	Population population = InitPopulation(input, populationSize, delta);
+	Population population = InitPopulation(input, population_size, delta);
 
-	int productiveIters = 0;
-	int nonImproveIters = 0;
+	int productive_iters = 0;
+	int non_improve_iters = 0;
 
 	int n = static_cast<int>(population.Size());
 
-	while (timeLimit ? clock() - startT < timeLimit * CLOCKS_PER_SEC :
-		productiveIters < maxProductiveIters && nonImproveIters < maxNonImproveIters) {
+	while (time_limit ? clock() - start_t < time_limit * CLOCKS_PER_SEC :
+		productive_iters < max_productive_iters && non_improve_iters < maxnon_improve_iters) {
 
 		assert(population.Size() == static_cast<size_t>(n));
 
@@ -439,36 +440,36 @@ ProblemSolution SolverGenetic::Run(InputData input, vector<double>args) {
 		}
 
 		auto child = Crossover(population.Chromosomes[parent1ind], population.Chromosomes[parent2ind], input);
-		auto mutatedChild = Mutation(child, mutationProb, input);
+		auto mutated_child = Mutation(child, mutation_prob, input);
 
-		int replacedInd = GenIndexForReplace(n);
+		int replaced_ind = GenIndexForReplace(n);
 
-		auto deletedChromosome = population.Chromosomes[replacedInd];
+		auto deleted_chromosome = population.Chromosomes[replaced_ind];
 
-		population.Del(replacedInd);
+		population.Del(replaced_ind);
 
-		if (!population.IsAddible(mutatedChild) && population.IsAddible(child)) {
-			mutatedChild = child;
+		if (!population.IsAddible(mutated_child) && population.IsAddible(child)) {
+			mutated_child = child;
 		}
 
-		nonImproveIters++;
+		++non_improve_iters;
 
-		if (productiveIters % 100 == 0) {
-			cout << "GA. Number of productive iterations: " << productiveIters << 
-				". Number of iterations without improving best solution: " << nonImproveIters << endl;
+		if (productive_iters % 100 == 0) {
+			cout << "GA. Number of productive iterations: " << productive_iters << 
+				". Number of iterations without improving best solution: " << non_improve_iters << endl;
 		}
 
-		if (population.IsAddible(mutatedChild)) {
-			if (mutatedChild.Fitness < population.Chromosomes[0].Fitness) {
-				nonImproveIters = 0;
-				cout << "GA. New best solution found: " << mutatedChild.Fitness << endl;
+		if (population.IsAddible(mutated_child)) {
+			if (mutated_child.Fitness < population.Chromosomes[0].Fitness) {
+				non_improve_iters = 0;
+				cout << "GA. New best solution found: " << mutated_child.Fitness << endl;
 			}
-			productiveIters++;
+			++productive_iters;
 
-			population.Add(mutatedChild);
+			population.Add(mutated_child);
 		}
 		else {
-			population.Add(deletedChromosome);
+			population.Add(deleted_chromosome);
 		}
 	}
 	

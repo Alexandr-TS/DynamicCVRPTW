@@ -8,7 +8,7 @@ using namespace std;
 bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_id, double cur_time) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
-		path_id++;
+		++path_id;
 		auto it = find(path.begin(), path.end(), target_id);
 		if (it == path.end()) {
 			continue;
@@ -36,7 +36,7 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution,
 	int target_id, double cur_time, double new_start, double new_end, ETargetPathsChange target_paths_change) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
-		path_id++;
+		++path_id;
 		auto it = find(path.begin(), path.end(), target_id);
 		if (it == path.end()) {
 			continue;
@@ -68,7 +68,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 	double cur_time, double new_x, double new_y, ETargetPathsChange target_paths_change) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
-		path_id++;
+		++path_id;
 		auto it = find(path.begin(), path.end(), target_id);
 		if (it == path.end()) {
 			continue;

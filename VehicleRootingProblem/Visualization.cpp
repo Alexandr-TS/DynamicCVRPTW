@@ -125,8 +125,8 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 
 				auto drawFont = gcnew Font("Arial", 12);
 				auto drawBrush = gcnew SolidBrush(Color::Black);
-				float x = static_cast<float>(pt.first - 1.0);
-				float y = static_cast<float>(pt.second + 5.0);
+				auto x = static_cast<float>(pt.first - 1.0);
+				auto y = static_cast<float>(pt.second + 5.0);
 				auto drawFormat = gcnew StringFormat();
 				graphics->DrawString(text, drawFont, drawBrush, x, y, drawFormat);
 			}

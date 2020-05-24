@@ -37,7 +37,7 @@ InputData::InputData(string inputFileName) {
 		fin >> UnloadingTime;
 		Points.resize(TargetsCnt + 1);
 		Points[0] = { 0, 0 };
-		for (int i = 0; i < TargetsCnt; i++) {
+		for (int i = 0; i < TargetsCnt; ++i) {
 			fin >> Points[i + 1].first >> Points[i + 1].second;
 		}
 
@@ -55,7 +55,7 @@ InputData::InputData(string inputFileName) {
 
 		TimeWindows.resize(TargetsCnt + 1);
 		TimeWindows[0] = { -INF, INF };
-		for (int i = 0; i < TargetsCnt; i++) {
+		for (int i = 0; i < TargetsCnt; ++i) {
 			fin >> TimeWindows[i + 1].first >> TimeWindows[i + 1].second;
 		}
 	}
@@ -109,13 +109,13 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths,
 		if (path.size() == 0) {
 			continue;
 		}
-		double currentLength = input.Distance(path.back(), 0);
-		int lastIndex = 0;
+		double current_length = input.Distance(path.back(), 0);
+		int last_index = 0;
 
 		for (int i = 0; i < (int)path.size(); ++i) {
 			auto index = path[i];
 			assert(index > 0 && index <= input.TargetsCnt);
-			double this_dist = input.Distance(lastIndex, index);
+			double this_dist = input.Distance(last_index, index);
 			cur_time = max(cur_time + this_dist, input.TimeWindows[index].first);
 			ArrivalTimes.back().push_back(cur_time);
 			if (cur_time > input.TimeWindows[index].second + EPS) {
@@ -123,13 +123,13 @@ ProblemSolution::ProblemSolution(InputData& input, MatrixInt paths,
 				cout << "ProblemSolution constructor. Solution is not valid because " <<
 					"of time windows" << endl;
 			}
-			currentLength += this_dist;
-			lastIndex = index;
+			current_length += this_dist;
+			last_index = index;
 			used[index - 1]++;
 		}
 
-		MaxPathLength = max(MaxPathLength, currentLength);
-		SumOfPathLengths += currentLength;
+		MaxPathLength = max(MaxPathLength, current_length);
+		SumOfPathLengths += current_length;
 	}
 
 	if (type == EProblemSolutionCtorType::CHECK_PRESENCE) {
