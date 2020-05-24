@@ -1,5 +1,6 @@
 #include "EventsHandler.h"
 #include "Optimizations.h"
+#include "Utils.h"
 #include <algorithm>
 
 using namespace std;
@@ -193,6 +194,58 @@ bool EventsHandler::UpdateOnVehicleBreakdown(ProblemSolution& solution, int vehi
 		throw NoValidSolutionException();
 	}
 	else {
-		throw runtime_error("not implemented yet");
+		// dummy node
+		not_visited_vertices.insert(not_visited_vertices.begin(), solution.Input.TargetsCnt + 1);
+		
+		auto breakdown_point = GetVehicleCoords(solution, vehicle_id, cur_time);
+
+		i = 0;
+		for (; i < path.size(); ++i) {
+			if (solution.ArrivalTimes[vehicle_id][i] > cur_time) {
+				break;
+			}
+		}
+
+		auto point_1_id = (!i ? 0 : path[i - 1]);
+		auto point_2_id = (path.size() == static_cast<size_t>(i) ? 0 : path[i]);
+
+		auto dist_from_0_to_bp = solution.Input.Distance(0, point_1_id);
+		double coef = PointDistance(solution.Input.Points[point_1_id], breakdown_point) /
+			PointDistance(solution.Input.Points[point_1_id], solution.Input.Points[point_2_id]);
+		assert(coef < 1 + EPS);
+		dist_from_0_to_bp += coef * solution.Input.Distance(point_1_id, point_2_id);
+		auto dist_from_bp_to_next = solution.Input.Distance(point_1_id, point_2_id) * (1 - coef);
+
+
+		auto new_solution = solution;
+		new_solution.Input.TargetsCnt++;
+		new_solution.Input.Points.push_back(breakdown_point);
+		new_solution.Input.TimeWindows.push_back({ cur_time + dist_from_0_to_bp, cur_time + dist_from_0_to_bp + EPS });
+		new_solution.Paths.push_back(not_visited_vertices);
+
+		// Leave first unvisited vertex in the broken path
+		for (size_t i = 0; i + 2 < not_visited_vertices.size(); ++i) {
+			new_solution.Paths[vehicle_id].pop_back();
+		}
+
+		new_solution.Input.Distances.push_back(vector<double>(solution.Input.TargetsCnt, INF / 10));
+		for (size_t i = 0; i < new_solution.Input.Distances.size(); ++i) {
+			new_solution.Input.Distances[i].push_back(INF / 10);
+		}
+		new_solution.Input.Distances[0][new_solution.Input.TargetsCnt] = dist_from_0_to_bp;
+		new_solution.Input.Distances[new_solution.Input.TargetsCnt][point_2_id] = dist_from_bp_to_next;
+
+		new_solution.BrokenVehicleTimeById[vehicle_id] = cur_time;
+
+		MultiOptimization(new_solution, cur_time, target_paths_change);
+
+		new_solution = ProblemSolution(new_solution.Input,
+			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
+		if (new_solution.SolutionExists) {
+			solution = new_solution;
+			return true;
+		}
+		throw NoValidSolutionException();
+
 	}
 }

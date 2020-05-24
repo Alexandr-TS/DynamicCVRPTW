@@ -67,3 +67,9 @@ pair<double, double> GetVehicleCoords(ProblemSolution& problem_solution, int pat
 	assert(false);
 	return { 0, 0 };
 }
+
+
+
+double PointDistance(pair<double, double> p1, pair<double, double> p2) {
+	return hypot(p1.first - p2.first, p1.second - p2.second);
+}
