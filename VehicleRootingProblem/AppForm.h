@@ -947,6 +947,12 @@ namespace VehicleRootingProblem {
 
 		int lineNum = 0;
 		for (auto& path : solution.Paths) {
+			if (solution.BrokenVehicleTimeById.count(lineNum)) {
+				this->dataGridViewPaths->Rows[lineNum]->DefaultCellStyle->BackColor = Color::Red;
+			}
+			else {
+				this->dataGridViewPaths->Rows[lineNum]->DefaultCellStyle->BackColor = Color::White;
+			}
 			double pathDistance = 0;
 			if (path.size() > 0) {
 				// from depot and to depot
