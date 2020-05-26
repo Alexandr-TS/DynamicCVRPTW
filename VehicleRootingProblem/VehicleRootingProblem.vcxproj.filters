@@ -16,6 +16,9 @@
     <Filter Include="Solvers">
       <UniqueIdentifier>{c46b0361-ac17-47ec-b477-e9de2124af4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Research">
+      <UniqueIdentifier>{a98d7835-33d5-499b-b7d7-1dc42cc08aed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataClasses.cpp">
@@ -53,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="EventsHandler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Research.cpp">
+      <Filter>Research</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,5 +98,13 @@
     <ClInclude Include="EventsHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Research.h">
+      <Filter>Research</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="research_logs.txt">
+      <Filter>Research</Filter>
+    </Text>
   </ItemGroup>
 </Project>

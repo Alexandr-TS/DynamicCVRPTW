@@ -145,6 +145,7 @@
     <ClCompile Include="DataClasses.cpp" />
     <ClCompile Include="EventsHandler.cpp" />
     <ClCompile Include="Optimizations.cpp" />
+    <ClCompile Include="Research.cpp" />
     <ClCompile Include="SolverAntColony.cpp" />
     <ClCompile Include="SolverGenetic.cpp" />
     <ClCompile Include="SolverGreedy.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="DataClasses.h" />
     <ClInclude Include="EventsHandler.h" />
     <ClInclude Include="Optimizations.h" />
+    <ClInclude Include="Research.h" />
     <ClInclude Include="SolverAntColony.h" />
     <ClInclude Include="SolverGenetic.h" />
     <ClInclude Include="SolverGreedy.h" />
@@ -174,6 +176,9 @@
     <EmbeddedResource Include="AppForm.resx">
       <DependentUpon>AppForm.h</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="research_logs.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
