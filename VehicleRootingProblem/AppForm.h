@@ -950,7 +950,7 @@ namespace VehicleRootingProblem {
 			double path_distance = 0;
 			if (path.size() > 0) {
 				// from depot and to depot
-				path_distance = solution.Input.Distance(0, path[0]) + solution.Input.Distance(0, path.back());
+				path_distance = solution.Input.Distance(0, path[0]) + solution.Input.Distance(path.back(), 0);
 			}
 			std::string path_str = "";
 			char buffer[(1 << 5)];
