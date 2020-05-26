@@ -106,5 +106,17 @@
     <Text Include="research_logs.txt">
       <Filter>Research</Filter>
     </Text>
+    <Text Include="vehicle_breakdown_logs.txt">
+      <Filter>Research</Filter>
+    </Text>
+    <Text Include="target_delete_logs.txt">
+      <Filter>Research</Filter>
+    </Text>
+    <Text Include="tw_update_logs.txt">
+      <Filter>Research</Filter>
+    </Text>
+    <Text Include="dist_upd_logs.txt">
+      <Filter>Research</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -3,6 +3,13 @@
 #include "DataClasses.h"
 #include "Utils.h"
 
+struct OptsConfig {
+	bool use_string_cross = true;
+	bool use_string_exchange = true;
+	bool use_single_string_relocation = true;
+	bool use_single_string_exchange = true;
+};
+
 // For first paths build
 bool GlobalSwapOptimization(MatrixInt& paths, InputData& input);
 bool GlobalInsertOptimization(MatrixInt& paths, InputData& input);
@@ -14,4 +21,4 @@ bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size
 bool OptSingleStringRelocation(std::vector<int>& path, InputData& input, double cur_time);
 bool OptSingleStringExchange(std::vector<int>& path, InputData& input, double cur_time);
 
-bool MultiOptimization(ProblemSolution& problem_solution, double cur_time, ETargetPathsChange target_paths_change);
+bool MultiOptimization(ProblemSolution& problem_solution, double cur_time, ETargetPathsChange target_paths_change, OptsConfig opts_config);

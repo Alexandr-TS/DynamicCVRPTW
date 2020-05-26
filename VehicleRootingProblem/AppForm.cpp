@@ -18,8 +18,9 @@ int main(array<String^>^ args) {
 		RunTests();
 		Research::RunResearch();
 	}
-
-	//VehicleRootingProblem::AppForm form;
-	//Application::Run(% form);
+	else {
+		VehicleRootingProblem::AppForm form;
+		Application::Run(% form);
+	}
 	return 0;
 }

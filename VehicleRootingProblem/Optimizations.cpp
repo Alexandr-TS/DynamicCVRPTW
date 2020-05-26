@@ -337,8 +337,10 @@ bool OptStringExchange(MatrixInt& paths, InputData& input, double cur_time, size
 
 							double new_path_1_len = CalcNewLenForGlobalOpt(input, path_1_copy);
 							double new_path_2_len = CalcNewLenForGlobalOpt(input, path_2_copy);
+							int cnt_new_valid = static_cast<int>(new_path_1_len <= input.MaxDist) + static_cast<int>(new_path_2_len <= input.MaxDist);
+							int cnt_old_valid = static_cast<int>(path_1_len <= input.MaxDist) + static_cast<int>(path_2_len <= input.MaxDist);
 							if (new_path_1_len + new_path_2_len < INF && 
-								new_path_1_len + new_path_2_len + EPS < path_1_len + path_2_len) {
+								new_path_1_len + new_path_2_len + EPS < path_1_len + path_2_len && cnt_new_valid >= cnt_old_valid) {
 								paths[path_id_1] = path_1_copy;
 								paths[path_id_2] = path_2_copy;
 								path_1_len = new_path_1_len;
@@ -399,8 +401,13 @@ bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time, map<int
 						back_inserter(path_2_copy));
 					double new_path_1_len = CalcNewLenForGlobalOpt(input, path_1_copy);
 					double new_path_2_len = CalcNewLenForGlobalOpt(input, path_2_copy);
+
+					int cnt_new_valid = static_cast<int>(new_path_1_len <= input.MaxDist) + static_cast<int>(new_path_2_len <= input.MaxDist);
+					int cnt_old_valid = static_cast<int>(path_1_len <= input.MaxDist) + static_cast<int>(path_2_len <= input.MaxDist);
 					if (new_path_1_len + new_path_2_len < INF && 
-						new_path_1_len + new_path_2_len + EPS < path_1_len + path_2_len) {
+						new_path_1_len + new_path_2_len + EPS < path_1_len + path_2_len &&
+						cnt_new_valid >= cnt_old_valid	
+						) {
 						paths[path_id_1] = path_1_copy;
 						paths[path_id_2] = path_2_copy;
 						path_1_len = new_path_1_len;
@@ -421,7 +428,7 @@ bool OptStringCross(MatrixInt& paths, InputData& input, double cur_time, map<int
 }
 
 
-bool MultiOptimization(ProblemSolution& problem_solution, double cur_time, ETargetPathsChange target_paths_change) {
+bool MultiOptimization(ProblemSolution& problem_solution, double cur_time, ETargetPathsChange target_paths_change, OptsConfig opts_config) {
 	auto& paths = problem_solution.Paths;
 	auto& input = problem_solution.Input;
 
@@ -437,12 +444,20 @@ bool MultiOptimization(ProblemSolution& problem_solution, double cur_time, ETarg
 			if (problem_solution.BrokenVehicleTimeById.count(static_cast<int>(i))) {
 				continue;
 			}
-			flag |= OptSingleStringExchange(paths[i], input, cur_time);
-			flag |= OptSingleStringRelocation(paths[i], input, cur_time);
+			if (opts_config.use_single_string_exchange) {
+				flag |= OptSingleStringExchange(paths[i], input, cur_time);
+			}
+			if (opts_config.use_single_string_relocation) {
+				flag |= OptSingleStringRelocation(paths[i], input, cur_time);
+			}
 		}
 		if (target_paths_change == ETargetPathsChange::ENABLE) {
-			flag |= OptStringCross(paths, input, cur_time, problem_solution.BrokenVehicleTimeById);
-			flag |= OptStringExchange(paths, input, cur_time, 10, problem_solution.BrokenVehicleTimeById);
+			if (opts_config.use_string_cross) {
+				flag |= OptStringCross(paths, input, cur_time, problem_solution.BrokenVehicleTimeById);
+			}
+			if (opts_config.use_string_exchange) {
+				flag |= OptStringExchange(paths, input, cur_time, 10, problem_solution.BrokenVehicleTimeById);
+			}
 		}
 		improved |= flag;
 	}

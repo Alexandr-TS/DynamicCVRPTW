@@ -12,7 +12,6 @@ finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputG
 finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test7_8.txt
 finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test8_40.txt
 finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test9_90.txt
-input_files built
 finished building test #1 out of 14
 finished building test #2 out of 14
 finished building test #3 out of 14
@@ -27,4 +26,13 @@ finished building test #11 out of 14
 finished building test #12 out of 14
 finished building test #13 out of 14
 finished building test #14 out of 14
-solutions built
+Solutions build
+Time passed: 124.993
+Done research on Vehicle Breakdown
+Time passed: 467.565
+Done research on Targets Delete
+Time passed: 927.583
+Done research on TimeWindows Update
+Time passed: 1489.01
+Done research on Distances Update
+Time passed: 1999.22

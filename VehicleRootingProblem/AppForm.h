@@ -1238,7 +1238,7 @@ namespace VehicleRootingProblem {
 		}
 		try {
 			EventsHandler::UpdateOnRemoveTarget(AppFormVars::CurrentSolution,
-				target_id, AppFormVars::CntSecondsPassed / 60);
+				target_id, AppFormVars::CntSecondsPassed / 60, AppFormVars::TargetPathsChange);
 			DrawPaths(Graphics, AppFormVars::CurrentSolution,
 				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
 			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);

@@ -178,7 +178,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="dist_upd_logs.txt" />
     <Text Include="research_logs.txt" />
+    <Text Include="target_delete_logs.txt" />
+    <Text Include="tw_update_logs.txt" />
+    <Text Include="vehicle_breakdown_logs.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
