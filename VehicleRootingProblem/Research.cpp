@@ -253,14 +253,17 @@ void ResearchTWUpdate(const vector<ProblemSolution>& solutions, ofstream& outlog
 
 			int target_id = gen() % solution.Input.TargetsCnt + 1;
 			double cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
-			while (solution.Input.TimeWindows[target_id].first < cur_time) {
+			while (solution.Input.TimeWindows[target_id].first + 90 < cur_time) {
 				target_id = gen() % solution.Input.TargetsCnt + 1;
 				cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
 			}
-			double new_start = static_cast<double>((gen() % 9 + 9) * 60);
-			double new_end = static_cast<double>((gen() % 9 + 9) * 60);
+			double new_start = static_cast<double>((gen() % 7 + 11) * 60);
+			double new_end = static_cast<double>((gen() % 9 + 8) * 60);
 			if (new_start > new_end) {
 				swap(new_start, new_end);
+			}
+			if (new_end - new_start < 1) {
+				new_end += 60;
 			}
 
 			vector<double> results_row;
