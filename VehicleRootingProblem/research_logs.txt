@@ -1,0 +1,38 @@
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test10_65.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test11_100.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test12_120.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test13_150.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test14_12.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test1_20.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test2_6.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test3_50.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test4_80.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test5_100.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test6_30.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test7_8.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test8_40.txt
+finished reading: C:\Users\Admin\OneDrive\UNIVER\11trimestr\DynamicCVRPTW\InputGenerator\tests\test9_90.txt
+finished building test #1 out of 14
+finished building test #2 out of 14
+finished building test #3 out of 14
+finished building test #4 out of 14
+finished building test #5 out of 14
+finished building test #6 out of 14
+finished building test #7 out of 14
+finished building test #8 out of 14
+finished building test #9 out of 14
+finished building test #10 out of 14
+finished building test #11 out of 14
+finished building test #12 out of 14
+finished building test #13 out of 14
+finished building test #14 out of 14
+Solutions build
+Time passed: 129.777
+Done research on Vehicle Breakdown
+Time passed: 468.224
+Done research on Targets Delete
+Time passed: 1086.3
+Done research on TimeWindows Update
+Time passed: 1753.11
+Done research on Distances Update
+Time passed: 2314.51

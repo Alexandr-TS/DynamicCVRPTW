@@ -217,9 +217,9 @@ void ResearchTargetDelete(const vector<ProblemSolution>& solutions, ofstream& ou
 
 			int target_id = gen() % solution.Input.TargetsCnt + 1;
 			double cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
-			while (solution.Input.TimeWindows[target_id].first < cur_time) {
+			while (solution.Input.TimeWindows[target_id].first - 90 < cur_time) {
 				target_id = gen() % solution.Input.TargetsCnt + 1;
-				cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
+				cur_time = static_cast<double>(gen() % (10 * 60) + 8 * 60);
 			}
 
 			vector<double> results_row;
@@ -253,12 +253,13 @@ void ResearchTWUpdate(const vector<ProblemSolution>& solutions, ofstream& outlog
 
 			int target_id = gen() % solution.Input.TargetsCnt + 1;
 			double cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
-			while (solution.Input.TimeWindows[target_id].first + 90 < cur_time) {
+			while (solution.Input.TimeWindows[target_id].first - 90 < cur_time) {
 				target_id = gen() % solution.Input.TargetsCnt + 1;
-				cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
+				cur_time = static_cast<double>(gen() % (10 * 60) + 8 * 60);
 			}
-			double new_start = static_cast<double>((gen() % 7 + 11) * 60);
-			double new_end = static_cast<double>((gen() % 9 + 8) * 60);
+
+			double new_start = max(cur_time, static_cast<double>((gen() % 7 + 11) * 60));
+			double new_end = max(cur_time + 60, static_cast<double>((gen() % 9 + 8) * 60));
 			if (new_start > new_end) {
 				swap(new_start, new_end);
 			}
@@ -298,10 +299,11 @@ void ResearchDistanceUpdate(const vector<ProblemSolution>& solutions, ofstream& 
 
 			int target_id = gen() % solution.Input.TargetsCnt + 1;
 			double cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
-			while (solution.Input.TimeWindows[target_id].first < cur_time) {
+			while (solution.Input.TimeWindows[target_id].first - 90 < cur_time) {
 				target_id = gen() % solution.Input.TargetsCnt + 1;
 				cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
 			}
+
 			vector<DistanceToChange> dist_updates;
 
 			int size_km = 20;

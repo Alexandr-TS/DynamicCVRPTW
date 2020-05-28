@@ -9,7 +9,7 @@ int main(array<String^>^ args) {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
-	bool research_mode = false;
+	bool research_mode = true;
 
 	if (research_mode) {
 		AllocConsole();
