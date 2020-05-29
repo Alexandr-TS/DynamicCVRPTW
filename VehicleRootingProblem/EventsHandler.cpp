@@ -1,11 +1,11 @@
 #include "EventsHandler.h"
-#include "Optimizations.h"
 #include "Utils.h"
 #include <algorithm>
 
 using namespace std;
 
-bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_id, double cur_time) {
+bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_id, double cur_time, 
+	ETargetPathsChange target_paths_change, OptsConfig opts_config) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
 		++path_id;
@@ -21,19 +21,25 @@ bool EventsHandler::UpdateOnRemoveTarget(ProblemSolution& solution, int target_i
 			throw ChangeVisitedVertexException();
 		}
 		path.erase(it);
-		bool improved = true;
-		while (improved) {
-			improved = false;
-			improved |= OptSingleStringExchange(path, solution.Input, cur_time);
-			improved |= OptSingleStringRelocation(path, solution.Input, cur_time);
+
+		auto new_solution = solution;
+		new_solution.Paths[path_id] = path;
+
+		MultiOptimization(new_solution, cur_time, target_paths_change, opts_config);
+
+		new_solution = ProblemSolution(new_solution.Input, 
+			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
+		if (new_solution.SolutionExists) {
+			solution = new_solution;
+			return true;
 		}
-		return true;
+		throw NoValidSolutionException();
 	}
 	throw NoSuchTargetException();
 }
 
 bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution, 
-	int target_id, double cur_time, double new_start, double new_end, ETargetPathsChange target_paths_change) {
+	int target_id, double cur_time, double new_start, double new_end, ETargetPathsChange target_paths_change, OptsConfig opts_config) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
 		++path_id;
@@ -51,7 +57,7 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution,
 		auto new_solution = solution;
 		new_solution.Input.TimeWindows[path[i]] = { new_start, new_end };
 
-		MultiOptimization(new_solution, cur_time, target_paths_change);
+		MultiOptimization(new_solution, cur_time, target_paths_change, opts_config);
 
 		new_solution = ProblemSolution(new_solution.Input, 
 			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
@@ -65,7 +71,7 @@ bool EventsHandler::UpdateOnTimeWindowUpdate(ProblemSolution& solution,
 }
 
 bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int target_id, 
-	double cur_time, double new_x, double new_y, ETargetPathsChange target_paths_change) {
+	double cur_time, double new_x, double new_y, ETargetPathsChange target_paths_change, OptsConfig opts_config) {
 	int path_id = -1;
 	for (auto& path : solution.Paths) {
 		++path_id;
@@ -112,7 +118,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 		}
 		*/
 
-		MultiOptimization(new_solution, cur_time, target_paths_change);
+		MultiOptimization(new_solution, cur_time, target_paths_change, opts_config);
 
 		new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
 			EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
@@ -126,7 +132,7 @@ bool EventsHandler::UpdateOnCoordinatesUpdate(ProblemSolution& solution, int tar
 }
 
 bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double cur_time,
-	const vector<DistanceToChange>& upd_dists, ETargetPathsChange target_paths_change) {
+	const vector<DistanceToChange>& upd_dists, ETargetPathsChange target_paths_change, OptsConfig opts_config) {
 
 	auto new_solution = solution;
 
@@ -134,7 +140,7 @@ bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double c
 		new_solution.Input.Distances[el.first_vertex][el.second_vertex] = el.new_distance;
 	}
 
-	MultiOptimization(new_solution, cur_time, target_paths_change);
+	MultiOptimization(new_solution, cur_time, target_paths_change, opts_config);
 
 	new_solution = ProblemSolution(new_solution.Input, new_solution.Paths, 
 		EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
@@ -147,7 +153,7 @@ bool EventsHandler::UpdateOnDistMatrixUpdate(ProblemSolution& solution, double c
 
 
 bool EventsHandler::UpdateOnVehicleBreakdown(ProblemSolution& solution, int vehicle_id, 
-	double cur_time, ETargetPathsChange target_paths_change) {
+	double cur_time, ETargetPathsChange target_paths_change, OptsConfig opts_config) {
 
 	auto& path = solution.Paths[vehicle_id];
 	vector<int> not_visited_vertices;
@@ -183,7 +189,7 @@ bool EventsHandler::UpdateOnVehicleBreakdown(ProblemSolution& solution, int vehi
 
 		new_solution.BrokenVehicleTimeById[vehicle_id] = cur_time;
 
-		MultiOptimization(new_solution, cur_time, target_paths_change);
+		MultiOptimization(new_solution, cur_time, target_paths_change, opts_config);
 
 		new_solution = ProblemSolution(new_solution.Input,
 			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);
@@ -237,7 +243,7 @@ bool EventsHandler::UpdateOnVehicleBreakdown(ProblemSolution& solution, int vehi
 
 		new_solution.BrokenVehicleTimeById[vehicle_id] = cur_time;
 
-		MultiOptimization(new_solution, cur_time, target_paths_change);
+		MultiOptimization(new_solution, cur_time, target_paths_change, opts_config);
 
 		new_solution = ProblemSolution(new_solution.Input,
 			new_solution.Paths, EProblemSolutionCtorType::SKIP_PRESENCE, new_solution.BrokenVehicleTimeById);

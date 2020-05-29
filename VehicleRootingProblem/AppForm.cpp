@@ -1,4 +1,5 @@
 #include "AppForm.h"
+#include "Research.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -8,12 +9,18 @@ int main(array<String^>^ args) {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
-	AllocConsole();
-	FILE* stream;
-	freopen_s(&stream, "CONOUT$", "w", stdout);
-	RunTests();
+	bool research_mode = false;
 
-	VehicleRootingProblem::AppForm form;
-	Application::Run(% form);
+	if (research_mode) {
+		AllocConsole();
+		FILE* stream;
+		freopen_s(&stream, "CONOUT$", "w", stdout);
+		RunTests();
+		Research::RunResearch();
+	}
+	else {
+		VehicleRootingProblem::AppForm form;
+		Application::Run(% form);
+	}
 	return 0;
 }
