@@ -1372,6 +1372,14 @@ namespace VehicleRootingProblem {
 			MessageBox::Show("Данное ТС вышло из строя ранее");
 			return;
 		}
+		if (AppFormVars::CurrentSolution.ArrivalTimes[row_id].back() <= AppFormVars::CntSecondsPassed / 60) {
+			AppFormVars::CurrentSolution.BrokenVehicleTimeById[row_id] = AppFormVars::CntSecondsPassed / 60.0;
+			MessageBox::Show("Данное ТС уже посетило все цели из своего пути");
+			DrawPaths(Graphics, AppFormVars::CurrentSolution,
+				this->pictureBoxRes->Height, this->pictureBoxRes->Width, AppFormVars::CntSecondsPassed / 60, false);
+			UpdateDataGridViewPaths(AppFormVars::CurrentSolution);
+			return;
+		}
 		try {
 			EventsHandler::UpdateOnVehicleBreakdown(AppFormVars::CurrentSolution, row_id, 
 				AppFormVars::CntSecondsPassed / 60, AppFormVars::TargetPathsChange);
