@@ -4,10 +4,17 @@
 #include "Utils.h"
 
 struct OptsConfig {
+	OptsConfig() = default;
+	OptsConfig(double multiopt_tl)
+		: multiopt_tl(multiopt_tl)
+	{
+	}
+
 	bool use_string_cross = true;
 	bool use_string_exchange = true;
 	bool use_single_string_relocation = true;
 	bool use_single_string_exchange = true;
+	double multiopt_tl = 2.7;
 };
 
 // For first paths build

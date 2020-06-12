@@ -27,12 +27,12 @@ finished building test #12 out of 14
 finished building test #13 out of 14
 finished building test #14 out of 14
 Solutions build
-Time passed: 103.568
+Time passed: 130.986
 Done research on Vehicle Breakdown
-Time passed: 314.58
+Time passed: 617.679
 Done research on Targets Delete
-Time passed: 894.631
+Time passed: 1630.04
 Done research on TimeWindows Update
-Time passed: 1416.29
+Time passed: 2658.87
 Done research on Distances Update
-Time passed: 1812.62
+Time passed: 3471.29

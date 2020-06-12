@@ -25,6 +25,23 @@ constexpr int TESTS_PER_FILE = 10;
 
 ofstream outlog("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\research_logs.txt");
 mt19937 gen;
+
+const vector<OptsConfig> configs { 
+	OptsConfig(0.0001),
+	OptsConfig(0.001),
+	OptsConfig(0.01),
+	OptsConfig(0.05),
+	OptsConfig(0.15),
+	OptsConfig(0.3),
+	OptsConfig(0.5),
+	OptsConfig(1.0),
+	OptsConfig(2.7),
+	OptsConfig(5.0),
+	OptsConfig(10.0),
+	OptsConfig(20.0)
+};
+
+/*
 const vector<OptsConfig> configs { 
 	{false, true, true, true}, 
 	{true, false, true, true}, 
@@ -40,6 +57,7 @@ const vector<OptsConfig> configs {
 	{false, false, false, false},
 	{false, false, true, true}
 };
+*/
 
 
 namespace AppFormVars {
@@ -182,6 +200,7 @@ void PrintResearchResults(vector<vector<double>>& results, ofstream& outlog) {
 
 void ResearchVehicleBreakdown(const vector<ProblemSolution>& solutions, ofstream& outlog) {
 	vector<vector<double>> results;
+	size_t cnt_finished = 0;
 	for (const auto& solution : solutions) {
 		assert(solution.SolutionExists);
 		for (int test_ = 0; test_ < TESTS_PER_FILE; ++test_) {
@@ -206,12 +225,14 @@ void ResearchVehicleBreakdown(const vector<ProblemSolution>& solutions, ofstream
 			}
 			results.push_back(results_row);
 		}
+		cout << "Finished solution number: " << ++cnt_finished << endl;
 	}
 	PrintResearchResults(results, outlog);
 }
 
 void ResearchTargetDelete(const vector<ProblemSolution>& solutions, ofstream& outlog) {
 	vector<vector<double>> results;
+	size_t cnt_finished = 0;
 	for (const auto& solution : solutions) {
 		assert(solution.SolutionExists);
 		for (int test_ = 0; test_ < TESTS_PER_FILE; ++test_) {
@@ -242,16 +263,17 @@ void ResearchTargetDelete(const vector<ProblemSolution>& solutions, ofstream& ou
 			}
 			results.push_back(results_row);
 		}
+		cout << "Finished solution number: " << ++cnt_finished << endl;
 	}
 	PrintResearchResults(results, outlog);
 }
 
 void ResearchTWUpdate(const vector<ProblemSolution>& solutions, ofstream& outlog) {
 	vector<vector<double>> results;
+	size_t cnt_finished = 0;
 	for (const auto& solution : solutions) {
 		assert(solution.SolutionExists);
 		for (int test_ = 0; test_ < TESTS_PER_FILE; ++test_) {
-
 			int target_id = gen() % solution.Input.TargetsCnt + 1;
 			double cur_time = static_cast<double>(gen() % (9 * 60) + 9 * 60);
 			while (solution.Input.TimeWindows[target_id].first - 90 < cur_time) {
@@ -287,13 +309,14 @@ void ResearchTWUpdate(const vector<ProblemSolution>& solutions, ofstream& outlog
 			}
 			results.push_back(results_row);
 		}
+		cout << "Finished solution number: " << ++cnt_finished << endl;
 	}
 	PrintResearchResults(results, outlog);
 }
 
-
 void ResearchDistanceUpdate(const vector<ProblemSolution>& solutions, ofstream& outlog) {
 	vector<vector<double>> results;
+	size_t cnt_finished = 0;
 	for (const auto& solution : solutions) {
 		assert(solution.SolutionExists);
 		for (int test_ = 0; test_ < TESTS_PER_FILE; ++test_) {
@@ -343,6 +366,7 @@ void ResearchDistanceUpdate(const vector<ProblemSolution>& solutions, ofstream& 
 			}
 			results.push_back(results_row);
 		}
+		cout << "Finished solution number: " << ++cnt_finished << endl;
 	}
 	PrintResearchResults(results, outlog);
 }
@@ -355,25 +379,25 @@ void Research::RunResearch() {
 	auto solutions = BuildSolutions(input_files);
 	outlog << "Solutions build\nTime passed: " << (clock() - start_time) / CLOCKS_PER_SEC << endl;
 
-	ofstream fout1("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\vehicle_breakdown_logs.txt");
+	ofstream fout1("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\tl_research\\vehicle_breakdown_logs.txt");
 	ResearchVehicleBreakdown(solutions, fout1);
 	fout1.close();
 	outlog << "Done research on Vehicle Breakdown" << endl;
 	outlog << "Time passed: " << (clock() - start_time) / CLOCKS_PER_SEC << endl;
 
-	ofstream fout2("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\target_delete_logs.txt");
+	ofstream fout2("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\tl_research\\target_delete_logs.txt");
 	ResearchTargetDelete(solutions, fout2);
 	fout2.close();
 	outlog << "Done research on Targets Delete" << endl;
 	outlog << "Time passed: " << (clock() - start_time) / CLOCKS_PER_SEC << endl;
 
-	ofstream fout3("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\tw_update_logs.txt");
+	ofstream fout3("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\tl_research\\tw_update_logs.txt");
 	ResearchTWUpdate(solutions, fout3);
 	fout3.close();
 	outlog << "Done research on TimeWindows Update" << endl;
 	outlog << "Time passed: " << (clock() - start_time) / CLOCKS_PER_SEC << endl;
 
-	ofstream fout4("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\dist_upd_logs.txt");
+	ofstream fout4("C:\\Users\\Admin\\OneDrive\\UNIVER\\11trimestr\\DynamicCVRPTW\\VehicleRootingProblem\\tl_research\\dist_upd_logs.txt");
 	ResearchDistanceUpdate(solutions, fout4);
 	fout4.close();
 	outlog << "Done research on Distances Update" << endl;

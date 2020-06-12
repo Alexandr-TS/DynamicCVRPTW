@@ -436,7 +436,7 @@ bool MultiOptimization(ProblemSolution& problem_solution, double cur_time, ETarg
 	bool flag = true;
 	double start_time = clock();
 	while (flag) {
-		if (clock() - start_time > 2.7 * CLOCKS_PER_SEC) {
+		if (clock() - start_time > opts_config.multiopt_tl * CLOCKS_PER_SEC) {
 			break;
 		}
 		flag = false;
