@@ -79,6 +79,9 @@ void DrawPaths(System::Drawing::Graphics^ graphics, ProblemSolution solution, in
 				auto cur_pt = GetVehicleCoords(solution, static_cast<int>(path_idx), solution.BrokenVehicleTimeById[static_cast<int>(path_idx)]);
 				TranslatePoint(cur_pt, minX, sz2, sz1, minY, newMaxY, newMinY);
 				int last_visited_id = static_cast<int>(path.size()) - 3;
+				if (solution.ArrivalTimes[path_idx].back() <= cur_time) {
+					last_visited_id = static_cast<int>(path.size()) - 2;
+				}
 				graphics->DrawLine(pen, static_cast<int>(points[path[last_visited_id]].first), static_cast<int>(points[path[last_visited_id]].second),
 					static_cast<int>(cur_pt.first), static_cast<int>(cur_pt.second));
 			}
